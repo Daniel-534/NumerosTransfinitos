@@ -1,0 +1,311 @@
+\documentclass[12pt,oneside]{book}
+
+% -------------------------------------------------
+% PAQUETES
+% -------------------------------------------------
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{tocloft}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{csquotes}
+\usepackage[backend=biber, style=alphabetic, sorting=nyt]{biblatex}
+\addbibresource{referencias.bib}
+
+% -------------------------------------------------
+% CONFIGURACIÓN VISUAL
+% -------------------------------------------------
+\definecolor{azulMath}{HTML}{026937}
+\definecolor{grisClaro}{HTML}{F4F6F8}
+\definecolor{grisTexto}{HTML}{2E2E2E}
+\definecolor{grisSec}{HTML}{6C757D}
+\definecolor{colorDef}{HTML}{EBF5FB}
+\definecolor{colorTeo}{HTML}{EAFAF1}
+\definecolor{colorEj}{HTML}{FEF9E7}
+\definecolor{colorObs}{HTML}{F2F3F4}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azulMath,
+    urlcolor=azulMath,
+    citecolor=azulMath,
+    pdftitle={Notas de Clase - Números Transfinitos},
+    pdfauthor={Daniel Soto Villada}
+}
+
+\setstretch{1.12}
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\setlength{\headheight}{26pt}
+
+% Estilo de capítulos y secciones
+\titleformat{\chapter}[display]
+  {\bfseries\Huge\color{azulMath}}
+  {\filleft\Large\chaptername\ \thechapter}
+  {1ex}
+  {\titlerule\vspace{1ex}\filright}
+  [\vspace{1ex}\titlerule]
+
+\titleformat{\section}
+  {\bfseries\Large\color{azulMath}}
+  {\thesection}{0.7em}{}
+
+\titleformat{\subsection}
+  {\bfseries\large\color{grisTexto}}
+  {\thesubsection}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\bfseries\normalsize\color{grisTexto}}
+  {\thesubsubsection}{0.5em}{}
+
+% Encabezados y pies
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{grisSec}{\nouppercase{\leftmark}}}
+\fancyhead[R]{\textcolor{grisSec}{Daniel Soto Villada}}
+\fancyfoot[C]{\textcolor{grisSec}{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{azulMath}\leaders\hrule height \headrulewidth\hfill}}
+
+% Índice más limpio
+\renewcommand{\cftchapfont}{\bfseries\color{azulMath}}
+\renewcommand{\cftsecfont}{\color{grisTexto}}
+\renewcommand{\cftchappagefont}{\bfseries\color{azulMath}}
+\renewcommand{\cftsecpagefont}{\color{grisTexto}}
+
+% -------------------------------------------------
+% ENTORNOS TCOLORBOX
+% -------------------------------------------------
+
+% Caja genérica para ideas importantes
+\newtcolorbox{importante}{
+  colback=grisClaro,
+  colframe=azulMath,
+  boxrule=0.8pt,
+  arc=2mm,
+  left=3mm, right=3mm, top=1.5mm, bottom=1.5mm
+}
+
+% Definición
+\newtcbtheorem[number within=chapter]{definicion}{Definición}{
+  enhanced,
+  colback=colorDef,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{def}
+
+% Teorema (define el contador compartido)
+\newtcbtheorem[number within=chapter]{teorema}{Teorema}{
+  enhanced,
+  colback=colorTeo,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{teo}
+
+% Lema (comparte contador con teorema)
+\newtcbtheorem[use counter from=teorema]{lema}{Lema}{
+  enhanced,
+  colback=colorTeo,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{lem}
+
+% Corolario (comparte contador con teorema)
+\newtcbtheorem[use counter from=teorema]{corolario}{Corolario}{
+  enhanced,
+  colback=colorTeo,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{cor}
+
+% Proposición (comparte contador con teorema)
+\newtcbtheorem[use counter from=teorema]{proposicion}{Proposición}{
+  enhanced,
+  colback=colorTeo,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{prop}
+
+% Ejemplo
+\newtcbtheorem[number within=chapter]{ejemplo}{Ejemplo}{
+  enhanced,
+  colback=colorEj,
+  colframe=azulMath,
+  coltitle=white,
+  colbacktitle=azulMath,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=azulMath},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.8pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{ej}
+
+% Observación
+\newtcbtheorem[number within=chapter]{observacion}{Observación}{
+  enhanced,
+  colback=colorObs,
+  colframe=grisSec,
+  coltitle=white,
+  colbacktitle=grisSec,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={enhanced, arc=1mm, boxrule=0pt, colframe=grisSec},
+  fonttitle=\bfseries,
+  breakable,
+  arc=1.5mm,
+  boxrule=0.6pt,
+  left=4mm, right=4mm, top=5mm, bottom=2mm,
+  separator sign none,
+  description delimiters={(}{)}
+}{obs}
+
+% -------------------------------------------------
+% ENTORNO DE DEMOSTRACIÓN
+% -------------------------------------------------
+\renewcommand{\proofname}{\textbf{Demostración}}
+
+% -------------------------------------------------
+% MACROS MATEMÁTICOS
+% -------------------------------------------------
+% Regla de inferencia: \infr[nombre]{premisas}{conclusión}
+\newcommand{\infr}[3][]{\dfrac{\displaystyle #2}{\displaystyle #3}\;\text{(}#1\text{)}}
+
+% Lenguajes y estructuras
+\newcommand{\Lang}{\mathcal{L}}
+\newcommand{\Struct}[1]{\mathfrak{#1}}
+\newcommand{\FV}{\mathrm{FV}}
+\newcommand{\dom}[1]{|{#1}|}
+
+% Consecuencia
+\newcommand{\entails}{\models}
+\newcommand{\proves}{\vdash}
+
+% -------------------------------------------------
+% DATOS DEL DOCUMENTO
+% -------------------------------------------------
+\newcommand{\NombreEstudiante}{Daniel Soto Villada}
+\newcommand{\Programa}{Estudiante de astronomía y matemáticas}
+\newcommand{\Universidad}{Universidad de Antioquia}
+\newcommand{\Facultad}{Facultad de Ciencias Exactas y Naturales}
+\newcommand{\Instituto}{Instituto de Matemáticas}
+\newcommand{\TituloDocumento}{Notas de Clase\\[0.4em]Números Transfinitos}
+
+% -------------------------------------------------
+% DOCUMENTO
+% -------------------------------------------------
+\begin{document}
+\hypersetup{pageanchor=false}
+
+% ---------- PORTADA ----------
+\begin{titlepage}
+    \centering
+    \vspace*{1.8cm}
+
+    {\Large\textcolor{grisSec}{\Universidad}\par}
+    \vspace{0.25cm}
+    {\large\textcolor{grisSec}{\Facultad}\par}
+    {\large\textcolor{grisSec}{\Instituto}\par}
+
+    \vspace{2.2cm}
+    {\Huge\bfseries\textcolor{azulMath}{\TituloDocumento}\par}
+    \vspace{0.5cm}
+    {\Large\textcolor{grisSec}{Fundamentos de Teoría de Conjuntos y Lógica Matemática}\par}
+
+    \vspace{2.4cm}
+    \begin{tcolorbox}[colback=grisClaro,colframe=azulMath,boxrule=0.9pt,arc=2mm,width=0.78\textwidth]
+        \centering
+        {\Large\bfseries \NombreEstudiante}\par
+        \vspace{0.2cm}
+        {\large \Programa}
+    \end{tcolorbox}
+
+    \vfill
+    {\large\textcolor{grisSec}{\today}\par}
+    \vspace{0.5cm}
+\end{titlepage}
+
+% ---------- PÁGINAS PRELIMINARES ----------
+\frontmatter
+\tableofcontents
+\clearpage
+
+% ---------- CONTENIDO ----------
+\clearpage
+\hypersetup{pageanchor=true}
+\mainmatter
+\input{clases/clase01}
+
+% ---------- FINAL ----------
+\backmatter
+\printbibliography[heading=bibintoc, title={Referencias}]
+
+\end{document}
