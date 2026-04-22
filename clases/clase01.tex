@@ -94,7 +94,7 @@ Usando $\Lang_{\mathrm{ar}} = (\{0,1\}, \{s,+,\times\}, \{\leq\})$:
 \begin{itemize}
   \item $x$, $y$, $z$ son términos (variables).
   \item $0$, $1$ son términos (constantes).
-  \item $s(0)$, $s(1)$, $s(s(0))$ son términos. Intuitivamente representan $1, 2, 2$ (o $2$ si $1$ ya es la constante para el uno).
+  \item $s(0)$, $s(1)$, $s(s(0))$ son términos. Dado que $0$ y $1$ son constantes, $s(0)$ representa el sucesor de $0$ (es decir, $1$), $s(1)$ representa el sucesor de $1$ (es decir, $2$), y $s(s(0)) = s(1)$ también representa $2$.
   \item $+(x, s(0))$ es un término; en notación infija: $x + s(0)$, que representa $x + 1$.
   \item $\times(+(x,y), s(0))$ es un término; en notación infija: $(x+y) \times s(0) = (x+y)\cdot 1$.
   \item $+(x, \times(y, z))$ representa $x + (y \cdot z)$.
@@ -230,7 +230,7 @@ donde:
     \mathbb{N} = \bigl(\mathbb{N},\; 0^{\mathbb{N}}=0,\; 1^{\mathbb{N}}=1,\; s^{\mathbb{N}}=\mathrm{sucesor},\; +^{\mathbb{N}}=\mathrm{suma},\; \times^{\mathbb{N}}=\mathrm{producto},\; \leq^{\mathbb{N}}={\leq}\bigr).
   \]
   \item \textbf{Modelo no estándar (anticipación):} Existen estructuras $\Struct{A}$ para $\Lang_{\mathrm{ar}}$ en las que el dominio $A$ contiene elementos ``infinitamente grandes'' (mayores que $n$ para todo $n$ estándar). Estas surgen como consecuencia del Teorema de Compacidad.
-  \item \textbf{Interpretación en $\mathbb{Z}$:} Se puede interpretar $\Lang_{\mathrm{ar}}$ en $\mathbb{Z}$ con las operaciones usuales. Nótese que en $\mathbb{Z}$ la fórmula $\exists x\,(x + x = s(0))$ es verdadera (tiene solución: $x = 1/2$... no, en $\mathbb{Z}$ no. Pero la fórmula $\forall x\, \exists y\, (x = y + y)$ falla en $\mathbb{N}$ pero es relevante estudiarla.)
+  \item \textbf{Interpretación en $\mathbb{Z}$:} Se puede interpretar $\Lang_{\mathrm{ar}}$ en $\mathbb{Z}$ con las operaciones usuales. En $\mathbb{Z}$, a diferencia de $\mathbb{N}$, la fórmula $\forall x\, \exists y\, (x = y + y)$ es falsa ($1$ no es el doble de ningún entero), mientras que $\exists x\, \exists y\, (x \neq y)$ sigue siendo verdadera. Esto ilustra cómo el valor de verdad de una fórmula depende de la estructura elegida.
 \end{enumerate}
 \end{ejemplo}
 
@@ -421,7 +421,7 @@ En la práctica, las derivaciones se presentan en forma lineal numerada, lo cual
   \infr[\wedge\mathrm{E}_2]{\varphi \wedge \psi}{\psi}
 \]
 
-\textbf{Lectura:} $\wedge$I dice que si tenemos demostradas $\varphi$ y $\psi$ por separado, podemos concluir su conjunción. $\wedge$E$_1$ (resp. $\wedge$E$_2$) dice que de una conjunción podemos extraer el primer (resp. segundo) conjunto.
+\textbf{Lectura:} $\wedge$I dice que si tenemos demostradas $\varphi$ y $\psi$ por separado, podemos concluir su conjunción. $\wedge$E$_1$ (resp. $\wedge$E$_2$) dice que de una conjunción podemos extraer el primer (resp. segundo) componente.
 
 \subsection{Reglas para la disyunción}
 
@@ -706,7 +706,7 @@ Equivalentemente: $\Gamma \models \varphi$ si y solo si existe un subconjunto fi
 \begin{proof}
 $(\Rightarrow)$ Si $\Struct{A} \models \Gamma$, entonces en particular $\Struct{A} \models \Delta$ para todo $\Delta \subseteq \Gamma$. Trivial.
 
-$(\Leftarrow)$ Supongamos que $\Gamma$ no tiene modelo. Por el Teorema de Completitud, $\Gamma$ es inconsistente: $\Gamma \vdash \bot$. Toda derivación en NK es una estructura finita y solo usa finitely many hipótesis; por tanto, existe un subconjunto finito $\Delta \subseteq \Gamma$ con $\Delta \vdash \bot$. Por el Teorema de Corrección, $\Delta$ es insatisfacible: $\Delta$ no tiene modelo. Luego no todo subconjunto finito de $\Gamma$ tiene modelo.
+$(\Leftarrow)$ Supongamos que $\Gamma$ no tiene modelo. Por el Teorema de Completitud, $\Gamma$ es inconsistente: $\Gamma \vdash \bot$. Toda derivación en NK es una estructura finita y solo usa un número finito de hipótesis; por tanto, existe un subconjunto finito $\Delta \subseteq \Gamma$ con $\Delta \vdash \bot$. Por el Teorema de Corrección, $\Delta$ es insatisfacible: $\Delta$ no tiene modelo. Luego no todo subconjunto finito de $\Gamma$ tiene modelo.
 \end{proof}
 
 \subsubsection{Aplicación 1: Modelos no estándar de la aritmética}
@@ -737,7 +737,7 @@ Se codifica el problema de coloración como un conjunto $\Gamma_G$ de sentencias
   \item Vértices adyacentes tienen colores distintos: $\neg(C_i(c_v) \wedge C_i(c_w))$ para cada arista $\{v,w\}$ y cada $i$.
 \end{enumerate}
 
-Todo subconjunto finito de $\Gamma_G$ involucra finitely many vértices, por lo que corresponde a un subgrafo finito, que por hipótesis es $k$-colorable. Por Compacidad, $\Gamma_G$ tiene un modelo, que proporciona una $k$-coloración de $G$.
+Todo subconjunto finito de $\Gamma_G$ involucra un número finito de vértices, por lo que corresponde a un subgrafo finito, que por hipótesis es $k$-colorable. Por Compacidad, $\Gamma_G$ tiene un modelo, que proporciona una $k$-coloración de $G$.
 \end{proof}
 
 \subsubsection{Aplicación 3: Teoría de modelos}
