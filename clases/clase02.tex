@@ -1,0 +1,653 @@
+% ===========================================================
+\chapter{Clase 2: Axiomática de Zermelo–Fraenkel con el Axioma de Elección (ZFC)}
+% ===========================================================
+
+La teoría de conjuntos de \textbf{Zermelo–Fraenkel con el Axioma de Elección}, conocida universalmente como \textbf{ZFC}, es el sistema axiomático que sirve de fundamento estándar para la totalidad de las matemáticas contemporáneas. A partir de un único símbolo primitivo —la relación de pertenencia $\in$— y de nueve axiomas más el Axioma de Elección, es posible construir los números naturales, reales y complejos, toda la teoría de la medida, el álgebra abstracta, el análisis funcional, la geometría diferencial, y —lo que más nos interesa en este curso— la jerarquía transfinita de números ordinales y cardinales.
+
+En esta clase presentamos los axiomas de ZF de manera formal y comentada, añadimos el Axioma de Elección, y estudiamos sus equivalencias más importantes: el \textbf{Lema de Zorn} y el \textbf{Teorema del Buen Orden}. Discutiremos también por qué ZFC constituye el sistema preferido y cuáles son sus limitaciones inherentes \cite{kunen2011, jech2003, halmos1960}.
+
+% ===========================================================
+\section{El lenguaje de la teoría de conjuntos}
+% ===========================================================
+
+Toda la teoría ZFC se expresa en el lenguaje de primer orden con una única relación no lógica:
+\[
+  \mathcal{L}_{\in} = (\emptyset,\, \emptyset,\, \{\in^{(2)}\}).
+\]
+Los únicos objetos que existen son los \emph{conjuntos}. En ZFC no hay \emph{ur-elementos} (objetos que no sean conjuntos); todo lo que existe es un conjunto, y los conjuntos se relacionan únicamente mediante la pertenencia $\in$.
+
+La relación de \textbf{inclusión} se introduce como abreviatura:
+\[
+  A \subseteq B \;\stackrel{\mathrm{def}}{\iff}\; \forall x\,(x \in A \to x \in B).
+\]
+
+\begin{observacion}{Notación y convenios}{conv}
+A lo largo de esta clase usaremos las siguientes abreviaturas estándar:
+\begin{itemize}[leftmargin=2em]
+  \item $A \subsetneq B$ (inclusión estricta): $A \subseteq B \wedge A \neq B$.
+  \item $\exists! x\,\varphi(x)$ (existencia y unicidad): $\exists x\,(\varphi(x) \wedge \forall y\,(\varphi(y) \to y = x))$.
+  \item $\{x \mid \varphi(x)\}$ denota la clase de todos los conjuntos que satisfacen $\varphi$. Esta notación es \emph{informal} dentro de ZFC (puede no ser un conjunto), como veremos al estudiar el Axioma de Separación.
+\end{itemize}
+\end{observacion}
+
+% ===========================================================
+\section{Los nueve axiomas de Zermelo–Fraenkel}
+% ===========================================================
+
+Presentamos cada axioma con su nombre, su fórmula en $\mathcal{L}_{\in}$, una explicación intuitiva y ejemplos desarrollados.
+
+% -----------------------------------------------------------
+\subsection{Axioma 1: Extensionalidad}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma de Extensionalidad}{ext}
+\[
+  \forall A\,\forall B\,\bigl(\forall x\,(x \in A \leftrightarrow x \in B) \to A = B\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} Dos conjuntos son iguales si y solo si tienen los mismos elementos. Este axioma captura la idea de que un conjunto queda completamente determinado por su extensión (sus miembros), no por la forma en que se lo describe.
+
+\begin{ejemplo}{Extensionalidad en acción}{}
+Consideremos las siguientes descripciones:
+\begin{itemize}[leftmargin=2em]
+  \item $A = \{x \in \mathbb{N} \mid x^2 - 3x + 2 = 0\} = \{1, 2\}$.
+  \item $B = \{x \in \mathbb{N} \mid x < 3 \wedge x \geq 1\} = \{1, 2\}$.
+\end{itemize}
+Aunque $A$ y $B$ se describen mediante condiciones distintas, el Axioma de Extensionalidad garantiza que $A = B$, puesto que $\forall x\,(x \in A \leftrightarrow x \in B)$.
+
+De manera más abstracta: $\{1, 2, 1\} = \{1, 2\}$, ya que la repetición de elementos no altera la extensión.
+\end{ejemplo}
+
+\begin{observacion}{Consecuencia fundamental}{unicidad}
+El Axioma de Extensionalidad implica que, si un axioma garantiza la existencia de un conjunto con cierta propiedad, dicho conjunto es \emph{único}. Esto justifica el uso del artículo determinado («el conjunto vacío», «el par $\{a,b\}$», etc.) y del símbolo $\exists!$ en muchos resultados.
+\end{observacion}
+
+% -----------------------------------------------------------
+\subsection{Axioma 2: Vacío (o Existencia)}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma del Conjunto Vacío}{vacio}
+\[
+  \exists A\,\forall x\,(x \notin A).
+\]
+\end{definicion}
+
+\textbf{Significado.} Existe al menos un conjunto que no tiene elementos. Combinado con el Axioma de Extensionalidad, este conjunto es único y se denota $\emptyset$.
+
+\begin{ejemplo}{Unicidad del conjunto vacío}{}
+Supongamos que $A$ y $B$ son dos conjuntos vacíos. Entonces para todo $x$: $x \notin A$ y $x \notin B$, de modo que trivialmente $x \in A \leftrightarrow x \in B$ (ambas partes son falsas). Por el Axioma de Extensionalidad, $A = B$.
+\end{ejemplo}
+
+\begin{observacion}{Necesidad del axioma}{nec-vacio}
+En algunos sistemas axiomáticos la existencia del conjunto vacío se deduce a partir del Axioma de Separación (aplicado a cualquier conjunto existente). Sin embargo, para que Separación tenga algo sobre qué operar, se necesita al menos un conjunto; de ahí que muchos autores incluyan el Axioma del Vacío de manera explícita como garantía de que el universo conjuntista no es vacío.
+\end{observacion}
+
+% -----------------------------------------------------------
+\subsection{Axioma 3: Pares}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma de Pares}{par}
+\[
+  \forall a\,\forall b\,\exists P\,\forall x\,(x \in P \leftrightarrow x = a \vee x = b).
+\]
+\end{definicion}
+
+\textbf{Significado.} Para cualesquiera dos conjuntos $a$ y $b$, existe el conjunto $\{a, b\}$ cuyos únicos miembros son $a$ y $b$.
+
+\begin{ejemplo}{Construcción de singletons y pares}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Tomando $a = b = \emptyset$, el axioma garantiza la existencia de $\{\emptyset, \emptyset\} = \{\emptyset\}$. Así obtenemos el \textbf{singleton} del vacío.
+
+  \item A partir de $\emptyset$ y $\{\emptyset\}$, el axioma produce $\{\emptyset, \{\emptyset\}\}$, que en la construcción de von Neumann representa el número natural $2$.
+
+  \item La construcción iterada de pares nos permite construir todos los naturales: $0 = \emptyset$, $1 = \{0\} = \{\emptyset\}$, $2 = \{0,1\} = \{\emptyset, \{\emptyset\}\}$, y en general $n+1 = n \cup \{n\}$ (donde la unión requiere el Axioma de Unión).
+\end{enumerate}
+\end{ejemplo}
+
+% -----------------------------------------------------------
+\subsection{Axioma 4: Unión}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma de Unión}{union}
+\[
+  \forall \mathcal{F}\,\exists U\,\forall x\bigl(x \in U \leftrightarrow \exists A\,(A \in \mathcal{F} \wedge x \in A)\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} Para toda familia de conjuntos $\mathcal{F}$, existe la unión $\bigcup \mathcal{F}$, cuyos elementos son exactamente los elementos de los miembros de $\mathcal{F}$.
+
+\begin{ejemplo}{Unión de una familia}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Sea $\mathcal{F} = \{\{1,2\},\{2,3\},\{3,4\}\}$.
+    Entonces $\bigcup \mathcal{F} = \{1,2,3,4\}$.
+
+  \item Sea $\mathcal{F} = \{a, b\}$. Entonces $\bigcup\{a,b\} = a \cup b$ en el sentido usual.
+
+  \item La unión binaria $a \cup b$ se define como $\bigcup\{a,b\}$, que existe por los Axiomas de Pares y Unión.
+
+  \item La sucesión de von Neumann: $n+1 = n \cup \{n\} = \bigcup\{n, \{n\}\}$. El Axioma de Unión garantiza que este sucesor existe.
+\end{enumerate}
+\end{ejemplo}
+
+% -----------------------------------------------------------
+\subsection{Axioma 5: Potencia (Conjunto de Partes)}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma de Potencia}{potencia}
+\[
+  \forall A\,\exists P\,\forall x\,(x \in P \leftrightarrow x \subseteq A).
+\]
+\end{definicion}
+
+\textbf{Significado.} Para todo conjunto $A$, existe el conjunto $\mathcal{P}(A)$ —llamado \textbf{conjunto potencia} o \textbf{conjunto de partes} de $A$— que contiene exactamente todos los subconjuntos de $A$.
+
+\begin{ejemplo}{Cómputo de conjuntos potencia}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\mathcal{P}(\emptyset) = \{\emptyset\}$. El único subconjunto del vacío es el propio vacío.
+
+  \item $\mathcal{P}(\{\emptyset\}) = \{\emptyset,\, \{\emptyset\}\}$. Tiene $2^1 = 2$ elementos.
+
+  \item $\mathcal{P}(\{0,1,2\}) = \{\emptyset,\{0\},\{1\},\{2\},\{0,1\},\{0,2\},\{1,2\},\{0,1,2\}\}$. Tiene $2^3 = 8$ elementos.
+
+  \item Para un conjunto finito con $n$ elementos, $|\mathcal{P}(A)| = 2^n$. Para conjuntos infinitos, el teorema de Cantor establece que $|\mathcal{P}(A)| > |A|$ en cardinalidad (ver Clase 3).
+\end{enumerate}
+\end{ejemplo}
+
+\begin{observacion}{Importancia del Axioma de Potencia}{imp-pot}
+El Axioma de Potencia es responsable de la existencia de los números reales (como subconjuntos de $\mathbb{N}$ o secuencias de bits), de espacios funcionales $B^A$, y de toda la jerarquía de cardinalidades infinitas más allá de $\aleph_0$. Sin él, el universo conjuntista sería demasiado pequeño para albergar el análisis real.
+\end{observacion}
+
+% -----------------------------------------------------------
+\subsection{Axioma 6: Infinito}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma del Infinito}{infinito}
+\[
+  \exists I\,\bigl(\emptyset \in I \;\wedge\; \forall x\,(x \in I \to x \cup \{x\} \in I)\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} Existe al menos un conjunto \emph{inductivo}: un conjunto que contiene $\emptyset$ y es cerrado bajo la operación sucesor $x \mapsto x \cup \{x\}$.
+
+\begin{ejemplo}{El conjunto de von Neumann de los naturales}{}
+El Axioma del Infinito garantiza la existencia de un conjunto inductivo $I$. Mediante el Axioma de Separación (ver más adelante) se puede extraer el \textbf{menor} conjunto inductivo:
+\[
+  \omega = \{x \in I \mid x \text{ pertenece a todo conjunto inductivo incluido en } I\}.
+\]
+Este conjunto $\omega$ contiene exactamente:
+\[
+  \omega = \{0, 1, 2, 3, \ldots\} = \{\emptyset,\, \{\emptyset\},\, \{\emptyset,\{\emptyset\}\},\, \ldots\}
+\]
+y sirve como modelo estándar de los números naturales dentro de ZFC. La construcción explicita los primeros elementos:
+\begin{align*}
+  0 &= \emptyset, \\
+  1 &= \{0\} = \{\emptyset\}, \\
+  2 &= \{0,1\} = \{\emptyset, \{\emptyset\}\}, \\
+  3 &= \{0,1,2\} = \{\emptyset, \{\emptyset\}, \{\emptyset,\{\emptyset\}\}\}.
+\end{align*}
+\end{ejemplo}
+
+% -----------------------------------------------------------
+\subsection{Axioma 7: Esquema de Reemplazo}
+% -----------------------------------------------------------
+
+\begin{definicion}{Esquema de Axiomas de Reemplazo}{reemplazo}
+Para toda fórmula $\varphi(x, y, p_1, \ldots, p_k)$ de $\mathcal{L}_{\in}$ que sea \emph{funcional} en los parámetros dados (es decir, $\forall x\,\exists! y\,\varphi(x,y,\vec{p})$), el siguiente enunciado es un axioma:
+\[
+  \forall \vec{p}\,\forall A\,\bigl(\forall x \in A\,\exists! y\,\varphi(x,y,\vec{p})\bigr)
+  \to \exists B\,\forall y\,\bigl(y \in B \leftrightarrow \exists x \in A\,\varphi(x,y,\vec{p})\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} Si $\varphi$ define una función $F: A \to V$ sobre un conjunto $A$ (donde $V$ es el universo conjuntista), entonces la imagen $F[A] = \{F(x) \mid x \in A\}$ es también un conjunto.
+
+\begin{ejemplo}{Reemplazo para construir conjuntos de ordinales}{}
+Sea $A = \omega$ y $\varphi(n, y)$ la fórmula ``$y$ es el $n$-ésimo número primo''. Esta es una función bien definida $F: \omega \to \omega$. El Esquema de Reemplazo garantiza que el conjunto de todos los números primos:
+\[
+  \{F(0), F(1), F(2), \ldots\} = \{2, 3, 5, 7, 11, \ldots\}
+\]
+es un conjunto.
+
+Otro ejemplo: sea $\varphi(n, y)$ la fórmula ``$y = \mathcal{P}^n(\omega)$'' (la $n$-ésima iteración del conjunto potencia de $\omega$). Entonces el Esquema de Reemplazo garantiza la existencia de:
+\[
+  \{\omega,\, \mathcal{P}(\omega),\, \mathcal{P}(\mathcal{P}(\omega)),\, \ldots\},
+\]
+que es fundamental para construir los ordinales de la jerarquía acumulativa $V_\alpha$.
+\end{ejemplo}
+
+\begin{observacion}{Reemplazo versus Separación}{rem-sep}
+El Esquema de Separación (que presentamos a continuación) es un caso especial del Esquema de Reemplazo: separar los elementos de $A$ que satisfacen $\psi$ equivale a aplicar la función identidad sobre el subconjunto $\{x \in A \mid \psi(x)\}$. En muchas presentaciones modernas solo se incluye Reemplazo, y Separación se deduce de él.
+\end{observacion}
+
+% -----------------------------------------------------------
+\subsection{Axioma 8: Regularidad (o Fundación)}
+% -----------------------------------------------------------
+
+\begin{definicion}{Axioma de Regularidad}{regularidad}
+\[
+  \forall A\,\bigl(A \neq \emptyset \to \exists x \in A\,(x \cap A = \emptyset)\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} Todo conjunto no vacío tiene un \textbf{elemento $\in$-minimal}: un miembro $x$ que no comparte ningún elemento con $A$. Esto equivale a decir que la relación $\in$ sobre cualquier conjunto es \emph{bien fundada}.
+
+\begin{ejemplo}{Consecuencias del Axioma de Regularidad}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{No existen conjuntos que se contengan a sí mismos.}
+    Supongamos $A \in A$. Sea $M = \{A\}$. Entonces $M \neq \emptyset$ y su único elemento es $A$. El Axioma de Regularidad exige $A \cap M = \emptyset$. Pero $A \in A$ y $A \in M$, así que $A \in A \cap M$, contradicción.
+
+  \item \textbf{No existe cadena $\in$-descendente infinita} $\cdots \in A_2 \in A_1 \in A_0$.
+    En efecto, el conjunto $\{A_i \mid i \in \omega\}$ (si existe como conjunto, lo que garantiza Reemplazo) no tendría elemento $\in$-minimal, contradiciendo el axioma.
+
+  \item \textbf{La jerarquía cumulativa.} El Axioma de Regularidad implica que todo conjunto pertenece a algún estrato $V_\alpha$ de la jerarquía de von Neumann:
+    \[
+      V_0 = \emptyset, \quad V_{\alpha+1} = \mathcal{P}(V_\alpha), \quad V_\lambda = \bigcup_{\alpha < \lambda} V_\alpha \;(\lambda \text{ límite}).
+    \]
+    El universo de ZFC es $V = \bigcup_{\alpha \in \mathrm{Ord}} V_\alpha$.
+\end{enumerate}
+\end{ejemplo}
+
+% -----------------------------------------------------------
+\subsection{Axioma 9: Esquema de Separación (o Comprensión Restringida)}
+% -----------------------------------------------------------
+
+\begin{definicion}{Esquema de Axiomas de Separación}{separacion}
+Para toda fórmula $\varphi(x, p_1, \ldots, p_k)$ de $\mathcal{L}_{\in}$:
+\[
+  \forall \vec{p}\,\forall A\,\exists B\,\forall x\,\bigl(x \in B \leftrightarrow x \in A \wedge \varphi(x, \vec{p})\bigr).
+\]
+\end{definicion}
+
+\textbf{Significado.} A partir de cualquier conjunto $A$ y cualquier propiedad $\varphi$, podemos separar los elementos de $A$ que satisfacen $\varphi$. El conjunto resultante se denota $\{x \in A \mid \varphi(x)\}$ y es un subconjunto de $A$.
+
+\begin{ejemplo}{Separación: usos fundamentales}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Intersección binaria.} La intersección $A \cap B = \{x \in A \mid x \in B\}$ existe por Separación (con $\varphi(x) = x \in B$ y parámetro $B$).
+
+  \item \textbf{Complemento relativo.} $A \setminus B = \{x \in A \mid x \notin B\}$ existe por Separación.
+
+  \item \textbf{Conjunto de los números pares.} El conjunto $\{n \in \omega \mid \exists k \in \omega\,(n = k+k)\}$ existe por Separación sobre $\omega$.
+
+  \item \textbf{Derivación del Teorema de Russell.} La fórmula «no restringida» $R = \{x \mid x \notin x\}$ lleva a la paradoja de Russell. Con el Esquema de Separación, solo podemos formar $R_A = \{x \in A \mid x \notin x\}$ para un conjunto $A$ dado. Se puede demostrar que $R_A \notin A$ (pero $R_A$ sí existe como subconjunto de $A$), evitando así la paradoja.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{importante}
+La paradoja de Russell surge al intentar definir $\{x \mid x \notin x\}$ \emph{sin restricción}. La solución de Zermelo fue exigir que la comprensión sea siempre \emph{relativa a un conjunto preexistente}: no se puede construir un conjunto desde la nada usando solo una propiedad; hay que partir de un conjunto ya existente y seleccionar sus elementos que satisfacen dicha propiedad.
+\end{importante}
+
+% ===========================================================
+\section{Tabla resumen de los axiomas de ZF}
+% ===========================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|p{7cm}|}
+\hline
+\textbf{N.º} & \textbf{Nombre} & \textbf{Garantía informal} \\
+\hline
+1 & Extensionalidad & Igualdad determinada por los miembros \\
+2 & Vacío & Existe $\emptyset$ \\
+3 & Pares & Existen $\{a, b\}$ \\
+4 & Unión & Existe $\bigcup \mathcal{F}$ \\
+5 & Potencia & Existe $\mathcal{P}(A)$ \\
+6 & Infinito & Existe $\omega$ \\
+7 & Reemplazo (esquema) & La imagen funcional de un conjunto es un conjunto \\
+8 & Regularidad & No hay descenso $\in$-infinito \\
+9 & Separación (esquema) & Subconjuntos por propiedad son conjuntos \\
+\hline
+\end{tabular}
+\end{center}
+
+% ===========================================================
+\section{El Axioma de Elección}
+% ===========================================================
+
+\subsection{Formulación del Axioma de Elección}
+
+\begin{definicion}{Axioma de Elección (AC)}{AC}
+Para toda familia $\mathcal{F}$ de conjuntos no vacíos y mutuamente disjuntos, existe un conjunto $C$ que contiene exactamente un elemento de cada miembro de $\mathcal{F}$:
+\[
+  \forall \mathcal{F}\,\Bigl(\bigl(\forall A \in \mathcal{F}\, A \neq \emptyset\bigr) \wedge \bigl(\forall A,B \in \mathcal{F}\,(A \neq B \to A \cap B = \emptyset)\bigr)
+  \to \exists C\,\forall A \in \mathcal{F}\,\exists! x\,(x \in C \cap A)\Bigr).
+\]
+\end{definicion}
+
+Una formulación equivalente —quizás más transparente— es mediante \textbf{funciones de elección}:
+
+\begin{definicion}{Función de elección}{fun-elec}
+Sea $\mathcal{F}$ una familia de conjuntos no vacíos. Una \textbf{función de elección} para $\mathcal{F}$ es una función $f: \mathcal{F} \to \bigcup \mathcal{F}$ tal que $f(A) \in A$ para todo $A \in \mathcal{F}$.
+
+\medskip
+El \textbf{Axioma de Elección} (AC) afirma que toda familia de conjuntos no vacíos admite una función de elección.
+\end{definicion}
+
+\begin{ejemplo}{Elección finita vs. elección infinita}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Caso finito.} Sea $\mathcal{F} = \{\{1,2\},\{3,5\},\{7\}\}$. Podemos elegir explícitamente $f(\{1,2\}) = 1$, $f(\{3,5\}) = 3$, $f(\{7\}) = 7$. No se necesita el AC; basta con una especificación finita.
+
+  \item \textbf{Pares de calcetines (Russell).} Supongamos que tenemos una familia infinita de pares de calcetines $\{P_n\}_{n \in \omega}$, donde cada $P_n = \{c_n^L, c_n^R\}$ y los calcetines del par $n$ son \emph{indistinguibles} entre sí. No hay ninguna regla que nos permita elegir uno de cada par de manera uniforme. El AC postula que, a pesar de ello, existe una función de elección.
+
+  \item \textbf{Subconjuntos de $\mathbb{R}$.} La construcción de un conjunto de Vitale (un conjunto no medible en $\mathbb{R}$) requiere esencialmente el AC: se elige un representante de cada clase de equivalencia de $\mathbb{R}/\mathbb{Q}$.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Independencia del AC}
+
+Un resultado profundo de la teoría de conjuntos es que el Axioma de Elección es \textbf{independiente} de los axiomas ZF:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Gödel (1938):} Si ZF es consistente, entonces ZFC también lo es. (El AC es consistente con ZF.) Gödel lo demostró construyendo el \textit{universo constructible} $L$.
+  \item \textbf{Cohen (1963):} Si ZF es consistente, entonces ZF $+ \neg$AC también lo es. (La negación del AC es consistente con ZF.) Cohen lo demostró mediante la técnica de \textit{forcing}.
+\end{itemize}
+
+\begin{observacion}{Consecuencias de la independencia}{ind-AC}
+La independencia del AC significa que, dentro del sistema ZF, no es posible ni demostrar ni refutar el Axioma de Elección. Esto nos libera de «probar» el AC; simplemente lo adoptamos como un axioma adicional, dando lugar a ZFC. Las matemáticas que requieren el AC (como la teoría de medida, el álgebra lineal sobre espacios de dimensión infinita, o la teoría de cardinales arbitrarios) dependen de esta elección axiomática.
+\end{observacion}
+
+% ===========================================================
+\section{El Lema de Zorn}
+% ===========================================================
+
+\subsection{Órdenes parciales y cadenas}
+
+\begin{definicion}{Orden parcial}{ord-parcial}
+Un \textbf{orden parcial} es un par $(P, \leq)$ donde $P$ es un conjunto y $\leq$ es una relación binaria sobre $P$ que satisface:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Reflexividad:} $\forall x \in P\,(x \leq x)$.
+  \item \textbf{Antisimetría:} $\forall x, y \in P\,(x \leq y \wedge y \leq x \to x = y)$.
+  \item \textbf{Transitividad:} $\forall x, y, z \in P\,(x \leq y \wedge y \leq z \to x \leq z)$.
+\end{enumerate}
+\end{definicion}
+
+\begin{definicion}{Cadena y cota superior}{cadena}
+Sea $(P, \leq)$ un orden parcial.
+\begin{itemize}[leftmargin=2em]
+  \item Una \textbf{cadena} (o subconjunto totalmente ordenado) de $P$ es un subconjunto $C \subseteq P$ tal que $\forall x, y \in C\,(x \leq y \vee y \leq x)$.
+  \item Una \textbf{cota superior} de un subconjunto $S \subseteq P$ es un elemento $u \in P$ tal que $\forall x \in S\,(x \leq u)$.
+  \item Un \textbf{elemento maximal} de $P$ es un elemento $m \in P$ tal que $\forall x \in P\,(m \leq x \to x = m)$.
+\end{itemize}
+\end{definicion}
+
+\subsection{Enunciado y demostración del Lema de Zorn}
+
+\begin{lema}{Lema de Zorn}{zorn}
+Si $(P, \leq)$ es un orden parcial no vacío en el que toda cadena tiene una cota superior en $P$, entonces $P$ tiene al menos un elemento maximal.
+\end{lema}
+
+\begin{proof}
+Demostraremos que el Lema de Zorn se deduce del Axioma de Elección. La demostración se realiza por el absurdo.
+
+Supongamos que $(P, \leq)$ satisface las hipótesis pero que $P$ no tiene ningún elemento maximal. Entonces para cada cadena $C \subseteq P$ existe una cota superior $u_C \in P$ con $u_C \notin C$ (pues de lo contrario $u_C$ sería un elemento maximal, contradiciendo nuestra suposición, ya que una cota superior $u$ de $C$ con $u \in C$ satisfaría que nada en $C$ supera estrictamente a $u$, pero entonces $u$ es maximal en $P$ salvo que exista $v > u$ fuera de $C$; el argumento preciso requiere la siguiente construcción transfinita).
+
+Sea $\mathcal{C}$ la colección de todas las cadenas de $P$. Por el AC, existe una función de elección $f: \mathcal{C} \to P$ tal que $f(C) \in P$ es una cota estricta de $C$ (es decir, $f(C) > c$ para todo $c \in C$; esta elección es posible porque $P$ no tiene maximales).
+
+Usando esta función $f$ y el Principio de Recursión Transfinita (que se demuestra en ZF), construimos una secuencia transfinita estrictamente creciente $\{a_\alpha\}_{\alpha \in \mathrm{Ord}}$ en $P$: tomamos $a_0 \in P$ cualquiera, $a_{\alpha+1} = f(\{a_\beta \mid \beta \leq \alpha\})$, y para $\lambda$ límite $a_\lambda = f(\{a_\beta \mid \beta < \lambda\})$.
+
+Esta secuencia es estrictamente creciente en un orden parcial, lo que implica que todos los $a_\alpha$ son distintos, formando una clase propia. Pero $P$ es un conjunto (no una clase propia), contradicción. Por lo tanto, la suposición de que $P$ no tiene maximales es falsa. $\square$
+\end{proof}
+
+\begin{ejemplo}{Aplicaciones del Lema de Zorn}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Bases de espacios vectoriales.} Sea $V$ un espacio vectorial sobre un cuerpo $K$. Sea $P$ el conjunto de todos los conjuntos linealmente independientes de $V$, ordenado por inclusión. Toda cadena tiene cota superior (la unión), y $P \neq \emptyset$ (contiene conjuntos de un solo vector no nulo). Por el Lema de Zorn, $P$ tiene un elemento maximal: un conjunto linealmente independiente maximal, es decir, una \textbf{base de Hamel} de $V$.
+
+  \item \textbf{Ideales maximales en anillos.} Sea $R$ un anillo con unidad y $P$ el conjunto de todos los ideales propios de $R$, ordenado por inclusión. Si $R \neq \{0\}$, entonces $P \neq \emptyset$ y toda cadena de ideales propios tiene como cota su unión (que sigue siendo un ideal propio). Por el Lema de Zorn, todo anillo con unidad tiene al menos un ideal maximal.
+
+  \item \textbf{Extensión de homomorfismos.} En álgebra homológica y análisis funcional, el Lema de Zorn se usa para extender funcionales lineales acotados (Lema de Hahn–Banach en su versión algebraica) y homomorfismos de grupos, entre otros resultados.
+\end{enumerate}
+\end{ejemplo}
+
+% ===========================================================
+\section{El Teorema del Buen Orden}
+% ===========================================================
+
+\subsection{Órdenes totales y buenos órdenes}
+
+\begin{definicion}{Orden total}{ord-total}
+Un \textbf{orden total} (o \textbf{lineal}) sobre $P$ es un orden parcial $(P, \leq)$ en el que $\forall x, y \in P\,(x \leq y \vee y \leq x)$, es decir, todo par de elementos es comparable.
+\end{definicion}
+
+\begin{definicion}{Buen orden}{buen-orden}
+Un \textbf{buen orden} sobre $P$ es un orden total $(P, \leq)$ tal que todo subconjunto no vacío de $P$ tiene un \textbf{mínimo} (elemento menor o igual que todos los demás):
+\[
+  \forall S \subseteq P\,\bigl(S \neq \emptyset \to \exists m \in S\,\forall s \in S\,(m \leq s)\bigr).
+\]
+El par $(P, \leq)$ se llama entonces un \textbf{conjunto bien ordenado}.
+\end{definicion}
+
+\begin{ejemplo}{Ejemplos de buenos órdenes}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $(\mathbb{N}, \leq)$ con el orden usual es un buen orden: todo subconjunto no vacío de $\mathbb{N}$ tiene un mínimo.
+
+  \item $(\mathbb{Z}, \leq)$ con el orden usual \emph{no} es un buen orden: el subconjunto $\mathbb{Z}$ mismo no tiene mínimo.
+
+  \item $(\mathbb{R}_{>0}, \leq)$ con el orden usual \emph{no} es un buen orden: el intervalo $(0, 1)$ no tiene mínimo.
+
+  \item El conjunto $\omega + \omega = \{0, 1, 2, \ldots, \omega, \omega+1, \omega+2, \ldots\}$ con el orden ordinal es un buen orden (ver Clase 3).
+
+  \item Todo subconjunto de un conjunto bien ordenado, con el orden inducido, es bien ordenado.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Enunciado y demostración del Teorema del Buen Orden}
+
+\begin{teorema}{Teorema del Buen Orden (Zermelo, 1904)}{buen-orden}
+Todo conjunto puede ser bien ordenado: para todo conjunto $A$, existe una relación $\leq$ sobre $A$ que es un buen orden.
+\end{teorema}
+
+\begin{proof}
+Utilizamos el Axioma de Elección. Sea $A$ un conjunto. El AC proporciona una función de elección $f: \mathcal{P}(A) \setminus \{\emptyset\} \to A$ tal que $f(S) \in S$ para todo $S \neq \emptyset$.
+
+Definimos una secuencia transfinita por recursión sobre los ordinales:
+\begin{itemize}[leftmargin=2em]
+  \item $a_0 = f(A)$.
+  \item $a_{\alpha+1} = f(A \setminus \{a_\beta \mid \beta \leq \alpha\})$, si $A \setminus \{a_\beta \mid \beta \leq \alpha\} \neq \emptyset$.
+  \item Para $\lambda$ límite: $a_\lambda = f(A \setminus \{a_\beta \mid \beta < \lambda\})$, si este conjunto es no vacío.
+  \item El proceso se detiene cuando $A \setminus \{a_\beta \mid \beta < \alpha\} = \emptyset$.
+\end{itemize}
+
+Puesto que $A$ es un conjunto (no una clase propia), existe un ordinal $\theta$ en el que el proceso termina. Entonces $\{a_\beta \mid \beta < \theta\}$ es una enumeración biyectiva de todos los elementos de $A$, y el orden $a_\alpha \leq a_\beta \iff \alpha \leq \beta$ define un buen orden sobre $A$. $\square$
+\end{proof}
+
+\begin{ejemplo}{Buen orden sobre $\mathbb{R}$}{}
+El Teorema del Buen Orden garantiza que $\mathbb{R}$ puede ser bien ordenado. Sin embargo, dicho buen orden \emph{no} puede ser construido explícitamente en ZFC (independientemente de si se cree o no en el AC). Ninguna fórmula concreta de $\mathcal{L}_{\in}$ define un buen orden de $\mathbb{R}$ en todos los modelos de ZFC. Esta es una de las manifestaciones de que el AC —y los objetos que produce— en general no son constructivos.
+\end{ejemplo}
+
+% ===========================================================
+\section{Equivalencias clásicas del Axioma de Elección}
+% ===========================================================
+
+Uno de los resultados más notables de la teoría de conjuntos del siglo XX es que muchas proposiciones que a primera vista parecen independientes entre sí son de hecho equivalentes en ZF. El siguiente teorema recoge las más importantes.
+
+\begin{teorema}{Equivalencias del Axioma de Elección}{equiv-AC}
+En el sistema ZF, las siguientes afirmaciones son equivalentes:
+\begin{enumerate}[leftmargin=2em, label=\textbf{(\roman*)}]
+  \item \textbf{Axioma de Elección (AC):} Toda familia de conjuntos no vacíos admite una función de elección.
+  \item \textbf{Lema de Zorn:} Todo orden parcial no vacío en el que toda cadena tiene cota superior posee un elemento maximal.
+  \item \textbf{Teorema del Buen Orden:} Todo conjunto puede ser bien ordenado.
+  \item \textbf{Principio de la base de Hamel:} Todo espacio vectorial (sobre cualquier cuerpo) tiene una base.
+  \item \textbf{Teorema de Tychonoff:} El producto cartesiano de una familia arbitraria de espacios topológicos compactos es compacto.
+  \item \textbf{Principio de la cardinalidad:} Para cualesquiera dos conjuntos $A$ y $B$, se cumple $|A| \leq |B|$ o $|B| \leq |A|$.
+  \item \textbf{Principio de la unión numerable:} La unión de una colección numerable de conjuntos numerables es numerable.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}[Esquema de la demostración]
+Indicamos las implicaciones principales; las demostraciones completas se encuentran en \cite{jech2003, kunen2011}.
+
+\medskip
+\textbf{(i) $\Rightarrow$ (ii) [AC $\Rightarrow$ Zorn]:} Ya demostrado en la sección anterior (Lema de Zorn).
+
+\medskip
+\textbf{(ii) $\Rightarrow$ (iii) [Zorn $\Rightarrow$ Buen Orden]:} Sea $A$ un conjunto. Sea $P$ el conjunto de todos los pares $(B, \leq_B)$ donde $B \subseteq A$ y $\leq_B$ es un buen orden de $B$. Se ordena $P$ por: $(B, \leq_B) \preceq (C, \leq_C)$ si $B \subseteq C$ y $\leq_C$ extiende $\leq_B$ (y $B$ es un segmento inicial de $C$). Toda cadena en $P$ tiene cota superior (la unión). Por el Lema de Zorn, existe un elemento maximal $(M, \leq_M)$. Se muestra que $M = A$ (de lo contrario, se podría extender a un conjunto estrictamente mayor, contradiciendo la maximalidad).
+
+\medskip
+\textbf{(iii) $\Rightarrow$ (i) [Buen Orden $\Rightarrow$ AC]:} Sea $\mathcal{F}$ una familia de conjuntos no vacíos. Buen Ordenemos $\bigcup \mathcal{F}$ con algún buen orden $\leq$. Para cada $A \in \mathcal{F}$, definimos $f(A) = \min_{\leq}(A)$ (el mínimo de $A$ respecto a $\leq$). Esta $f$ es una función de elección para $\mathcal{F}$.
+\end{proof}
+
+\begin{ejemplo}{Equivalencias en la práctica}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Sin el AC, hay espacios vectoriales sin base.} En ZF + $\neg$AC (por ejemplo, en el modelo de Solovay donde todo subconjunto de $\mathbb{R}$ es Lebesgue medible), existen espacios vectoriales sobre $\mathbb{Q}$ que no admiten base. La afirmación «todo espacio vectorial tiene base» equivale al AC.
+
+  \item \textbf{Tychonoff y la compacidad del cubo de Hilbert.} El producto $[0,1]^{\mathbb{R}}$ (con la topología producto) es compacto si y solo si aceptamos el AC. Sin el AC, este resultado puede fallar.
+
+  \item \textbf{La cardinalidad requiere el AC.} En ZF sin el AC, es posible tener dos conjuntos $A$ y $B$ tales que $|A| \not\leq |B|$ y $|B| \not\leq |A|$ simultáneamente; es decir, los cardinales pueden ser incomparables. Con el AC, todos los cardinales son comparables (son ordinales iniciales).
+\end{enumerate}
+\end{ejemplo}
+
+% ===========================================================
+\section{Formas débiles del Axioma de Elección}
+% ===========================================================
+
+En la literatura se estudian varias versiones debilitadas del AC, estrictamente más débiles que él pero suficientes para muchos propósitos:
+
+\begin{definicion}{Axioma de Elección Numerable (CC)}{CC}
+Toda familia \emph{numerable} de conjuntos no vacíos admite una función de elección.
+\end{definicion}
+
+\begin{definicion}{Axioma de Elección Dependiente (DC)}{DC}
+Si $R$ es una relación binaria sobre un conjunto $A$ no vacío tal que para todo $x \in A$ existe $y \in A$ con $x \mathrel{R} y$, entonces existe una secuencia $\langle a_n \rangle_{n \in \omega}$ en $A$ con $a_n \mathrel{R} a_{n+1}$ para todo $n$.
+\end{definicion}
+
+La jerarquía de implicaciones (en ZF) es:
+\[
+  \mathrm{AC} \Rightarrow \mathrm{DC} \Rightarrow \mathrm{CC}.
+\]
+Y ninguna implicación inversa es demostrable en ZF. Las formas débiles son suficientes para gran parte del análisis real estándar: la completitud de los reales, la existencia de bases ortonormales en espacios de Hilbert separables, y los teoremas de categoría de Baire, entre otros.
+
+% ===========================================================
+\section{ZFC como fundamento estándar de las matemáticas}
+% ===========================================================
+
+\subsection{¿Por qué ZFC?}
+
+ZFC se ha establecido como el sistema axiomático de referencia por varias razones:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item \textbf{Suficiencia.} ZFC es suficientemente expresivo para formalizar prácticamente toda la matemática estándar: los números naturales, enteros, racionales, reales y complejos; el análisis real y complejo; la topología general; el álgebra abstracta; la teoría de medida; y la geometría diferencial.
+
+  \item \textbf{Consistencia relativa.} Si ZFC fuera inconsistente, lo sabríamos: cualquier contradicción derivable en ZFC revelaría una falla en nuestra comprensión matemática. El consenso actual de la comunidad matemática es que ZFC es consistente (aunque, por el Segundo Teorema de Incompletitud de Gödel, ZFC no puede demostrar su propia consistencia).
+
+  \item \textbf{Economía de primitivos.} ZFC se expresa con un único símbolo primitivo ($\in$) y un conjunto manejable de axiomas, todos en lógica de primer orden.
+
+  \item \textbf{Compatibilidad con el AC.} El Axioma de Elección, aunque filosóficamente debatido, es necesario para resultados cotidianos como «todo espacio vectorial tiene base», y su inclusión en ZFC lo convierte en el sistema adecuado para matemáticas sin restricciones.
+\end{enumerate}
+
+\subsection{Limitaciones de ZFC}
+
+A pesar de su predominio, ZFC tiene limitaciones importantes:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Incompletitud (Gödel, 1931).} Por el Primer Teorema de Incompletitud, si ZFC es consistente, existen enunciados de $\mathcal{L}_{\in}$ que no son ni demostrables ni refutables en ZFC. El más célebre es la \textbf{Hipótesis del Continuo} (CH): $2^{\aleph_0} = \aleph_1$.
+
+  \item \textbf{Necesidad de grandes cardinales.} Muchos enunciados de importancia matemática (como la existencia de cardinales de medida o el axioma de determinancy) requieren axiomas adicionales más allá de ZFC.
+
+  \item \textbf{Alternativas.} Existen otros sistemas fundacionales: la teoría de tipos de Russell–Whitehead, la Teoría de Conjuntos de Von Neumann–Bernays–Gödel (NBG, que permite hablar de clases propias), la Teoría de Categorías (con sus propios fundamentos) o la Homotopy Type Theory (HoTT).
+\end{itemize}
+
+\begin{observacion}{El papel de ZFC en este curso}{rol-ZFC}
+En el estudio de los números transfinitos, ZFC desempeña un papel central: los números ordinales y cardinales se construyen como conjuntos especiales en el universo de ZFC, y el Axioma de Elección es indispensable para demostrar que los cardinales son comparables, que toda cardinalidad infinita es un $\aleph$, y que el Teorema de Hartogs tiene sus consecuencias esperadas. Los próximos capítulos desarrollarán en detalle esta construcción.
+\end{observacion}
+
+% ===========================================================
+\section{Problemas y tareas para el estudiante}
+% ===========================================================
+
+Los siguientes ejercicios están diseñados para afianzar la comprensión de los axiomas de ZFC y sus consecuencias. Se recomienda justificar cada respuesta con rigor, citando los axiomas utilizados.
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{P\arabic*.}, itemsep=0.8em]
+
+  \item \textbf{(Extensionalidad y unicidad.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que $\{1, 2, 3\} = \{3, 1, 2\} = \{1, 1, 2, 3\}$ usando únicamente el Axioma de Extensionalidad.
+    \item Enuncia y demuestra que el conjunto vacío es único en ZF.
+    \item ¿Es cierto que $\emptyset = \{\emptyset\}$? Justifica tu respuesta.
+  \end{enumerate}
+
+  \item \textbf{(Pares y unión.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Construye el conjunto $\{a, b, c\}$ (para conjuntos $a, b, c$ dados) a partir de los Axiomas de Pares y Unión.
+    \item Demuestra que la intersección $A \cap B$ existe para cualesquiera conjuntos $A$ y $B$, usando los Axiomas de Separación (y Pares si es necesario).
+    \item Muestra que $A \cup B = \bigcup\{A, B\}$ y deduce que la unión binaria existe usando los Axiomas de Pares y Unión.
+  \end{enumerate}
+
+  \item \textbf{(Potencia e infinito.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcula $\mathcal{P}(\mathcal{P}(\emptyset))$ y $\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset)))$.
+    \item Describe los primeros cinco elementos del conjunto $\omega$ en la construcción de von Neumann y verifica que cada uno satisface la condición del Axioma del Infinito.
+    \item ¿Por qué la existencia de $\omega$ no se sigue solo de los axiomas de Pares, Unión y Potencia?
+  \end{enumerate}
+
+  \item \textbf{(Regularidad.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que no existe ningún conjunto $A$ tal que $A \in A$, usando el Axioma de Regularidad.
+    \item Demuestra que no existen conjuntos $A$ y $B$ con $A \in B$ y $B \in A$ simultáneamente.
+    \item Más generalmente, demuestra que no existe ninguna cadena $\in$-cíclica: $A_1 \in A_2 \in \cdots \in A_n \in A_1$.
+  \end{enumerate}
+
+  \item \textbf{(Paradoja de Russell y Separación.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $A$ un conjunto cualquiera. Define $R_A = \{x \in A \mid x \notin x\}$. Demuestra que $R_A \notin A$.
+    \item Concluye que no existe el «conjunto de todos los conjuntos» en ZFC.
+    \item ¿Qué sucedería si permitiéramos el «Principio de Comprensión Irrestricta» $\{x \mid \varphi(x)\}$ sin restricción? Explica la paradoja que surgiría.
+  \end{enumerate}
+
+  \item \textbf{(Reemplazo.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $f: \omega \to \omega$ la función $f(n) = n^2$. Usando el Esquema de Reemplazo, argumenta que el conjunto $\{0, 1, 4, 9, 16, \ldots\}$ existe en ZFC.
+    \item Demuestra que el Esquema de Separación es consecuencia del Esquema de Reemplazo (considerando la función identidad restringida al subconjunto que satisface la propiedad).
+  \end{enumerate}
+
+  \item \textbf{(Axioma de Elección.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Escribe explícitamente una función de elección para la familia $\mathcal{F} = \{\{2k, 2k+1\} \mid k \in \omega\}$ (pares de naturales consecutivos). ¿Es necesario el AC en este caso?
+    \item Explica por qué la siguiente afirmación requiere el AC: «El producto cartesiano de una familia infinita de conjuntos no vacíos es no vacío.»
+    \item Sea $V$ un espacio vectorial sobre $\mathbb{Q}$ con $\dim_{\mathbb{Q}}(V) = \aleph_0$. ¿Garantiza ZFC la existencia de una base? ¿Y ZF sin el AC?
+  \end{enumerate}
+
+  \item \textbf{(Lema de Zorn.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $R$ un anillo conmutativo unitario con $R \neq \{0\}$. Usando el Lema de Zorn, demuestra que $R$ tiene al menos un ideal maximal.
+    \item Sea $G$ un grupo abeliano. Demuestra, usando el Lema de Zorn, que todo subgrupo de $G$ está contenido en un subgrupo maximal propio (si existe alguno).
+    \item Enuncia el Teorema de Hahn–Banach y explica en qué paso de su demostración se usa el Lema de Zorn.
+  \end{enumerate}
+
+  \item \textbf{(Teorema del Buen Orden y cardinalidad.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que el Teorema del Buen Orden implica el Axioma de Elección en ZF (es decir, TBO $\Rightarrow$ AC).
+    \item El Teorema del Buen Orden garantiza que $\mathbb{R}$ puede ser bien ordenado. Sin embargo, tal bien orden no puede ser construido explícitamente. Investiga y resume brevemente el argumento que muestra que ninguna fórmula concreta de ZFC define un buen orden de $\mathbb{R}$ en todos sus modelos.
+    \item Demuestra que todo conjunto bien ordenado es isomorfo a un único ordinal. (Puede usar resultados de la Clase 3.)
+  \end{enumerate}
+
+  \item \textbf{(Formas débiles del AC y análisis.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item El Axioma de Elección Dependiente (DC) implica que $\mathbb{R}$ es Arquimediano (todo real positivo es superado por algún natural). Explica la conexión con DC.
+    \item Investiga y enuncia el \emph{Principio de Elección Numerable} (CC) y da un ejemplo de un teorema del análisis real que requiere CC pero no el AC completo.
+    \item Demuestra (usando únicamente ZF + DC) que toda sucesión de Cauchy de reales converge.
+  \end{enumerate}
+
+  \item \textbf{(Proyecto: independencia del AC.)}
+  Investiga y redacta un resumen de no más de dos páginas sobre la demostración de la independencia del Axioma de Elección respecto a ZF, cubriendo:
+  \begin{itemize}[leftmargin=2em]
+    \item La construcción del universo constructible $L$ de Gödel y por qué $L \models \mathrm{AC}$.
+    \item La idea intuitiva del método de \emph{forcing} de Cohen y por qué permite construir un modelo de ZF $+ \neg$AC.
+    \item Las consecuencias filosóficas de esta independencia para el fundamento de las matemáticas.
+  \end{itemize}
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias bibliográficas de esta clase}
+% ===========================================================
+
+Los temas tratados en esta clase se desarrollan con mayor detalle en las siguientes fuentes, que constituyen la bibliografía principal del curso:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Fundamentos y axiomática de ZFC:} \cite{jech2003} es la referencia enciclopédica estándar; \cite{kunen2011} ofrece una presentación rigurosa con énfasis en independencia y forcing; \cite{halmos1960} es un texto introductorio clásico, conciso y elegante.
+
+  \item \textbf{Axioma de Elección y equivalencias:} \cite{herrlich2006} es una monografía dedicada íntegramente al Axioma de Elección y sus consecuencias; \cite{moore1982} ofrece una historia detallada del AC desde Cantor hasta Cohen.
+
+  \item \textbf{Lema de Zorn y aplicaciones algebraicas:} \cite{lang2002} contiene aplicaciones del Lema de Zorn en álgebra; \cite{rudin1991} ilustra su uso en análisis funcional (Teorema de Hahn–Banach).
+
+  \item \textbf{Independencia del AC:} \cite{cohen1966} es el trabajo original de Cohen sobre forcing; \cite{kanamori2003} cubre la historia y los grandes cardinales en el contexto de ZFC.
+\end{itemize}
