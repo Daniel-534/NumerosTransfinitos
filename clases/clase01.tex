@@ -1,0 +1,865 @@
+\chapter{Clase 1: Lógica de Primer Orden --- Sintaxis, Semántica y Deducción}
+
+La lógica de primer orden —también llamada \textbf{lógica de predicados}— constituye el lenguaje universal en el que se expresan y demuestran la casi totalidad de los resultados de las matemáticas modernas. Antes de construir la teoría de conjuntos de Zermelo–Fraenkel, estudiar los números cardinales y ordinales o demostrar resultados sobre conjuntos transfinitos, es imprescindible comprender con precisión el substrato formal sobre el que todo esto descansa: un lenguaje con reglas sintácticas precisas, una semántica que asigna significado a las fórmulas, y un aparato deductivo que permite derivar consecuencias a partir de hipótesis.
+
+Esta clase presenta dicho substrato de manera rigurosa y con los detalles suficientes para que el estudiante pueda trabajar con la lógica de primer orden con plena confianza. Los resultados culminantes —los teoremas de Completitud y Compacidad de Gödel— son fundamentales no solo para la lógica misma, sino también para entender los límites y alcances de la teoría de conjuntos y la aritmética formal \cite{godel1930, enderton2001}.
+
+% ===========================================================
+\section{El lenguaje formal de primer orden}
+% ===========================================================
+
+\subsection{Motivación: ¿por qué un lenguaje formal?}
+
+En matemáticas es habitual escribir enunciados como:
+\begin{itemize}
+  \item \textit{``Para todo número natural $n$, existe un primo mayor que $n$.''}
+  \item \textit{``Todo grupo abeliano finito es isomorfo a un producto de grupos cíclicos.''}
+  \item \textit{``Si $A \subseteq B$ y $B \subseteq C$, entonces $A \subseteq C$.''}
+\end{itemize}
+
+Estos enunciados se expresan en lenguaje natural, lo cual introduce ambigüedades y dependencias culturales. La \textbf{lógica de primer orden} ofrece un lenguaje completamente formal: cada símbolo tiene un significado exacto, las reglas de formación de fórmulas son algorítmicas y las demostraciones son secuencias de pasos verificables mecánicamente.
+
+Esta formalización no es un capricho filosófico: es necesaria para poder enunciar y demostrar con rigor resultados como los teoremas de incompletitud de Gödel, el teorema de Löwenheim–Skolem, y para estudiar los modelos de la teoría de conjuntos.
+
+\subsection{Firma o signatura}
+
+El primer paso para construir un lenguaje de primer orden es especificar los \emph{símbolos no lógicos} que lo componen. Estos símbolos codifican la estructura matemática que queremos hablar.
+
+\begin{definicion}{Firma (o signatura)}{firma}
+Una \textbf{firma} (o \textbf{signatura}) es una tupla $\Lang = (C, \mathcal{F}, \mathcal{R})$ donde:
+\begin{itemize}[leftmargin=2em]
+  \item $C$ es un conjunto (posiblemente vacío) de \textbf{símbolos de constante}: $c_0, c_1, \ldots$
+  \item $\mathcal{F}$ es un conjunto de \textbf{símbolos de función}, cada uno con una aridad $n \geq 1$ fija: $f^{(n)}, g^{(m)}, \ldots$
+  \item $\mathcal{R}$ es un conjunto de \textbf{símbolos de relación}, cada uno con una aridad $n \geq 1$ fija: $R^{(n)}, P^{(m)}, \ldots$
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Firmas matemáticas usuales}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Lenguaje de la aritmética de Peano:}
+    \[
+      \Lang_{\mathrm{ar}} = (\{0,1\},\; \{s^{(1)}, +^{(2)}, \times^{(2)}\},\; \{\leq^{(2)}\})
+    \]
+    donde $0,1$ son constantes, $s$ es la función sucesor, $+$ y $\times$ son operaciones binarias, y $\leq$ es una relación binaria.
+
+  \item \textbf{Lenguaje de la teoría de grupos:}
+    \[
+      \Lang_{\mathrm{gr}} = (\{e\},\; \{\cdot^{(2)},\, (-)^{-1\,(1)}\},\; \emptyset)
+    \]
+    donde $e$ es la identidad, $\cdot$ es la operación de grupo y $(-)^{-1}$ es la operación de inversión.
+
+  \item \textbf{Lenguaje de la teoría de conjuntos ($\mathrm{ZFC}$):}
+    \[
+      \Lang_{\in} = (\emptyset,\; \emptyset,\; \{\in^{(2)}\})
+    \]
+    Solo contiene la relación binaria de pertenencia. Esta es la firma que utilizaremos a lo largo del curso.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{El alfabeto de \texorpdfstring{$\mathcal{L}_1$}{L1}}
+
+A partir de una firma $\Lang$, el alfabeto de la lógica de primer orden $\mathcal{L}_1(\Lang)$ consta de los siguientes símbolos:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item \textbf{Variables:} un conjunto contable de símbolos $x_0, x_1, x_2, \ldots$ (o $x, y, z, w, \ldots$ para mayor legibilidad).
+  \item \textbf{Símbolo de igualdad:} $=$
+  \item \textbf{Conectivos lógicos:} $\neg$ (negación), $\wedge$ (conjunción), $\vee$ (disyunción), $\to$ (implicación), $\leftrightarrow$ (bicondicional).
+  \item \textbf{Cuantificadores:} $\forall$ (universal), $\exists$ (existencial).
+  \item \textbf{Signos de puntuación:} paréntesis $($ y $)$, coma $,$.
+  \item \textbf{Símbolos de la firma:} todos los símbolos en $C$, $\mathcal{F}$ y $\mathcal{R}$.
+\end{enumerate}
+
+\begin{importante}
+La \textbf{lógica de primer orden} (abreviada $\mathcal{L}_1$) recibe ese nombre porque los cuantificadores $\forall$ y $\exists$ solo pueden cuantificar sobre \emph{individuos} (elementos del dominio), no sobre propiedades, funciones ni conjuntos de individuos. La \emph{lógica de segundo orden} ($\mathcal{L}_2$) extiende $\mathcal{L}_1$ permitiendo cuantificar sobre relaciones y funciones, pero pierde propiedades cruciales como la completitud.
+\end{importante}
+
+\subsection{Términos}
+
+Los \textbf{términos} son las expresiones que denotan \emph{objetos} o \emph{individuos} del dominio. Su definición es inductiva.
+
+\begin{definicion}{Términos de $\mathcal{L}_1(\Lang)$}{terminos}
+El conjunto $\mathrm{Term}(\Lang)$ de \textbf{términos} se define inductivamente:
+\begin{enumerate}[leftmargin=2em]
+  \item Toda variable $x_i$ es un término.
+  \item Todo símbolo de constante $c \in C$ es un término.
+  \item Si $f \in \mathcal{F}$ tiene aridad $n$ y $t_1, \ldots, t_n$ son términos, entonces $f(t_1, \ldots, t_n)$ es un término.
+  \item \textbf{Nada más es un término.}
+\end{enumerate}
+\end{definicion}
+
+La cláusula (4) —llamada \emph{cláusula de cierre}— garantiza que la definición sea precisa: un término es exactamente lo que puede construirse mediante las reglas (1)--(3).
+
+\begin{ejemplo}{Términos en el lenguaje de la aritmética}{}
+Usando $\Lang_{\mathrm{ar}} = (\{0,1\}, \{s,+,\times\}, \{\leq\})$:
+\begin{itemize}
+  \item $x$, $y$, $z$ son términos (variables).
+  \item $0$, $1$ son términos (constantes).
+  \item $s(0)$, $s(1)$, $s(s(0))$ son términos. Intuitivamente representan $1, 2, 2$ (o $2$ si $1$ ya es la constante para el uno).
+  \item $+(x, s(0))$ es un término; en notación infija: $x + s(0)$, que representa $x + 1$.
+  \item $\times(+(x,y), s(0))$ es un término; en notación infija: $(x+y) \times s(0) = (x+y)\cdot 1$.
+  \item $+(x, \times(y, z))$ representa $x + (y \cdot z)$.
+\end{itemize}
+\end{ejemplo}
+
+\begin{ejemplo}{Términos en el lenguaje de los grupos}{}
+Usando $\Lang_{\mathrm{gr}} = (\{e\}, \{\cdot, (-)^{-1}\}, \emptyset)$:
+\begin{itemize}
+  \item $x$, $y$ son términos.
+  \item $e$ es un término (la identidad).
+  \item $x^{-1}$ es un término.
+  \item $x \cdot y^{-1}$ es el término $\cdot(x, (-)^{-1}(y))$.
+  \item $e \cdot (x \cdot (y \cdot z))$ es un término más complejo.
+\end{itemize}
+\end{ejemplo}
+
+\subsection{Fórmulas bien formadas}
+
+A partir de los términos, construimos las \textbf{fórmulas}, que son las expresiones que tienen valor de verdad.
+
+\begin{definicion}{Fórmulas atómicas}{atomicas}
+Las \textbf{fórmulas atómicas} de $\mathcal{L}_1(\Lang)$ son:
+\begin{enumerate}[leftmargin=2em]
+  \item Si $t_1, t_2$ son términos, entonces $t_1 = t_2$ es una fórmula atómica.
+  \item Si $R \in \mathcal{R}$ tiene aridad $n$ y $t_1, \ldots, t_n$ son términos, entonces $R(t_1, \ldots, t_n)$ es una fórmula atómica.
+\end{enumerate}
+\end{definicion}
+
+\begin{definicion}{Fórmulas bien formadas (fbf)}{fbf}
+El conjunto $\mathrm{Form}(\Lang)$ de \textbf{fórmulas bien formadas} se define inductivamente:
+\begin{enumerate}[leftmargin=2em]
+  \item Toda fórmula atómica es una fbf.
+  \item Si $\varphi$ es una fbf, entonces $\neg \varphi$ es una fbf.
+  \item Si $\varphi$ y $\psi$ son fbf, entonces $(\varphi \wedge \psi)$, $(\varphi \vee \psi)$, $(\varphi \to \psi)$ y $(\varphi \leftrightarrow \psi)$ son fbf.
+  \item Si $\varphi$ es una fbf y $x$ es una variable, entonces $\forall x\, \varphi$ y $\exists x\, \varphi$ son fbf.
+  \item \textbf{Nada más es una fbf.}
+\end{enumerate}
+\end{definicion}
+
+\begin{ejemplo}{Fórmulas bien formadas en $\Lang_{\mathrm{ar}}$}{}
+\begin{itemize}
+  \item $0 = 0$ es una fbf atómica (y es verdadera).
+  \item $x \leq y$ es una fbf atómica.
+  \item $\neg(x = 0)$ es una fbf (``$x$ no es cero'').
+  \item $\forall x\, \forall y\, (x + y = y + x)$ es una fbf (conmutatividad de la suma).
+  \item $\exists x\, (x + x = s(0))$ es una fbf (``existe $x$ tal que $2x = 1$'').
+  \item $\forall x\, \exists y\, (x < y)$ es una fbf (``no hay máximo'').
+\end{itemize}
+\end{ejemplo}
+
+\subsection{Variables libres y ligadas}
+
+En la fórmula $\forall x\, \exists y\, (x < y)$, las variables $x$ e $y$ están \emph{ligadas} por los cuantificadores. En $x + y = z$, las variables $x, y, z$ son \emph{libres}: no están bajo el alcance de ningún cuantificador y, por tanto, actúan como parámetros.
+
+\begin{definicion}{Variables libres}{libres}
+El conjunto $\FV(\varphi)$ de \textbf{variables libres} de una fórmula $\varphi$ se define inductivamente:
+\begin{align*}
+  \FV(t_1 = t_2) &= \FV(t_1) \cup \FV(t_2) \\
+  \FV(R(t_1,\ldots,t_n)) &= \FV(t_1) \cup \cdots \cup \FV(t_n) \\
+  \FV(\neg\varphi) &= \FV(\varphi) \\
+  \FV(\varphi \circ \psi) &= \FV(\varphi) \cup \FV(\psi) \quad (\circ \in \{\wedge, \vee, \to, \leftrightarrow\})\\
+  \FV(\forall x\, \varphi) &= \FV(\varphi) \setminus \{x\} \\
+  \FV(\exists x\, \varphi) &= \FV(\varphi) \setminus \{x\}
+\end{align*}
+donde $\FV(x) = \{x\}$ para una variable $x$ y $\FV(c) = \emptyset$ para una constante $c$.
+\end{definicion}
+
+\begin{definicion}{Sentencia (fórmula cerrada)}{sentencia}
+Una fórmula $\varphi$ es una \textbf{sentencia} (o \textbf{fórmula cerrada}) si $\FV(\varphi) = \emptyset$. El conjunto de sentencias de $\mathcal{L}_1(\Lang)$ se denota $\mathrm{Sent}(\Lang)$.
+\end{definicion}
+
+\begin{ejemplo}{Variables libres y ligadas}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item En $\varphi := \forall x\, (x + y = z)$: $x$ está ligada; $y$ y $z$ son libres. Luego $\FV(\varphi) = \{y, z\}$. No es una sentencia.
+  \item En $\psi := \forall x\, \forall y\, (x + y = y + x)$: todas las variables están ligadas. $\FV(\psi) = \emptyset$. Es una sentencia.
+  \item En $\chi := \exists x\, (x < y) \wedge (y < z)$: $x$ está ligada; $y$ aparece tanto dentro del alcance de $\exists x$ (libre) como en $y < z$ (libre). $\FV(\chi) = \{y, z\}$.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Sustitución}
+
+La \textbf{sustitución} $\varphi[t/x]$ denota la fórmula obtenida al reemplazar todas las ocurrencias libres de $x$ en $\varphi$ por el término $t$. Para que esta operación sea semánticamente correcta, debe hacerse con cuidado para evitar \emph{capturas de variable}.
+
+\begin{definicion}{Sustitución libre}{sustitucion}
+Un término $t$ es \textbf{libre para $x$ en $\varphi$} si ninguna variable libre de $t$ queda capturada por un cuantificador al sustituir. Formalmente, para cada ocurrencia libre de $x$ en $\varphi$ dentro del alcance de $\forall y\, (\ldots)$ o $\exists y\, (\ldots)$, se requiere que $y \notin \FV(t)$.
+
+La \textbf{sustitución} $\varphi[t/x]$ se define inductivamente de manera obvia en los casos atómicos y conectivos, y para los cuantificadores:
+\begin{itemize}
+  \item Si $\varphi = \forall y\, \psi$ y $y \neq x$ y $t$ es libre para $x$ en $\varphi$:
+  \[
+    (\forall y\, \psi)[t/x] \;=\; \forall y\, (\psi[t/x]).
+  \]
+  \item Si $\varphi = \forall x\, \psi$: $(\forall x\, \psi)[t/x] = \forall x\, \psi$ (la variable $x$ no ocurre libre, no hay nada que sustituir).
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Sustitución correcta e incorrecta}{}
+Sea $\varphi := \exists y\, (x < y)$ y $t := y + 1$.
+
+\textbf{Sustitución problemática:} $\varphi[y+1/x] = \exists y\, (y+1 < y)$.
+Aquí la variable $y$ de $t = y+1$ queda capturada por el cuantificador $\exists y$. El resultado no tiene el significado deseado: en lugar de decir ``$y+1$ tiene un sucesor mayor'', dice ``existe $y$ tal que $y+1 < y$'', que es falso.
+
+\textbf{Solución (renombramiento):} Antes de sustituir, renombramos la variable ligada: $\varphi \equiv \exists z\,(x < z)$. Luego $\varphi[y+1/x] = \exists z\,(y+1 < z)$, que dice correctamente que $y+1$ tiene algo mayor. $t = y+1$ es libre para $x$ en $\exists z\,(x<z)$.
+\end{ejemplo}
+
+% ===========================================================
+\section{Semántica: interpretaciones y modelos}
+% ===========================================================
+
+\subsection{Estructuras de primer orden}
+
+Para dotar de \emph{significado} a las fórmulas de $\mathcal{L}_1(\Lang)$, se recurre al concepto de \textbf{estructura} (o \textbf{interpretación}).
+
+\begin{definicion}{Estructura de primer orden}{estructura}
+Una \textbf{$\Lang$-estructura} (o \textbf{$\Lang$-interpretación}) es una tupla
+\[
+  \Struct{A} = \bigl(A,\; (c^{\Struct{A}})_{c \in C},\; (f^{\Struct{A}})_{f \in \mathcal{F}},\; (R^{\Struct{A}})_{R \in \mathcal{R}}\bigr)
+\]
+donde:
+\begin{itemize}[leftmargin=2em]
+  \item $A \neq \emptyset$ es el \textbf{dominio} o \textbf{universo} de la estructura (también escrito $|\Struct{A}|$).
+  \item Para cada $c \in C$: $c^{\Struct{A}} \in A$ (una constante designada del dominio).
+  \item Para cada $f \in \mathcal{F}$ con aridad $n$: $f^{\Struct{A}} : A^n \to A$ (una función $n$-aria sobre $A$).
+  \item Para cada $R \in \mathcal{R}$ con aridad $n$: $R^{\Struct{A}} \subseteq A^n$ (una relación $n$-aria sobre $A$).
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Estructuras para $\Lang_{\mathrm{ar}}$}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Modelo estándar de la aritmética:}
+  \[
+    \mathbb{N} = \bigl(\mathbb{N},\; 0^{\mathbb{N}}=0,\; 1^{\mathbb{N}}=1,\; s^{\mathbb{N}}=\mathrm{sucesor},\; +^{\mathbb{N}}=\mathrm{suma},\; \times^{\mathbb{N}}=\mathrm{producto},\; \leq^{\mathbb{N}}={\leq}\bigr).
+  \]
+  \item \textbf{Modelo no estándar (anticipación):} Existen estructuras $\Struct{A}$ para $\Lang_{\mathrm{ar}}$ en las que el dominio $A$ contiene elementos ``infinitamente grandes'' (mayores que $n$ para todo $n$ estándar). Estas surgen como consecuencia del Teorema de Compacidad.
+  \item \textbf{Interpretación en $\mathbb{Z}$:} Se puede interpretar $\Lang_{\mathrm{ar}}$ en $\mathbb{Z}$ con las operaciones usuales. Nótese que en $\mathbb{Z}$ la fórmula $\exists x\,(x + x = s(0))$ es verdadera (tiene solución: $x = 1/2$... no, en $\mathbb{Z}$ no. Pero la fórmula $\forall x\, \exists y\, (x = y + y)$ falla en $\mathbb{N}$ pero es relevante estudiarla.)
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Asignación de variables e interpretación de términos}
+
+Para evaluar una fórmula con variables libres necesitamos asignar elementos del dominio a las variables.
+
+\begin{definicion}{Asignación de variables}{asignacion}
+Dada una $\Lang$-estructura $\Struct{A}$, una \textbf{asignación de variables} es una función $\sigma : \mathrm{Var} \to A$.
+
+Si $a \in A$ y $x$ es una variable, escribimos $\sigma[x \mapsto a]$ para la asignación que coincide con $\sigma$ en todas las variables excepto en $x$, donde toma el valor $a$.
+\end{definicion}
+
+\begin{definicion}{Interpretación de términos}{interpretacion-terminos}
+Dada $(\Struct{A}, \sigma)$, la \textbf{interpretación} $\overline{\sigma}(t) \in A$ de un término $t$ se define inductivamente:
+\begin{align*}
+  \overline{\sigma}(x) &= \sigma(x) \quad \text{(variable)} \\
+  \overline{\sigma}(c) &= c^{\Struct{A}} \quad \text{(constante)} \\
+  \overline{\sigma}(f(t_1,\ldots,t_n)) &= f^{\Struct{A}}(\overline{\sigma}(t_1),\ldots,\overline{\sigma}(t_n))
+\end{align*}
+\end{definicion}
+
+\subsection{La relación de satisfacción}
+
+El corazón de la semántica de primer orden es la \textbf{relación de satisfacción} $\Struct{A} \models \varphi[\sigma]$, que se lee ``la estructura $\Struct{A}$ satisface $\varphi$ bajo la asignación $\sigma$''.
+
+\begin{definicion}{Satisfacción ($\models$)}{satisfaccion}
+Dada una $\Lang$-estructura $\Struct{A}$ y una asignación $\sigma$, definimos $\Struct{A} \models \varphi[\sigma]$ inductivamente sobre la estructura de $\varphi$:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{(\roman*)}]
+  \item $\Struct{A} \models (t_1 = t_2)[\sigma]$ \quad sii \quad $\overline{\sigma}(t_1) = \overline{\sigma}(t_2)$ en $A$.
+  \item $\Struct{A} \models R(t_1,\ldots,t_n)[\sigma]$ \quad sii \quad $(\overline{\sigma}(t_1),\ldots,\overline{\sigma}(t_n)) \in R^{\Struct{A}}$.
+  \item $\Struct{A} \models \neg\varphi[\sigma]$ \quad sii \quad $\Struct{A} \not\models \varphi[\sigma]$.
+  \item $\Struct{A} \models (\varphi \wedge \psi)[\sigma]$ \quad sii \quad $\Struct{A} \models \varphi[\sigma]$ \textbf{ y } $\Struct{A} \models \psi[\sigma]$.
+  \item $\Struct{A} \models (\varphi \vee \psi)[\sigma]$ \quad sii \quad $\Struct{A} \models \varphi[\sigma]$ \textbf{ o } $\Struct{A} \models \psi[\sigma]$.
+  \item $\Struct{A} \models (\varphi \to \psi)[\sigma]$ \quad sii \quad $\Struct{A} \not\models \varphi[\sigma]$ \textbf{ o } $\Struct{A} \models \psi[\sigma]$.
+  \item $\Struct{A} \models (\varphi \leftrightarrow \psi)[\sigma]$ \quad sii \quad $\Struct{A} \models \varphi[\sigma]$ $\Leftrightarrow$ $\Struct{A} \models \psi[\sigma]$.
+  \item $\Struct{A} \models \forall x\, \varphi[\sigma]$ \quad sii \quad para todo $a \in A$: $\Struct{A} \models \varphi[\sigma[x \mapsto a]]$.
+  \item $\Struct{A} \models \exists x\, \varphi[\sigma]$ \quad sii \quad existe $a \in A$ tal que $\Struct{A} \models \varphi[\sigma[x \mapsto a]]$.
+\end{enumerate}
+\end{definicion}
+
+\begin{importante}
+La regla para $\forall$ en el punto (viii) expresa que $\forall x\, \varphi$ es verdadera cuando $\varphi$ es verdadera \emph{para cada elección posible} del valor de $x$ en el dominio. La regla para $\exists$ en (ix) expresa que basta con que $\varphi$ sea verdadera \emph{para algún} valor de $x$. Estas son las reglas semánticas definitivas de los cuantificadores.
+\end{importante}
+
+Para sentencias (fórmulas sin variables libres), la asignación $\sigma$ no afecta el resultado, por lo que escribimos simplemente $\Struct{A} \models \varphi$.
+
+\begin{definicion}{Modelo de un conjunto de sentencias}{modelo}
+Sea $\Gamma$ un conjunto de sentencias. Decimos que $\Struct{A}$ es un \textbf{modelo} de $\Gamma$, y escribimos $\Struct{A} \models \Gamma$, si $\Struct{A} \models \varphi$ para toda $\varphi \in \Gamma$.
+\end{definicion}
+
+\subsection{Verificación semántica: ejemplos desarrollados}
+
+\begin{ejemplo}{Verificación de verdad en $\mathbb{N}$}{}
+Tomemos $\Lang_{\mathrm{ar}}$ y la estructura $\mathbb{N}$ con interpretación estándar. Verificamos semánticamente:
+
+\medskip
+\textbf{(a)} $\varphi_1 := \forall x\, \forall y\, (x + y = y + x)$.
+
+Para verificar $\mathbb{N} \models \varphi_1$: tomamos cualquier $m, n \in \mathbb{N}$ (cualquier asignación $\sigma[x \mapsto m, y \mapsto n]$) y comprobamos $m + n = n + m$ en $\mathbb{N}$. Esto es la conmutatividad de la suma natural, que es un hecho aritmético conocido. Luego $\mathbb{N} \models \varphi_1$. $\checkmark$
+
+\medskip
+\textbf{(b)} $\varphi_2 := \forall x\, \exists y\, (x < y)$ (``no hay máximo'').
+
+Para verificar $\mathbb{N} \models \varphi_2$: dado cualquier $m \in \mathbb{N}$, tomemos $n = m + 1 \in \mathbb{N}$. Entonces $m < m+1$, luego $\mathbb{N} \models (x < y)[\sigma[x\mapsto m, y \mapsto m+1]]$. Como esto vale para todo $m$, se tiene $\mathbb{N} \models \varphi_2$. $\checkmark$
+
+\medskip
+\textbf{(c)} $\varphi_3 := \exists x\, (x + x = s(0))$ (``existe $x$ tal que $2x = 1$'').
+
+En $\mathbb{N}$, no existe ningún número natural $m$ con $m + m = 1$. Por tanto $\mathbb{N} \not\models \varphi_3$.
+
+Sin embargo, en $\mathbb{Q}$ (con la interpretación obvia) sí existe tal $x$ (a saber, $x = 1/2$). Esto ilustra que la verdad depende de la estructura elegida.
+\end{ejemplo}
+
+\begin{ejemplo}{Construcción de un modelo}{}
+Sea $\Gamma = \{\exists x\, \exists y\, (x \neq y),\; \forall x\, (x = x)\}$.
+
+Buscamos una estructura $\Struct{A}$ con $\Struct{A} \models \Gamma$.
+
+Tomemos $A = \{0, 1\}$ (dos elementos) con la igualdad estándar. Entonces:
+\begin{itemize}
+  \item $\Struct{A} \models \exists x\, \exists y\, (x \neq y)$: tomamos $x \mapsto 0, y \mapsto 1$; claramente $0 \neq 1$. $\checkmark$
+  \item $\Struct{A} \models \forall x\, (x = x)$: para todo $a \in A$, $a = a$. $\checkmark$
+\end{itemize}
+Por tanto $\Struct{A} \models \Gamma$. Cualquier conjunto con al menos dos elementos sirve como modelo de $\Gamma$.
+\end{ejemplo}
+
+% ===========================================================
+\section{Consecuencia semántica y validez}
+% ===========================================================
+
+\subsection{Fórmulas válidas, satisfacibles e insatisfacibles}
+
+\begin{definicion}{Validez y satisfacibilidad}{validez}
+Sea $\varphi$ una sentencia de $\mathcal{L}_1$.
+\begin{itemize}[leftmargin=2em]
+  \item $\varphi$ es \textbf{lógicamente válida} (o \textbf{tautología de primer orden}) si $\Struct{A} \models \varphi$ para toda $\Lang$-estructura $\Struct{A}$. Notación: $\models \varphi$.
+  \item $\varphi$ es \textbf{satisfacible} si existe alguna $\Lang$-estructura $\Struct{A}$ con $\Struct{A} \models \varphi$.
+  \item $\varphi$ es \textbf{insatisfacible} (o \textbf{contradicción}) si no existe ninguna estructura que la satisfaga.
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Tautologías de primer orden}{}
+\begin{itemize}
+  \item $\models \forall x\, (x = x)$ \quad (reflexividad de la igualdad).
+  \item $\models \forall x\, (P(x) \to P(x))$ \quad para cualquier símbolo de relación $P$.
+  \item $\models \forall x\, P(x) \to \exists x\, P(x)$ \quad (lo universal implica lo existencial).
+  \item $\models \neg(\varphi \wedge \neg\varphi)$ \quad (ley de no contradicción).
+\end{itemize}
+\end{ejemplo}
+
+\subsection{Consecuencia semántica}
+
+\begin{definicion}{Consecuencia semántica ($\models$)}{consecuencia-semantica}
+Sea $\Gamma$ un conjunto de sentencias y $\varphi$ una sentencia. Decimos que $\varphi$ es \textbf{consecuencia semántica} de $\Gamma$, y escribimos $\Gamma \models \varphi$, si para toda $\Lang$-estructura $\Struct{A}$:
+\[
+  \Struct{A} \models \Gamma \implies \Struct{A} \models \varphi.
+\]
+En palabras: todo modelo de $\Gamma$ es también modelo de $\varphi$.
+\end{definicion}
+
+\begin{observacion}{Casos especiales}{}
+\begin{itemize}[leftmargin=2em]
+  \item $\emptyset \models \varphi$ equivale a $\models \varphi$ (tautología).
+  \item $\Gamma \models \varphi$ para $\varphi \in \Gamma$ siempre (reflexividad).
+\end{itemize}
+\end{observacion}
+
+\begin{proposicion}{Propiedades de la consecuencia semántica}{}
+Sean $\Gamma, \Delta$ conjuntos de sentencias y $\varphi, \psi$ sentencias.
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Reflexividad:} Si $\varphi \in \Gamma$, entonces $\Gamma \models \varphi$.
+  \item \textbf{Monotonía:} Si $\Gamma \models \varphi$ y $\Gamma \subseteq \Delta$, entonces $\Delta \models \varphi$.
+  \item \textbf{Corte:} Si $\Gamma \models \psi$ y $\Gamma \cup \{\psi\} \models \varphi$, entonces $\Gamma \models \varphi$.
+  \item \textbf{Equivalencia con insatisfacibilidad:} $\Gamma \models \varphi$ si y solo si $\Gamma \cup \{\neg\varphi\}$ es insatisfacible.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+Todas las propiedades se derivan directamente de la definición. Verificamos (iv):
+
+($\Rightarrow$) Si $\Gamma \models \varphi$, todo modelo de $\Gamma$ satisface $\varphi$, luego ningún modelo de $\Gamma$ satisface $\neg\varphi$. Por tanto $\Gamma \cup \{\neg\varphi\}$ es insatisfacible.
+
+($\Leftarrow$) Si $\Gamma \cup \{\neg\varphi\}$ es insatisfacible, no existe modelo de $\Gamma$ que satisfaga $\neg\varphi$; es decir, todo modelo de $\Gamma$ satisface $\varphi$, o sea $\Gamma \models \varphi$.
+\end{proof}
+
+\begin{ejemplo}{Ejemplos de consecuencia semántica}{}
+\textbf{(a)} Verificar: $\{\forall x\, P(x)\} \models P(c)$ para cualquier término cerrado $c$.
+
+Sea $\Struct{A}$ cualquier estructura con $\Struct{A} \models \forall x\, P(x)$. Esto significa que $a \in P^{\Struct{A}}$ para todo $a \in A$. En particular, $c^{\Struct{A}} \in P^{\Struct{A}}$, luego $\Struct{A} \models P(c)$. $\checkmark$
+
+\medskip
+\textbf{(b)} Verificar: $\{\forall x\,(P(x) \to Q(x)),\, \forall x\, P(x)\} \models \forall x\, Q(x)$.
+
+Sea $\Struct{A}$ modelo de ambas hipótesis. Tomemos cualquier $a \in A$. De $\forall x\, P(x)$ obtenemos $a \in P^{\Struct{A}}$. De $\forall x\,(P(x)\to Q(x))$ obtenemos $P^{\Struct{A}}(a) \Rightarrow Q^{\Struct{A}}(a)$. Como la premisa se cumple, $a \in Q^{\Struct{A}}$. Como $a$ fue arbitrario, $\Struct{A} \models \forall x\, Q(x)$. $\checkmark$
+
+\medskip
+\textbf{(c)} Mostrar que $\models \forall x\, P(x) \to \exists x\, P(x)$.
+
+Sea $\Struct{A}$ cualquier estructura y supongamos $\Struct{A} \models \forall x\, P(x)$. Como $A \neq \emptyset$ (por definición de estructura), existe $a \in A$ con $a \in P^{\Struct{A}}$. Luego $\Struct{A} \models \exists x\, P(x)$. $\checkmark$
+\end{ejemplo}
+
+% ===========================================================
+\section{Sistemas de deducción natural}
+% ===========================================================
+
+\subsection{Introducción y motivación}
+
+Los sistemas de deducción natural fueron introducidos por Gerhard Gentzen en 1935 \cite{vandalen2013}. La idea central es imitar el estilo de razonamiento matemático informal: uno asume hipótesis temporalmente, realiza pasos intermedios y eventualmente concluye. Cada paso está justificado por una \emph{regla de inferencia}.
+
+En el sistema NK (deducción natural clásica), una \textbf{derivación} de $\varphi$ a partir de hipótesis $\Gamma$ es un árbol de fórmulas en el que:
+\begin{itemize}
+  \item Las hojas son hipótesis (elementos de $\Gamma$) o supuestos temporales (que deben ser descargados).
+  \item Cada nodo interior se obtiene de sus hijos mediante una regla de inferencia.
+  \item La raíz es la fórmula $\varphi$ que se demuestra.
+\end{itemize}
+
+En la práctica, las derivaciones se presentan en forma lineal numerada, lo cual es más legible.
+
+\subsection{Reglas para la conjunción}
+
+\[
+  \infr[\wedge\mathrm{I}]{\varphi \qquad \psi}{\varphi \wedge \psi}
+  \qquad\qquad
+  \infr[\wedge\mathrm{E}_1]{\varphi \wedge \psi}{\varphi}
+  \qquad\qquad
+  \infr[\wedge\mathrm{E}_2]{\varphi \wedge \psi}{\psi}
+\]
+
+\textbf{Lectura:} $\wedge$I dice que si tenemos demostradas $\varphi$ y $\psi$ por separado, podemos concluir su conjunción. $\wedge$E$_1$ (resp. $\wedge$E$_2$) dice que de una conjunción podemos extraer el primer (resp. segundo) conjunto.
+
+\subsection{Reglas para la disyunción}
+
+\[
+  \infr[\vee\mathrm{I}_1]{\varphi}{\varphi \vee \psi}
+  \qquad\qquad
+  \infr[\vee\mathrm{I}_2]{\psi}{\varphi \vee \psi}
+  \qquad\qquad
+  \infr[\vee\mathrm{E}]{\varphi \vee \psi \quad [\varphi] \vdash \chi \quad [\psi] \vdash \chi}{\chi}
+\]
+
+La regla $\vee$E es la eliminación por casos: si tenemos $\varphi \vee \psi$ y en cada caso (asumiendo $\varphi$, o asumiendo $\psi$) llegamos a $\chi$, entonces podemos concluir $\chi$ incondicionalmente. Los corchetes $[\,\cdot\,]$ indican que esa hipótesis es \emph{descargada} (eliminada) al aplicar la regla.
+
+\subsection{Reglas para la implicación}
+
+\[
+  \infr[\to\mathrm{I}]{[\varphi] \vdash \psi}{\varphi \to \psi}
+  \qquad\qquad\qquad
+  \infr[\to\mathrm{E}]{\varphi \to \psi \qquad \varphi}{\psi}
+\]
+
+La regla $\to$I (introducción de implicación) formaliza la \emph{prueba condicional}: para demostrar $\varphi \to \psi$, asumimos temporalmente $\varphi$ y derivamos $\psi$; al terminar, descargamos la hipótesis $\varphi$.
+
+La regla $\to$E es el célebre \emph{modus ponens}: de $\varphi \to \psi$ y $\varphi$, se concluye $\psi$.
+
+\subsection{Reglas para la negación y contradicción}
+
+Sea $\bot$ el símbolo de la \textbf{contradicción} (``lo falso'').
+
+\[
+  \infr[\neg\mathrm{I}]{[\varphi] \vdash \bot}{\neg\varphi}
+  \qquad\qquad
+  \infr[\bot\mathrm{E}]{\bot}{\psi}
+  \qquad\qquad
+  \infr[\mathrm{DNE}]{[\neg\varphi] \vdash \bot}{\varphi}
+\]
+
+$\neg$I (introducción de negación): si asumiendo $\varphi$ llegamos a una contradicción $\bot$, concluimos $\neg\varphi$ y descargamos $\varphi$.
+
+$\bot$E (ex falso quodlibet / explosión): de $\bot$ puede concluirse cualquier cosa.
+
+$\mathrm{DNE}$ (eliminación de doble negación): si asumiendo $\neg\varphi$ llegamos a $\bot$, concluimos $\varphi$. Esta regla corresponde a la \emph{reducción al absurdo clásica} y diferencia la lógica clásica de la intuicionista.
+
+La forma en que se obtiene $\bot$ es:
+\[
+  \infr[\neg\mathrm{E}]{\varphi \qquad \neg\varphi}{\bot}
+\]
+De una fórmula y su negación se obtiene $\bot$.
+
+\subsection{Reglas para los cuantificadores}
+
+Estas reglas son la característica distintiva de la lógica de primer orden. Se usa la notación $\varphi[t/x]$ para indicar la sustitución (libre) de $t$ por $x$ en $\varphi$.
+
+\[
+  \infr[\forall\mathrm{E}]{\forall x\, \varphi}{\varphi[t/x]}
+  \qquad\qquad\qquad
+  \infr[\forall\mathrm{I}]{\varphi[a/x] \quad (a \text{ fresca})}{\forall x\,\varphi}
+\]
+
+$\forall$E (eliminación universal / instanciación): de $\forall x\, \varphi$ podemos instanciar cualquier término $t$ libre para $x$.
+
+$\forall$I (introducción universal / generalización): si hemos demostrado $\varphi[a/x]$ donde $a$ es un \emph{parámetro fresco} (no ocurre libre en ninguna hipótesis no descargada de la derivación), entonces concluimos $\forall x\, \varphi$. La condición de frescura es crucial: garantiza que $a$ sea realmente arbitrario.
+
+\[
+  \infr[\exists\mathrm{I}]{\varphi[t/x]}{\exists x\, \varphi}
+  \qquad\qquad\qquad
+  \infr[\exists\mathrm{E}]{\exists x\,\varphi \quad [\varphi[a/x]] \vdash \psi \quad (a \text{ fresca en } \psi)}{\psi}
+\]
+
+$\exists$I (introducción existencial): si tenemos $\varphi[t/x]$, podemos concluir que existe algo con la propiedad $\varphi$.
+
+$\exists$E (eliminación existencial): si sabemos que $\exists x\,\varphi$ y que asumiendo $\varphi[a/x]$ (con $a$ fresca) podemos derivar $\psi$, entonces concluimos $\psi$. La condición de frescura garantiza que no usamos nada específico sobre $a$.
+
+\subsection{Reglas de igualdad}
+
+\[
+  \infr[{=}\mathrm{I}]{\quad}{t = t}
+  \qquad\qquad\qquad
+  \infr[{=}\mathrm{E}]{t_1 = t_2 \qquad \varphi[t_1/x]}{\varphi[t_2/x]}
+\]
+
+${=}$I dice que la igualdad es reflexiva: $t = t$ es siempre demostrable sin hipótesis.
+
+${=}$E (sustitución por iguales): si $t_1 = t_2$ y $\varphi$ es verdadera con $t_1$, entonces también con $t_2$.
+
+\subsection{Derivaciones formales: ejemplos desarrollados}
+
+\begin{ejemplo}{Modus Barbara: $\forall x\,(P(x)\to Q(x)),\, \forall x\, P(x) \vdash \forall x\, Q(x)$}{}
+Este es el silogismo bárbaro de la lógica aristotélica, formalizado en deducción natural.
+
+\begin{align*}
+(1)\quad &\forall x\,(P(x) \to Q(x)) && \text{hipótesis} \\
+(2)\quad &\forall x\, P(x) && \text{hipótesis} \\
+(3)\quad &P(a) \to Q(a) && \forall\mathrm{E} \text{ a (1), instanciando } a \text{ fresca} \\
+(4)\quad &P(a) && \forall\mathrm{E} \text{ a (2), instanciando } a \\
+(5)\quad &Q(a) && \to\mathrm{E} \text{ a (3) y (4)} \\
+(6)\quad &\forall x\, Q(x) && \forall\mathrm{I} \text{ a (5), } a \text{ fresca}
+\end{align*}
+
+Observación: $a$ es una variable o parámetro fresco que no ocurre en las hipótesis (1) y (2), de modo que la generalización en el paso (6) es legítima.
+\end{ejemplo}
+
+\begin{ejemplo}{Dualidad cuantificadores: $\neg\exists x\, P(x) \vdash \forall x\, \neg P(x)$}{}
+\begin{align*}
+(1)\quad &\neg\exists x\, P(x) && \text{hipótesis} \\
+(2)\quad &[P(a)] && \text{supuesto (para } \neg\mathrm{I} \text{), } a \text{ fresca} \\
+(3)\quad &\exists x\, P(x) && \exists\mathrm{I} \text{ a (2)} \\
+(4)\quad &\bot && \neg\mathrm{E} \text{ a (1) y (3)} \\
+(5)\quad &\neg P(a) && \neg\mathrm{I} \text{ a (2)--(4), descargando } [P(a)] \\
+(6)\quad &\forall x\, \neg P(x) && \forall\mathrm{I} \text{ a (5), } a \text{ fresca respecto a (1)}
+\end{align*}
+\end{ejemplo}
+
+\begin{ejemplo}{Transitividad de la igualdad: $x=y,\, y=z \vdash x=z$}{}
+\begin{align*}
+(1)\quad & x = y && \text{hipótesis} \\
+(2)\quad & y = z && \text{hipótesis} \\
+(3)\quad & x = x && {=}\mathrm{I} \\
+(4)\quad & x = z && {=}\mathrm{E} \text{ a (1) y (3), sustituyendo } x \text{ por } y \text{ en } x = y \text{ ... }
+\end{align*}
+
+Más precisamente: de $x = y$ (línea 1) y $x = z$ [donde usamos (2) $y=z$ para reescribir]:
+
+Usando ${=}$E con $y = z$ (línea 2) y la fórmula $x = y$ (línea 1), donde sustituimos $y$ por $z$:
+\begin{align*}
+(4)\quad & x = z && {=}\mathrm{E} \text{ a (2) y (1): de } y=z \text{ y } x=y, \text{ concluir } x=z
+\end{align*}
+Aquí aplicamos ${=}$E con $t_1 = y$, $t_2 = z$ y $\varphi(w) = (x = w)$: de $y = z$ y $\varphi[y/w] = (x=y)$, obtenemos $\varphi[z/w] = (x = z)$.
+\end{ejemplo}
+
+\begin{ejemplo}{Importación-exportación: $\varphi \to (\psi \to \chi) \vdash (\varphi \wedge \psi) \to \chi$}{}
+Esta derivación muestra que la conjunción en la premisa puede ``importarse'' al antecedente de la implicación.
+
+\begin{align*}
+(1)\quad &\varphi \to (\psi \to \chi) && \text{hipótesis} \\
+(2)\quad &[\varphi \wedge \psi] && \text{supuesto (para }\to\mathrm{I}\text{)} \\
+(3)\quad &\varphi && \wedge\mathrm{E}_1 \text{ a (2)} \\
+(4)\quad &\psi && \wedge\mathrm{E}_2 \text{ a (2)} \\
+(5)\quad &\psi \to \chi && \to\mathrm{E} \text{ a (1) y (3)} \\
+(6)\quad &\chi && \to\mathrm{E} \text{ a (5) y (4)} \\
+(7)\quad &(\varphi \wedge \psi) \to \chi && \to\mathrm{I} \text{ a (2)--(6), descargando }[\varphi\wedge\psi]
+\end{align*}
+\end{ejemplo}
+
+% ===========================================================
+\section{Consecuencia sintáctica}
+% ===========================================================
+
+\subsection{Definición y notación}
+
+\begin{definicion}{Consecuencia sintáctica ($\vdash$)}{consecuencia-sintactica}
+Sea $\Gamma$ un conjunto de sentencias y $\varphi$ una sentencia. Decimos que $\varphi$ es \textbf{consecuencia sintáctica} de $\Gamma$ en el sistema NK, y escribimos $\Gamma \vdash \varphi$, si existe una derivación en NK de $\varphi$ a partir de hipótesis en $\Gamma$.
+
+Una sentencia $\varphi$ es un \textbf{teorema} si $\emptyset \vdash \varphi$, escrito simplemente $\vdash \varphi$.
+\end{definicion}
+
+La relación $\vdash$ es puramente \emph{sintáctica}: no requiere hablar de ningún modelo. Es una relación de derivabilidad formal mediante reglas simbólicas.
+
+\begin{proposicion}{Propiedades de $\vdash$}{}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Reflexividad:} $\{\varphi\} \vdash \varphi$.
+  \item \textbf{Monotonía:} Si $\Gamma \vdash \varphi$ y $\Gamma \subseteq \Delta$, entonces $\Delta \vdash \varphi$.
+  \item \textbf{Corte:} Si $\Gamma \vdash \psi$ y $\Gamma \cup \{\psi\} \vdash \varphi$, entonces $\Gamma \vdash \varphi$.
+  \item \textbf{Teorema de la deducción:} $\Gamma \cup \{\varphi\} \vdash \psi$ si y solo si $\Gamma \vdash \varphi \to \psi$.
+\end{enumerate}
+\end{proposicion}
+
+\subsection{Consistencia}
+
+\begin{definicion}{Consistencia}{consistencia}
+Un conjunto de sentencias $\Gamma$ es \textbf{consistente} si $\Gamma \not\vdash \bot$, es decir, si no existe derivación de $\bot$ (la contradicción) a partir de $\Gamma$.
+
+$\Gamma$ es \textbf{inconsistente} si $\Gamma \vdash \bot$, lo que implica $\Gamma \vdash \varphi$ para toda fórmula $\varphi$ (por la regla $\bot$E).
+\end{definicion}
+
+% ===========================================================
+\section{Los teoremas fundamentales: Corrección, Completitud y Compacidad}
+% ===========================================================
+
+\subsection{Teorema de Corrección (Soundness)}
+
+El teorema de corrección establece que el sistema de deducción natural NK no demuestra nada falso: toda demostración formal refleja una verdad semántica.
+
+\begin{teorema}{Corrección de NK}{correccion}
+Para todo conjunto $\Gamma$ de sentencias y toda sentencia $\varphi$:
+\[
+  \Gamma \vdash \varphi \implies \Gamma \models \varphi.
+\]
+\end{teorema}
+
+\begin{proof}[Esquema de demostración]
+Se procede por inducción sobre la estructura de la derivación. El caso base corresponde a hipótesis: si $\varphi \in \Gamma$, todo modelo de $\Gamma$ satisface $\varphi$, luego $\Gamma \models \varphi$.
+
+Para el paso inductivo, se verifica que cada regla de inferencia preserva la consecuencia semántica. Ilustramos con dos casos:
+
+\textbf{Modus ponens ($\to$E):} Si $\Gamma \models \varphi \to \psi$ y $\Gamma \models \varphi$, entonces en todo modelo $\Struct{A}$ de $\Gamma$ se cumplen tanto $\varphi \to \psi$ como $\varphi$. Por la semántica de $\to$, también se cumple $\psi$. Luego $\Gamma \models \psi$.
+
+\textbf{Introducción universal ($\forall$I):} Si $\Gamma \models \varphi[a/x]$ con $a$ no libre en $\Gamma$, entonces en todo modelo $\Struct{A}$ de $\Gamma$, la fórmula $\varphi[a/x]$ es verdadera. Como $a$ no ocurre libre en $\Gamma$, su interpretación puede ser cualquier elemento de $A$. Luego $\varphi[b/x]$ es verdadera para todo $b \in A$, i.e., $\Struct{A} \models \forall x\, \varphi$.
+
+Los demás casos son análogos.
+\end{proof}
+
+\begin{importante}
+El teorema de corrección garantiza que NK es una herramienta \emph{confiable}: si se logra una demostración formal de $\varphi$, entonces $\varphi$ es semánticamente verdadera en todo modelo de las hipótesis. No puede haber ``demostraciones incorrectas'' en un sistema correcto.
+\end{importante}
+
+\subsection{Teorema de Completitud de Gödel}
+
+La completitud es la propiedad recíproca a la corrección: todo lo que es semánticamente consecuencia puede demostrarse formalmente. Este resultado fue establecido por Kurt Gödel en su tesis doctoral de 1930 \cite{godel1930, enderton2001}.
+
+\begin{teorema}{Completitud de Gödel (1930)}{completitud}
+Para todo conjunto $\Gamma$ de sentencias y toda sentencia $\varphi$:
+\[
+  \Gamma \models \varphi \implies \Gamma \vdash \varphi.
+\]
+En particular, $\models \varphi \iff \vdash \varphi$.
+
+Equivalentemente: $\Gamma$ es consistente (i.e., $\Gamma \not\vdash \bot$) si y solo si $\Gamma$ tiene un modelo.
+\end{teorema}
+
+La equivalencia entre las dos formulaciones del teorema se deduce del Lema~\ref{lem:equiv-completitud}.
+
+\begin{lema}{Equivalencia de formulaciones}{equiv-completitud}
+Las siguientes afirmaciones son equivalentes para todo $\Gamma$ y $\varphi$:
+\begin{enumerate}[label=(\roman*), leftmargin=2em]
+  \item $\Gamma \models \varphi \implies \Gamma \vdash \varphi$.
+  \item Todo $\Gamma$ consistente tiene un modelo.
+\end{enumerate}
+\end{lema}
+
+\begin{proof}
+$(i) \Rightarrow (ii)$: Supongamos que $\Gamma$ es consistente. Si $\Gamma$ no tuviera modelo, entonces $\Gamma \models \varphi$ para toda $\varphi$ (vacuamente), y en particular $\Gamma \models \bot$. Por (i), $\Gamma \vdash \bot$, contradiciendo la consistencia.
+
+$(ii) \Rightarrow (i)$: Supongamos $\Gamma \models \varphi$. Entonces $\Gamma \cup \{\neg\varphi\}$ es insatisfacible. Por (ii) aplicado en su contrarrecíproco, $\Gamma \cup \{\neg\varphi\}$ es inconsistente, i.e., $\Gamma \cup \{\neg\varphi\} \vdash \bot$. Por la regla DNE, $\Gamma \vdash \varphi$.
+\end{proof}
+
+\subsubsection{Idea de la demostración: la construcción de Henkin}
+
+La demostración de la completitud utiliza el método de \textbf{construcción de modelos canónicos}, desarrollado por Leon Henkin (1949) y que es una de las técnicas más elegantes de la lógica matemática. La presentamos como esquema:
+
+\medskip
+\textbf{Paso 1 — Lema de Lindenbaum.} Sea $\Gamma$ un conjunto consistente de sentencias en un lenguaje $\Lang$. Podemos extender $\Gamma$ a un conjunto $\Gamma^*$ de sentencias que sea \emph{maximalmente consistente}: todo $\Gamma^*$ con $\Gamma \subseteq \Gamma^*$ que sea consistente y tal que, para toda sentencia $\varphi$, exactamente una de $\varphi$ o $\neg\varphi$ pertenece a $\Gamma^*$.
+
+La construcción de $\Gamma^*$ usa el axioma de elección o la enumeración de todas las sentencias: se añaden una a una, cuidando de no crear inconsistencia.
+
+\textbf{Paso 2 — Extensión de Henkin.} Ampliamos el lenguaje $\Lang$ a $\Lang^+$ añadiendo una cantidad contable de nuevas constantes $\{c_{\varphi}\}$, una por cada sentencia existencial $\varphi = \exists x\, \psi$. Luego extendemos $\Gamma^*$ añadiendo los \emph{testigos de Henkin}:
+\[
+  \exists x\, \psi(x) \to \psi(c_{\exists x\,\psi(x)}).
+\]
+Esto garantiza que para toda existencial en $\Gamma^*$, hay una constante que ``testimonia'' dicha existencia. El conjunto extendido sigue siendo consistente y maximalmente consistente en $\Lang^+$.
+
+\textbf{Paso 3 — Modelo canónico o de términos.} Definimos la estructura $\Struct{M}$:
+\begin{itemize}
+  \item \textbf{Dominio:} $|\Struct{M}|$ = clases de equivalencia de términos cerrados de $\Lang^+$ bajo la relación $t_1 \sim t_2 \iff (t_1 = t_2) \in \Gamma^*$.
+  \item \textbf{Funciones y relaciones:} interpretadas de manera natural a través de los términos.
+\end{itemize}
+
+\textbf{Paso 4 — Lema de verdad.} El resultado central es:
+\[
+  \Struct{M} \models \varphi \iff \varphi \in \Gamma^*.
+\]
+Este lema se demuestra por inducción sobre la complejidad de $\varphi$. El caso de los cuantificadores usa esencialmente los testigos de Henkin del Paso 2.
+
+\textbf{Conclusión.} Como $\Gamma \subseteq \Gamma^*$, el modelo $\Struct{M}$ satisface toda sentencia de $\Gamma$. Luego $\Struct{M} \models \Gamma$, y $\Gamma$ tiene un modelo.
+
+\begin{importante}
+La completitud de Gödel tiene una consecuencia filosófica profunda: la distinción entre ``semánticamente verdadero en todos los modelos'' y ``formalmente demostrable'' desaparece en la lógica de primer orden. Esto no es trivial: Gödel mismo demostró después (en sus teoremas de incompletitud de 1931) que en teorías suficientemente expresivas como la aritmética de Peano, hay sentencias verdaderas en el modelo estándar que no son demostrables en el sistema formal. Estos resultados no se contradicen: la completitud garantiza que todo lo válido en \emph{todos} los modelos es demostrable, pero no todo lo verdadero en \emph{un} modelo particular.
+\end{importante}
+
+\subsection{Teorema de Compacidad}
+
+El Teorema de Compacidad es una consecuencia inmediata de la Completitud y tiene aplicaciones sorprendentes en toda la matemática.
+
+\begin{teorema}{Compacidad de la lógica de primer orden}{compacidad}
+Sea $\Gamma$ un conjunto (posiblemente infinito) de sentencias. Entonces:
+\[
+  \Gamma \text{ tiene un modelo} \iff \text{todo subconjunto finito de } \Gamma \text{ tiene un modelo.}
+\]
+Equivalentemente: $\Gamma \models \varphi$ si y solo si existe un subconjunto finito $\Delta \subseteq \Gamma$ tal que $\Delta \models \varphi$.
+\end{teorema}
+
+\begin{proof}
+$(\Rightarrow)$ Si $\Struct{A} \models \Gamma$, entonces en particular $\Struct{A} \models \Delta$ para todo $\Delta \subseteq \Gamma$. Trivial.
+
+$(\Leftarrow)$ Supongamos que $\Gamma$ no tiene modelo. Por el Teorema de Completitud, $\Gamma$ es inconsistente: $\Gamma \vdash \bot$. Toda derivación en NK es una estructura finita y solo usa finitely many hipótesis; por tanto, existe un subconjunto finito $\Delta \subseteq \Gamma$ con $\Delta \vdash \bot$. Por el Teorema de Corrección, $\Delta$ es insatisfacible: $\Delta$ no tiene modelo. Luego no todo subconjunto finito de $\Gamma$ tiene modelo.
+\end{proof}
+
+\subsubsection{Aplicación 1: Modelos no estándar de la aritmética}
+
+Sea $\mathrm{PA}$ el conjunto de axiomas de Peano para $\Lang_{\mathrm{ar}}$, y definamos la sentencia $\varphi_n := s(\cdots s(0)\cdots) < x$ (``$x$ es mayor que el numeral $n$'', con $n$ aplicaciones del sucesor). Consideremos:
+\[
+  \Gamma = \mathrm{PA} \cup \{\varphi_n : n \in \mathbb{N}\}.
+\]
+
+\textbf{Todo subconjunto finito de $\Gamma$ tiene modelo:} dado $\Delta$ finito, contiene $\varphi_0, \ldots, \varphi_k$ para algún $k$. El modelo estándar $\mathbb{N}$ con $x$ interpretado como $k+1$ satisface todos los $\varphi_j$ para $j \leq k$.
+
+\textbf{Por Compacidad}, $\Gamma$ tiene un modelo $\Struct{A}$. En $\Struct{A}$ existe un elemento $a = x^{\Struct{A}}$ que es mayor que el numeral $n$ para todo $n \in \mathbb{N}$. Este elemento $a$ es ``infinitamente grande'' y no corresponde a ningún número natural estándar. Así, $\Struct{A}$ es un \textbf{modelo no estándar de la aritmética}.
+
+\begin{importante}
+Este resultado tiene consecuencias filosóficas profundas: ningún conjunto de axiomas de primer orden puede \emph{caracterizar} completamente los números naturales. Siempre existe un modelo no estándar con elementos ``infinitos''. Esto está relacionado con el Teorema de Löwenheim–Skolem, que estudiaremos más adelante.
+\end{importante}
+
+\subsubsection{Aplicación 2: Coloración de grafos infinitos}
+
+\begin{corolario}{Coloración de grafos}{coloracion}
+Si todo subgrafo finito de un grafo $G$ es $k$-colorable (para algún $k$ fijo), entonces $G$ es $k$-colorable.
+\end{corolario}
+
+\begin{proof}[Esquema]
+Se codifica el problema de coloración como un conjunto $\Gamma_G$ de sentencias de primer orden: para cada vértice $v$ se introduce una constante $c_v$, para cada color $1,\ldots,k$ un predicado unario $C_i$, y se añaden sentencias que expresan:
+\begin{enumerate}
+  \item Cada vértice tiene al menos un color: $\bigvee_{i=1}^k C_i(c_v)$.
+  \item Vértices adyacentes tienen colores distintos: $\neg(C_i(c_v) \wedge C_i(c_w))$ para cada arista $\{v,w\}$ y cada $i$.
+\end{enumerate}
+
+Todo subconjunto finito de $\Gamma_G$ involucra finitely many vértices, por lo que corresponde a un subgrafo finito, que por hipótesis es $k$-colorable. Por Compacidad, $\Gamma_G$ tiene un modelo, que proporciona una $k$-coloración de $G$.
+\end{proof}
+
+\subsubsection{Aplicación 3: Teoría de modelos}
+
+La Compacidad es la herramienta central de la teoría de modelos \cite{marker2002}. Entre sus usos:
+\begin{itemize}
+  \item \textbf{Construcción de extensiones elementales}: toda estructura infinita tiene una extensión elemental de cardinalidad mayor (Teorema de Löwenheim–Skolem hacia arriba).
+  \item \textbf{Transferencia de propiedades}: si una propiedad es expresable en $\mathcal{L}_1$ y falla en estructuras arbitrariamente grandes, entonces falla en alguna estructura infinita.
+  \item \textbf{Teorema de los cuatro colores}: la versión infinita de la conjetura de los cuatro colores (todo grafo planar es 4-colorable) se reduce al caso finito via Compacidad.
+\end{itemize}
+
+% ===========================================================
+\section{Síntesis y perspectiva}
+% ===========================================================
+
+A lo largo de esta clase hemos construido el andamiaje lógico sobre el que se apoya todo el curso. Las nociones fundamentales son:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item \textbf{Sintaxis:} el lenguaje $\mathcal{L}_1(\Lang)$ con sus términos, fórmulas, variables libres y sustitución.
+  \item \textbf{Semántica:} las $\Lang$-estructuras como modelos, la relación de satisfacción $\models$ que conecta símbolos formales con objetos matemáticos.
+  \item \textbf{Consecuencia semántica ($\models$):} verdad en todos los modelos de las hipótesis.
+  \item \textbf{Deducción natural NK:} reglas de inferencia que formalizan el razonamiento matemático.
+  \item \textbf{Consecuencia sintáctica ($\vdash$):} derivabilidad formal.
+  \item \textbf{Corrección + Completitud} (Gödel, 1930): $\Gamma \models \varphi \iff \Gamma \vdash \varphi$.
+  \item \textbf{Compacidad:} satisfacibilidad es un asunto local (finito).
+\end{enumerate}
+
+Estos resultados garantizan que podamos trabajar con la teoría de conjuntos $\mathrm{ZFC}$ con plena confianza: la firma $\Lang_\in = \{\in\}$, los axiomas de $\mathrm{ZFC}$ como un conjunto $\Gamma$, y las demostraciones matemáticas como derivaciones en NK (o en sistemas equivalentes). El Teorema de Completitud asegura que toda consecuencia semántica de $\mathrm{ZFC}$ es alcanzable por medios formales.
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+Los siguientes problemas consolidan y amplían los conceptos de la clase. Se recomienda resolver cada uno con el nivel de formalidad adecuado: los problemas de derivación deben presentarse con pasos numerados y justificaciones explícitas.
+
+\medskip
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{Problema \arabic*.}, itemsep=1em]
+
+  \item \textbf{[Términos y fórmulas]}
+  Usando el lenguaje de los grupos $\Lang_{\mathrm{gr}} = (\{e\}, \{\cdot, (-)^{-1}\}, \emptyset)$:
+  \begin{enumerate}[label=(\alph*)]
+    \item Escribe cinco términos distintos que involucren variables $x$ e $y$.
+    \item Formula en $\mathcal{L}_1(\Lang_{\mathrm{gr}})$ los axiomas de grupo: asociatividad, identidad por la izquierda e inverso por la izquierda.
+    \item Determina $\FV(\varphi)$ para cada uno de los axiomas escritos.
+  \end{enumerate}
+
+  \item \textbf{[Variables libres y sustitución]}
+  Considera la fórmula $\varphi := \forall y\, (R(x,y) \to \exists z\, R(y,z))$ en el lenguaje con única relación binaria $R$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcula $\FV(\varphi)$.
+    \item Calcula $\varphi[c/x]$ donde $c$ es una constante.
+    \item Explica qué problemas surgen al intentar calcular $\varphi[y/x]$ y cómo resolverlos.
+    \item Calcula $\varphi[f(y)/x]$ donde $f$ es un símbolo de función unaria, renombrando variables si es necesario.
+  \end{enumerate}
+
+  \item \textbf{[Satisfacción semántica]}
+  Sea $\Lang = \{+^{(2)}, 0^{(0)}, s^{(1)}\}$ y considera las estructuras $\mathbb{N}$ (naturales estándar) y $\mathbb{Z}$ (enteros) con sus interpretaciones naturales.
+  \begin{enumerate}[label=(\alph*)]
+    \item Verifica semánticamente en $\mathbb{N}$ la fórmula: $\forall x\,(x + s(0) \neq x)$.
+    \item Encuentra una fórmula $\varphi$ que sea verdadera en $\mathbb{Z}$ pero falsa en $\mathbb{N}$.
+    \item Encuentra una fórmula $\psi$ verdadera en $\mathbb{N}$ pero falsa en la estructura $(\{0\}, 0^A = 0, s^A(0) = 0, +^A = \text{trivial})$.
+  \end{enumerate}
+
+  \item \textbf{[Consecuencia semántica]}
+  Determina, justificando, si las siguientes relaciones de consecuencia semántica son válidas. Si son válidas, da un argumento semántico. Si no, exhibe un contraejemplo (una estructura que satisfaga las hipótesis pero no la conclusión).
+  \begin{enumerate}[label=(\alph*)]
+    \item $\{\exists x\, P(x),\; \forall x\,(P(x) \to Q(x))\} \models \exists x\, Q(x)$.
+    \item $\{\forall x\, P(x)\} \models \forall x\, \forall y\, (P(x) \wedge P(y))$.
+    \item $\{\exists x\, P(x),\; \exists x\, Q(x)\} \models \exists x\,(P(x) \wedge Q(x))$.
+    \item $\emptyset \models \forall x\, \exists y\, (x = y)$.
+  \end{enumerate}
+
+  \item \textbf{[Derivaciones en NK -- Nivel básico]}
+  Construye derivaciones formales en NK para:
+  \begin{enumerate}[label=(\alph*)]
+    \item $\{\varphi \to \psi,\; \psi \to \chi\} \vdash \varphi \to \chi$ \hfill (silogismo hipotético).
+    \item $\{\varphi \wedge \psi\} \vdash \psi \wedge \varphi$ \hfill (conmutatividad de la conjunción).
+    \item $\{\varphi \to \psi,\; \neg\psi\} \vdash \neg\varphi$ \hfill (modus tollens).
+    \item $\vdash \varphi \to (\psi \to \varphi)$ \hfill (afirmación del consecuente).
+  \end{enumerate}
+
+  \item \textbf{[Derivaciones en NK -- Cuantificadores]}
+  Construye derivaciones formales en NK para:
+  \begin{enumerate}[label=(\alph*)]
+    \item $\{\forall x\, \forall y\, R(x,y)\} \vdash \forall y\, \forall x\, R(x,y)$.
+    \item $\{\exists x\, \neg P(x)\} \vdash \neg \forall x\, P(x)$.
+    \item $\{\neg \forall x\, P(x)\} \vdash \exists x\, \neg P(x)$ \hfill (\textit{Sugerencia: usa DNE}).
+    \item $\{\forall x\,(P(x) \wedge Q(x))\} \vdash \forall x\, P(x) \wedge \forall x\, Q(x)$.
+  \end{enumerate}
+
+  \item \textbf{[Igualdad]}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra formalmente que la igualdad es simétrica: $x = y \vdash y = x$.
+    \item Demuestra que la igualdad es transitiva: $x = y,\; y = z \vdash x = z$ (usa ${=}$E con la fórmula apropiada).
+    \item Si $f$ es un símbolo de función unaria, prueba: $x = y \vdash f(x) = f(y)$.
+  \end{enumerate}
+
+  \item \textbf{[Corrección e incompletitud]}
+  \begin{enumerate}[label=(\alph*)]
+    \item Enuncia con precisión el Teorema de Corrección y explica por qué su demostración va por inducción sobre las derivaciones.
+    \item Explica (informalmente) por qué el Teorema de Completitud de Gödel (1930) \emph{no} contradice los Teoremas de Incompletitud de Gödel (1931). ¿Qué demuestra cada uno?
+    \item Sea $T$ una teoría consistente en $\mathcal{L}_1$. Argumenta usando el Teorema de Completitud por qué $T$ tiene un modelo.
+  \end{enumerate}
+
+  \item \textbf{[Compacidad -- Aplicaciones]}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $\mathrm{DLO}$ la teoría del orden linear denso sin extremos (con axiomas: orden total, densidad y no extremos). Usando Compacidad, demuestra que cualquier teoría que extienda $\mathrm{DLO}$ con una cantidad finita de constantes que satisfacen un orden específico tiene un modelo.
+    \item Enuncia y demuestra (usando Compacidad) el siguiente resultado: si una propiedad $P$ sobre grafos es preservada bajo subgrafos finitos y todo grafo finito satisface $P$, entonces todo grafo infinito satisface $P$. ¿Esta afirmación es cierta en general? Da un contraejemplo o una prueba.
+    \item (Difícil) Sea $\Gamma = \mathrm{PA} \cup \{\overline{n} < c : n \in \mathbb{N}\}$ donde $\overline{n}$ es el numeral para $n$ y $c$ es una nueva constante. Usando Compacidad, demuestra que $\Gamma$ tiene un modelo. ¿Qué dice esto sobre la teoría de los números naturales?
+  \end{enumerate}
+
+  \item \textbf{[Proyecto: La construcción de Henkin]}
+  Investiga y escribe una presentación detallada (2--4 páginas) de la demostración completa del Teorema de Completitud de Gödel siguiendo la construcción de Henkin. Tu presentación debe incluir:
+  \begin{enumerate}[label=(\alph*)]
+    \item La definición precisa de conjunto maximalmente consistente.
+    \item El Lema de Lindenbaum con su demostración.
+    \item La extensión de Henkin: cómo y por qué se agregan los testigos existenciales.
+    \item La construcción del modelo canónico: la relación de equivalencia $\sim$ en los términos y la definición de las funciones y relaciones.
+    \item El Lema de Verdad (por inducción sobre fórmulas).
+    \item La conclusión: todo conjunto consistente tiene un modelo.
+  \end{enumerate}
+  Referencias sugeridas: \cite{enderton2001}, \cite{ebbinghaus1994}, \cite{vandalen2013}.
+
+\end{enumerate}
