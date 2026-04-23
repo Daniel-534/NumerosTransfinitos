@@ -1,0 +1,813 @@
+% ===========================================================
+\chapter{Clase 6: Aritmética Ordinal Avanzada y la Jerarquía de Ordinales Infinitos}
+% ===========================================================
+
+La aritmética ordinal elemental —suma, producto y potencia— fue presentada en la Clase~5 mediante definiciones recursivas. En esta clase completamos ese programa con dos grandes logros: la \textbf{demostración completa del Teorema de la Forma Normal de Cantor} y el estudio del universo de ordinales que la potenciación $\alpha \mapsto \omega^\alpha$ genera más allá de $\omega^\omega$. El personaje central es el ordinal $\varepsilon_0$: el primer punto fijo de la función $\alpha \mapsto \omega^\alpha$, un ordinal que ni siquiera la forma normal de Cantor puede representar de manera finita sin aludirse a sí mismo.
+
+Junto con la aritmética avanzada, introducimos la noción de \textbf{cofinalidad}, que permite clasificar los ordinales límite según el «ritmo» con que se aproximan a su propio valor, y que resulta esencial en la teoría cardinal y en la teoría de grandes cardinales \cite{jech2003, kanamori2003}.
+
+La exposición sigue los lineamientos clásicos de \cite{sierpinski1958, enderton1977, hrbacek1999, levy1979}, con una atención especial a los detalles de los argumentos por inducción y recursión transfinita.
+
+% ===========================================================
+\section{Potenciación ordinal: propiedades y cálculos avanzados}
+% ===========================================================
+
+\subsection{Recordatorio de la definición}
+
+Recordemos que la \textbf{potencia ordinal} $\alpha^\beta$ se define por recursión transfinita en $\beta$:
+
+\begin{definicion}{Potencia ordinal}{potordrecord}
+Para ordinales $\alpha$ y $\beta$:
+\begin{align*}
+  \alpha^0 &= 1, \\
+  \alpha^{\beta+1} &= \alpha^\beta \cdot \alpha, \\
+  \alpha^\lambda &= \sup_{\beta < \lambda} \alpha^\beta \quad \text{(para } \lambda \text{ límite, } \alpha > 0\text{)}.
+\end{align*}
+Se establece además $0^\lambda = 0$ para todo $\lambda > 0$.
+\end{definicion}
+
+\begin{observacion}{El caso $\alpha = 0$}{cerobase}
+La convención $0^\lambda = 0$ para $\lambda > 0$ es consistente con el caso límite: $\sup_{\beta < \lambda} 0^\beta = \sup\{0\} = 0$. El caso $0^0 = 1$ sigue la convención universal que hace la recursión coherente.
+\end{observacion}
+
+\subsection{Propiedades fundamentales de la potencia ordinal}
+
+\begin{proposicion}{Leyes de los exponentes ordinales}{leyesexp}
+Para todos los ordinales $\alpha, \beta, \gamma$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha^{\beta+\gamma} = \alpha^\beta \cdot \alpha^\gamma$.
+  \item $(\alpha^\beta)^\gamma = \alpha^{\beta \cdot \gamma}$.
+  \item Si $1 < \alpha$ y $\beta < \gamma$, entonces $\alpha^\beta < \alpha^\gamma$.
+  \item Si $\alpha \leq \beta$ y $\gamma > 0$, entonces $\alpha^\gamma \leq \beta^\gamma$.
+  \item $\alpha^1 = \alpha$ y $1^\alpha = 1$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+Probamos (i) y (ii) por inducción transfinita; (iii)--(v) siguen de las mismas técnicas.
+
+\textbf{(i)} Inducción transfinita en $\gamma$.
+
+\textit{Base:} $\alpha^{\beta+0} = \alpha^\beta = \alpha^\beta \cdot 1 = \alpha^\beta \cdot \alpha^0$. \checkmark
+
+\textit{Paso sucesor:} Asuma $\alpha^{\beta+\gamma} = \alpha^\beta \cdot \alpha^\gamma$. Entonces
+\[
+  \alpha^{\beta+(\gamma+1)} = \alpha^{(\beta+\gamma)+1} = \alpha^{\beta+\gamma} \cdot \alpha
+  = (\alpha^\beta \cdot \alpha^\gamma) \cdot \alpha = \alpha^\beta \cdot (\alpha^\gamma \cdot \alpha)
+  = \alpha^\beta \cdot \alpha^{\gamma+1}. \checkmark
+\]
+
+\textit{Paso límite:} Sea $\lambda$ un ordinal límite. Entonces $\beta + \lambda = \sup_{\gamma<\lambda}(\beta+\gamma)$ es también un límite, y
+\[
+  \alpha^{\beta+\lambda}
+  = \sup_{\gamma < \lambda} \alpha^{\beta+\gamma}
+  \stackrel{\text{HI}}{=} \sup_{\gamma < \lambda} (\alpha^\beta \cdot \alpha^\gamma)
+  = \alpha^\beta \cdot \sup_{\gamma < \lambda} \alpha^\gamma
+  = \alpha^\beta \cdot \alpha^\lambda. \checkmark
+\]
+(El penúltimo paso usa que la multiplicación por $\alpha^\beta$ conmuta con el supremo cuando $\alpha^\beta > 0$, hecho que se verifica por inducción.)
+
+\textbf{(ii)} Inducción transfinita en $\gamma$.
+
+\textit{Base:} $(\alpha^\beta)^0 = 1 = \alpha^0 = \alpha^{\beta \cdot 0}$. \checkmark
+
+\textit{Paso sucesor:} $(\alpha^\beta)^{\gamma+1} = (\alpha^\beta)^\gamma \cdot \alpha^\beta
+\stackrel{\text{HI}}{=} \alpha^{\beta\gamma} \cdot \alpha^\beta = \alpha^{\beta\gamma + \beta}
+= \alpha^{\beta(\gamma+1)}$. \checkmark
+
+\textit{Paso límite:} $(\alpha^\beta)^\lambda = \sup_{\gamma<\lambda}(\alpha^\beta)^\gamma
+\stackrel{\text{HI}}{=} \sup_{\gamma<\lambda} \alpha^{\beta\gamma}
+= \alpha^{\sup_{\gamma<\lambda}\beta\gamma} = \alpha^{\beta\lambda}$. \checkmark
+\end{proof}
+
+\begin{observacion}{Las leyes de exponentes fallan sin orden}{noconmpot}
+La ley $(\alpha \cdot \beta)^\gamma = \alpha^\gamma \cdot \beta^\gamma$ \emph{no} vale en general. Por ejemplo, con $\alpha = \omega$, $\beta = \omega$ y $\gamma = 2$:
+\[
+  (\omega \cdot \omega)^2 = \omega^2 \cdot \omega^2 = \omega^4,
+\]
+pero aplicando la fórmula candidata se obtendría $\omega^2 \cdot \omega^2 = \omega^4$, que en este caso coincide. Sin embargo, si tomamos $\alpha = 2$, $\beta = \omega$ y $\gamma = \omega$:
+\[
+  (2 \cdot \omega)^\omega = \omega^\omega,
+  \quad\text{mientras que}\quad
+  2^\omega \cdot \omega^\omega = \omega \cdot \omega^\omega = \omega^{1+\omega} = \omega^\omega.
+\]
+Aquí coinciden por absorción, pero la identidad en cuestión falla de manera no trivial para otros valores \cite{sierpinski1958}.
+\end{observacion}
+
+\subsection{Las potencias de $\omega$: cálculos detallados}
+
+\begin{ejemplo}{Las potencias de $\omega$ paso a paso}{potomegadet}
+\begin{align*}
+  \omega^0 &= 1, \\
+  \omega^1 &= \omega, \\
+  \omega^2 &= \omega^1 \cdot \omega = \omega \cdot \omega = \sup_{n<\omega}(\omega \cdot n)
+    = \sup\{0,\omega,\omega+\omega,\omega+\omega+\omega,\ldots\}, \\
+  \omega^3 &= \omega^2 \cdot \omega = \sup_{n<\omega}(\omega^2 \cdot n), \\
+  \omega^n &= \underbrace{\omega \cdot \omega \cdots \omega}_{n\text{ veces}}
+    \quad(n \in \omega), \\
+  \omega^\omega &= \sup_{n<\omega} \omega^n.
+\end{align*}
+
+El ordinal $\omega^2$ tiene el tipo de orden del conjunto
+$\omega \times \omega = \{(i,j) : i,j \in \omega\}$
+con el orden lexicográfico (primero por $i$, luego por $j$):
+\[
+  (0,0) < (0,1) < (0,2) < \cdots < (1,0) < (1,1) < \cdots < (2,0) < \cdots
+\]
+
+El ordinal $\omega^\omega$ es el supremo de todos $\omega^n$, un ordinal límite que no es alcanzado por ninguna potencia finita de $\omega$. Representa el tipo de orden de las sucesiones $(a_0, a_1, a_2, \ldots)$ con valores en $\omega$, casi todas nulas, bajo el orden lexicográfico inverso.
+\end{ejemplo}
+
+\begin{ejemplo}{Potencias mixtas}{potmixtas}
+\begin{align*}
+  2^\omega &= \sup_{n<\omega} 2^n = \sup\{1, 2, 4, 8, \ldots\} = \omega, \\
+  3^\omega &= \sup_{n<\omega} 3^n = \omega, \\
+  n^\omega &= \omega \quad \text{para todo } 1 < n < \omega, \\
+  \omega^{\omega+1} &= \omega^\omega \cdot \omega = \sup_{n<\omega}(\omega^\omega \cdot n), \\
+  \omega^{\omega \cdot 2} &= (\omega^\omega)^2 = \omega^\omega \cdot \omega^\omega, \\
+  \omega^{\omega^2} &= \sup_{n<\omega} \omega^{\omega \cdot n}.
+\end{align*}
+
+En particular, $n^\omega = \omega$ para todo entero $n \geq 2$: la potencia $n^\omega$ es absorbida por $\omega$ porque se trata del supremo de la sucesión de enteros $n^0 < n^1 < n^2 < \cdots$ que sigue siendo contable y coinicial con $\omega$.
+\end{ejemplo}
+
+% ===========================================================
+\section{El Teorema de la Forma Normal de Cantor}
+% ===========================================================
+
+\subsection{Enunciado preciso}
+
+El Teorema de la Forma Normal de Cantor es el análogo ordinal de la representación en una base numérica. Todo número natural tiene una única representación decimal; todo ordinal positivo tiene una única representación como «polinomio en $\omega$».
+
+\begin{teorema}{Forma Normal de Cantor}{fncantor}
+Para todo ordinal $\alpha > 0$ existe una única representación
+\[
+  \alpha = \omega^{\beta_1} \cdot c_1 + \omega^{\beta_2} \cdot c_2 + \cdots + \omega^{\beta_k} \cdot c_k,
+\]
+donde:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $k \geq 1$.
+  \item $\beta_1 > \beta_2 > \cdots > \beta_k$ son ordinales (llamados los \textbf{exponentes}).
+  \item $c_1, c_2, \ldots, c_k$ son enteros positivos (llamados los \textbf{coeficientes}).
+  \item $\beta_1 \leq \alpha$ (el exponente más alto no supera al propio ordinal).
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+La demostración consta de dos partes: \emph{existencia} y \emph{unicidad}.
+
+\medskip
+\textbf{Existencia.} Procederemos por inducción transfinita en $\alpha$.
+
+Sea $\alpha > 0$. Consideremos el conjunto
+\[
+  E = \{\beta \in \mathbf{ON} : \omega^\beta \leq \alpha\}.
+\]
+El conjunto $E$ es no vacío (pues $0 \in E$: $\omega^0 = 1 \leq \alpha$) y está acotado superiormente por $\alpha$ (si $\omega^\beta > \alpha$ para todo $\beta > \alpha$, basta verificar que $\omega^{\alpha+1} > \alpha$, lo cual se prueba por inducción sobre $\alpha$). Por tanto $E$ tiene un supremo $\beta_1 = \sup E$, y como $E$ es un conjunto de ordinales con cota, $\beta_1 \in \mathbf{ON}$.
+
+\textit{Afirmamos que $\beta_1 \in E$, es decir, $\omega^{\beta_1} \leq \alpha$.}
+Si $\beta_1 = 0$, entonces $\omega^0 = 1 \leq \alpha$. Si $\beta_1 = \gamma + 1$ para algún $\gamma$, entonces $\gamma \in E$, es decir $\omega^\gamma \leq \alpha < \omega^{\gamma+1} = \omega^{\beta_1}$, contradiciendo $\beta_1 = \sup E$ (ya que $\beta_1 \notin E$ si $\omega^{\beta_1} > \alpha$). Luego $\beta_1$ es límite o $\beta_1 = 0$, y en ambos casos $\beta_1 \in E$.
+
+Así $\omega^{\beta_1} \leq \alpha$. Como $\beta_1+1 \notin E$, tenemos $\omega^{\beta_1+1} > \alpha$, es decir $\omega^{\beta_1} \cdot \omega > \alpha$. Sea
+\[
+  c_1 = \max\{c \in \omega : \omega^{\beta_1} \cdot c \leq \alpha\}.
+\]
+Este máximo existe porque $\omega^{\beta_1} \cdot \omega > \alpha$, así que el conjunto es finito y no vacío (contiene al menos a $1$). Define $\alpha_1 = \alpha - \omega^{\beta_1} \cdot c_1$ (diferencia ordinal por la derecha), es decir, el único ordinal tal que $\omega^{\beta_1} \cdot c_1 + \alpha_1 = \alpha$.
+
+Si $\alpha_1 = 0$, hemos terminado: $\alpha = \omega^{\beta_1} \cdot c_1$.
+
+Si $\alpha_1 > 0$, nótese que $\alpha_1 < \omega^{\beta_1}$ (pues si $\alpha_1 \geq \omega^{\beta_1}$, entonces $c_1$ no sería el máximo). Por hipótesis de inducción, $\alpha_1$ tiene una forma normal
+\[
+  \alpha_1 = \omega^{\beta_2} \cdot c_2 + \cdots + \omega^{\beta_k} \cdot c_k,
+\]
+con $\beta_2 < \beta_1$ (ya que $\alpha_1 < \omega^{\beta_1}$ implica que todos los exponentes de $\alpha_1$ son estrictamente menores que $\beta_1$). Concatenando, obtenemos la forma normal de $\alpha$.
+
+\medskip
+\textbf{Unicidad.} Supongamos que
+\[
+  \alpha = \omega^{\beta_1} c_1 + \cdots + \omega^{\beta_k} c_k
+  = \omega^{\gamma_1} d_1 + \cdots + \omega^{\gamma_m} d_m,
+\]
+con $\beta_1 > \cdots > \beta_k$ y $\gamma_1 > \cdots > \gamma_m$. Procedemos por inducción transfinita en $\alpha$.
+
+Primero observamos que el mayor exponente en la forma normal de $\alpha$ es el mayor ordinal $\delta$ con $\omega^\delta \leq \alpha$, es decir $\beta_1 = \gamma_1$ (ambos son el supremo del conjunto $E$ anterior). Así $\beta_1 = \gamma_1$.
+
+A continuación, el coeficiente $c_1$ es el mayor entero positivo con $\omega^{\beta_1} \cdot c_1 \leq \alpha$, así que $c_1 = d_1$.
+
+Luego $\omega^{\beta_2} c_2 + \cdots = \omega^{\gamma_2} d_2 + \cdots = \alpha - \omega^{\beta_1}c_1$, y la unicidad de este ordinal (que es estrictamente menor que $\alpha$) sigue por hipótesis de inducción.
+\end{proof}
+
+\subsection{Ejemplos de cálculo de la forma normal}
+
+\begin{ejemplo}{Forma normal de ordinales concretos}{ejfncantor}
+Calculamos la forma normal de Cantor paso a paso.
+
+\textbf{(a) $\alpha = 1427$.} El mayor $\beta$ con $\omega^\beta \leq 1427$ es $\beta_1 = 0$ (ya que $\omega^1 = \omega > 1427$).
+\[
+  1427 = \omega^0 \cdot 1427.
+\]
+En general, todo entero positivo $n$ tiene forma normal $\omega^0 \cdot n$.
+
+\textbf{(b) $\alpha = \omega^3 + \omega^2 \cdot 5 + \omega \cdot 3 + 7$.} Esta ya es la forma normal con exponentes $3 > 2 > 1 > 0$ y coeficientes $1, 5, 3, 7$.
+
+\textbf{(c) $\alpha = \omega^4 + \omega \cdot 2 + 1$.} Los exponentes son $4 > 1 > 0$ y los coeficientes $1, 2, 1$.
+
+\textbf{(d) $\alpha = \omega^\omega$.} La forma normal es $\omega^\omega \cdot 1$: un solo término con exponente $\omega$ y coeficiente $1$. Nótese que aquí el exponente $\beta_1 = \omega$ es un ordinal infinito.
+
+\textbf{(e) $\alpha = \omega^{\omega^2} + \omega^3 \cdot 4 + 2$.} Exponentes: $\omega^2 > 3 > 0$, coeficientes: $1, 4, 2$.
+
+\textbf{(f) $\alpha = \omega^{\omega^\omega}$.} La forma normal es $\omega^{\omega^\omega} \cdot 1$. El exponente $\omega^\omega$ es en sí un ordinal transfinito con su propia forma normal $\omega^\omega \cdot 1$.
+\end{ejemplo}
+
+\begin{ejemplo}{Aritmética con la forma normal}{aritfncantor}
+Sean $\alpha = \omega^3 \cdot 2 + \omega \cdot 5 + 3$ y $\beta = \omega^2 \cdot 4 + \omega \cdot 7 + 1$.
+
+\textbf{Suma $\alpha + \beta$:} En la suma ordinal, los términos de $\alpha$ con exponente $\leq \beta_1(\beta) = 2$ quedan absorbidos por $\beta$:
+\begin{align*}
+  \alpha + \beta
+  &= (\omega^3 \cdot 2 + \omega \cdot 5 + 3) + (\omega^2 \cdot 4 + \omega \cdot 7 + 1) \\
+  &= \omega^3 \cdot 2 + (\omega \cdot 5 + 3 + \omega^2 \cdot 4) + \omega \cdot 7 + 1 \\
+  &= \omega^3 \cdot 2 + \omega^2 \cdot 4 + \omega \cdot 7 + 1.
+\end{align*}
+(El término $\omega \cdot 5 + 3$ es absorbido por $\omega^2 \cdot 4$, pues $\omega \cdot 5 + 3 < \omega^2 \leq \omega^2 \cdot 4$.)
+
+\textbf{Suma $\beta + \alpha$:} Aquí el término más alto de $\alpha$ es $\omega^3 > \omega^2$:
+\[
+  \beta + \alpha = \omega^3 \cdot 2 + \omega \cdot 5 + 3 = \alpha.
+\]
+Esto refleja que $\beta < \omega^3$ y $\omega^3$ absorbe a $\beta$: $\beta + \omega^3 = \omega^3$, y por tanto $\beta + (\omega^3 \cdot 2 + \cdots) = \omega^3 \cdot 2 + \cdots = \alpha$.
+
+\textbf{Producto $\alpha \cdot \omega$:} Para cualquier $\alpha = \omega^{\beta_1} c_1 + (\text{términos menores})$, se tiene $\alpha \cdot \omega = \omega^{\beta_1+1}$, pues
+\[
+  \alpha \cdot \omega = \sup_{n<\omega}(\alpha \cdot n)
+  = \sup_{n<\omega}(\omega^{\beta_1} c_1 n + \cdots)
+  = \omega^{\beta_1+1}.
+\]
+En nuestro caso, $\alpha \cdot \omega = \omega^4$.
+\end{ejemplo}
+
+\begin{corolario}{Algoritmo de suma con la forma normal}{algsuma}
+Si $\alpha = \omega^{\beta_1} c_1 + \cdots + \omega^{\beta_k} c_k$ y $\gamma = \omega^{\delta_1} d_1 + \cdots + \omega^{\delta_m} d_m$ con $\beta_1 \geq \cdots \geq \beta_k$ y $\delta_1 \geq \cdots \geq \delta_m$, entonces para calcular $\alpha + \gamma$:
+\begin{enumerate}[leftmargin=2em, label=(\arabic*)]
+  \item Se eliminan de $\alpha$ todos los términos $\omega^{\beta_i} c_i$ con $\beta_i < \delta_1$ (quedan absorbidos).
+  \item Si el mayor exponente restante de $\alpha$ coincide con $\delta_1$, se suman los coeficientes correspondientes.
+  \item Se concatenan los términos restantes de $\alpha$ con todos los de $\gamma$.
+\end{enumerate}
+\end{corolario}
+
+\begin{proposicion}{El exponente máximo y la forma normal}{expmaxfn}
+Sea $\alpha > 0$ con forma normal $\alpha = \omega^{\beta_1} c_1 + \cdots$. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha \geq \omega^{\beta_1}$.
+  \item $\alpha < \omega^{\beta_1+1}$.
+  \item $\alpha$ es un ordinal límite si y solo si $\beta_k > 0$ (el último exponente es positivo) o $k \geq 2$ con $\beta_k = 0$... más precisamente, $\alpha$ es límite si y solo si el término de menor exponente tiene exponente $> 0$.
+  \item $\alpha = \omega^{\beta_1} \cdot c_1$ si y solo si $k = 1$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} y \textbf{(ii)} son consecuencia directa de la construcción de $\beta_1$ en la prueba del teorema.
+
+\textbf{(iii)} $\alpha$ es sucesor $\iff$ $\alpha = \alpha' + 1$ para algún $\alpha'$, lo que en la forma normal ocurre $\iff$ $\beta_k = 0$ (el último término es $\omega^0 \cdot c_k = c_k$), en cuyo caso $\alpha = (\omega^{\beta_1} c_1 + \cdots + \omega^{\beta_{k-1}} c_{k-1} + (c_k - 1)) + 1$.
+\end{proof}
+
+% ===========================================================
+\section{Puntos fijos de \texorpdfstring{$\alpha \mapsto \omega^\alpha$}{alpha -> omega^alpha} y el ordinal \texorpdfstring{$\varepsilon_0$}{ε₀}}
+% ===========================================================
+
+\subsection{La función \texorpdfstring{$\alpha \mapsto \omega^\alpha$}{α ↦ ωᵅ} y sus propiedades}
+
+La función $\Phi: \mathbf{ON} \to \mathbf{ON}$ definida por $\Phi(\alpha) = \omega^\alpha$ es un objeto fundamental en la teoría de ordinales. Antes de estudiar sus puntos fijos, sistematizamos sus propiedades.
+
+\begin{proposicion}{Propiedades de $\alpha \mapsto \omega^\alpha$}{propsomegaalpha}
+La función $\Phi(\alpha) = \omega^\alpha$ satisface:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Es \textbf{estrictamente creciente}: $\alpha < \beta \Rightarrow \omega^\alpha < \omega^\beta$.
+  \item Es \textbf{continua por la derecha}: para todo ordinal límite $\lambda$, $\omega^\lambda = \sup_{\alpha < \lambda} \omega^\alpha$.
+  \item Para todo $\alpha$ finito, $\omega^\alpha < \omega$.
+  \item Para todo $\alpha \geq 1$, $\alpha < \omega^\alpha$.
+  \item La imagen de $\Phi$ es una subclase propia de $\mathbf{ON}$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Por inducción en $\beta$ se demuestra que $\omega^\alpha < \omega^{\alpha+1}$ y que la función es creciente; luego por transitividad es estrictamente creciente.
+
+\textbf{(ii)} Es la definición misma de $\omega^\lambda$ para $\lambda$ límite.
+
+\textbf{(iv)} Por inducción transfinita en $\alpha$.
+\textit{Base $\alpha=1$}: $1 < \omega = \omega^1$. \checkmark
+\textit{Sucesor}: Si $\alpha < \omega^\alpha$, entonces $\alpha + 1 \leq \omega^\alpha < \omega^\alpha \cdot \omega = \omega^{\alpha+1}$. \checkmark
+\textit{Límite}: Si $\alpha$ es límite y $\beta < \alpha$ para todo $\beta$ implica $\beta < \omega^\beta \leq \omega^\alpha$, luego $\alpha = \sup_{\beta < \alpha} \beta \leq \omega^\alpha$. Y la igualdad no ocurre si $\alpha$ no es punto fijo (lo cual demostraremos abajo). \checkmark
+\end{proof}
+
+\subsection{La existencia de puntos fijos: definición de $\varepsilon_0$}
+
+\begin{definicion}{Punto fijo de $\alpha \mapsto \omega^\alpha$}{puntofijo}
+Un ordinal $\varepsilon$ es un \textbf{punto fijo} de la función $\alpha \mapsto \omega^\alpha$ si
+\[
+  \omega^\varepsilon = \varepsilon.
+\]
+Un ordinal así recibe el nombre de \textbf{ordinal épsilon}.
+\end{definicion}
+
+\begin{importante}
+¿Por qué $\omega$, $\omega^2$, $\omega^\omega$, etc., no son puntos fijos? Verifiquemos:
+\begin{align*}
+  \omega^1 &= \omega \quad\Rightarrow\quad \omega^{\omega^1} = \omega^\omega \neq \omega.\\
+  \omega^{\omega} &\quad\Rightarrow\quad \omega^{\omega^\omega} = \omega^{\omega^\omega} \neq \omega^\omega \quad\text{(pues $\omega^\omega < \omega^{\omega^\omega}$)}.
+\end{align*}
+Ningún ordinal de la forma $\omega^n$, $\omega^\omega$, $\omega^{\omega^\omega}$, etc., satisface la ecuación $\omega^\varepsilon = \varepsilon$. El primer punto fijo requiere un proceso iterado «hasta el infinito».
+\end{importante}
+
+\begin{teorema}{Existencia y definición de $\varepsilon_0$}{defeps0}
+Existe un ordinal $\varepsilon_0$ tal que $\omega^{\varepsilon_0} = \varepsilon_0$, y es el \textbf{mínimo} ordinal con esta propiedad. Está dado explícitamente por
+\[
+  \varepsilon_0 = \sup\bigl\{\omega,\; \omega^\omega,\; \omega^{\omega^\omega},\; \omega^{\omega^{\omega^\omega}},\; \ldots\bigr\}
+  = \sup_{n < \omega} \varphi_n,
+\]
+donde $\varphi_0 = \omega$ y $\varphi_{n+1} = \omega^{\varphi_n}$ para todo $n \in \omega$.
+\end{teorema}
+
+\begin{proof}
+Definimos por recursión ordinaria:
+\[
+  \varphi_0 = \omega, \qquad \varphi_{n+1} = \omega^{\varphi_n}.
+\]
+La sucesión $\varphi_0 < \varphi_1 < \varphi_2 < \cdots$ es estrictamente creciente (por la propiedad (i) de la proposición anterior, ya que $\varphi_n < \omega^{\varphi_n} = \varphi_{n+1}$). Sea $\varepsilon_0 = \sup_{n<\omega} \varphi_n$.
+
+\textbf{$\varepsilon_0$ es un punto fijo:} Como $\varepsilon_0$ es el supremo de una sucesión de tipo $\omega$, es un ordinal límite. Aplicando la continuidad de $\alpha \mapsto \omega^\alpha$:
+\[
+  \omega^{\varepsilon_0}
+  = \omega^{\sup_n \varphi_n}
+  = \sup_n \omega^{\varphi_n}
+  = \sup_n \varphi_{n+1}
+  = \sup_{n \geq 1} \varphi_n
+  = \varepsilon_0. \checkmark
+\]
+(El último paso es porque $\sup_{n \geq 1} \varphi_n = \sup_{n \geq 0} \varphi_n = \varepsilon_0$, pues $\varphi_0 < \varphi_1$.)
+
+\textbf{$\varepsilon_0$ es el mínimo:} Sea $\varepsilon$ cualquier punto fijo de $\alpha \mapsto \omega^\alpha$. Como $\varepsilon \geq \omega = \omega^0$ (pues $\omega^1 = \omega \leq \omega^\varepsilon = \varepsilon$, y $\varepsilon \geq 1$), tenemos $\varphi_0 = \omega \leq \varepsilon$. Por inducción: si $\varphi_n \leq \varepsilon$, entonces $\varphi_{n+1} = \omega^{\varphi_n} \leq \omega^\varepsilon = \varepsilon$. Luego $\varphi_n \leq \varepsilon$ para todo $n$, y por tanto $\varepsilon_0 = \sup_n \varphi_n \leq \varepsilon$.
+\end{proof}
+
+\subsection{Representación de $\varepsilon_0$ como torre de exponentes}
+
+\begin{ejemplo}{La torre exponencial de $\varepsilon_0$}{torreexp}
+La sucesión que converge a $\varepsilon_0$ puede escribirse explícitamente como torres de exponentes:
+\begin{align*}
+  \varphi_0 &= \omega, \\
+  \varphi_1 &= \omega^\omega, \\
+  \varphi_2 &= \omega^{\omega^\omega}, \\
+  \varphi_3 &= \omega^{\omega^{\omega^\omega}}, \\
+  \varphi_n &= \underbrace{\omega^{\omega^{\cdot^{\cdot^{\cdot^\omega}}}}}_{n+1\;\omega\text{'s}}.
+\end{align*}
+El límite $\varepsilon_0 = \sup_n \varphi_n$ puede imaginarse como la «torre infinita»:
+\[
+  \varepsilon_0 = \omega^{\omega^{\omega^{\omega^{\cdots}}}}.
+\]
+Por supuesto, esta «expresión» no es formalmente una notación finita; refleja el hecho de que $\varepsilon_0$ no puede ser escrito como una expresión finita con $\omega$ y las operaciones $+$, $\cdot$, y la potenciación, sin referirse a sí mismo. Esto contrasta con todos los ordinales que tienen forma normal de Cantor con exponentes finitos.
+\end{ejemplo}
+
+\subsection{La forma normal de Cantor y $\varepsilon_0$}
+
+\begin{observacion}{El límite de la forma normal de Cantor}{fnylimite}
+Si $\alpha < \varepsilon_0$, entonces la forma normal de Cantor de $\alpha$ involucra exponentes $\beta_1 < \varepsilon_0$, cuyos exponentes son a su vez $< \varepsilon_0$, y así sucesivamente; pero la cadena de exponentes es \emph{finita}. Esto es: para $\alpha < \varepsilon_0$, la forma normal de Cantor puede expandirse de manera \emph{completamente finita}, en el sentido de que todos los exponentes que aparecen son también $<\varepsilon_0$ y el proceso termina en un número finito de pasos.
+
+Por el contrario, $\varepsilon_0$ mismo no puede representarse por la forma normal de Cantor sin usar un exponente igual a $\varepsilon_0$:
+\[
+  \varepsilon_0 = \omega^{\varepsilon_0} \cdot 1.
+\]
+Esto no es circular (la forma normal existe) pero sí implica que la cadena de expansión de exponentes no termina; el proceso de expandir el exponente siempre produce de nuevo $\varepsilon_0$.
+\end{observacion}
+
+\begin{importante}
+$\varepsilon_0$ es el primer ordinal para el cual la forma normal de Cantor es «autorreferente»: $\varepsilon_0 = \omega^{\varepsilon_0}$. Todos los ordinales $\alpha < \varepsilon_0$ tienen representaciones en forma normal de Cantor que se resuelven en términos de ordinales estrictamente menores a través de una cadena finita de expansiones.
+\end{importante}
+
+% ===========================================================
+\section{La jerarquía de ordinales épsilon}
+% ===========================================================
+
+\subsection{Ordinales épsilon más allá de $\varepsilon_0$}
+
+La existencia de $\varepsilon_0$ es solo el comienzo. Una vez construido $\varepsilon_0$, podemos preguntar: ¿existen más puntos fijos de $\alpha \mapsto \omega^\alpha$? La respuesta es afirmativa, y de hecho forman una clase propia.
+
+\begin{teorema}{Existencia de $\varepsilon_{\alpha}$ para todo ordinal $\alpha$}{existepsalpha}
+Para cada ordinal $\alpha$ existe un único ordinal $\varepsilon_\alpha$ tal que:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\omega^{\varepsilon_\alpha} = \varepsilon_\alpha$ \quad ($\varepsilon_\alpha$ es punto fijo de $\alpha \mapsto \omega^\alpha$).
+  \item $\varepsilon_\alpha$ es el $(\alpha+1)$-ésimo punto fijo en orden creciente \quad (es decir, es el mínimo punto fijo mayor que todos $\varepsilon_\beta$ con $\beta < \alpha$).
+\end{enumerate}
+La colección $\{\varepsilon_\alpha : \alpha \in \mathbf{ON}\}$ es la \textbf{jerarquía épsilon} o \textbf{clase de ordinales épsilon}.
+\end{teorema}
+
+\begin{proof}[Construcción]
+Definimos la jerarquía por recursión transfinita en $\alpha$.
+
+\textbf{Caso base:} $\varepsilon_0$ se define como en el Teorema~\ref{teo:defeps0}.
+
+\textbf{Caso sucesor:} Dado $\varepsilon_\alpha$, definimos $\varepsilon_{\alpha+1}$ como el mínimo punto fijo de $\beta \mapsto \omega^\beta$ mayor que $\varepsilon_\alpha$. Explícitamente:
+\[
+  \varepsilon_{\alpha+1} = \sup\{\varepsilon_\alpha + 1,\; \omega^{\varepsilon_\alpha+1},\; \omega^{\omega^{\varepsilon_\alpha+1}},\; \ldots\}.
+\]
+El mismo argumento de la prueba del Teorema~\ref{teo:defeps0} muestra que este supremo es un punto fijo.
+
+\textbf{Caso límite:} Para $\lambda$ un ordinal límite,
+\[
+  \varepsilon_\lambda = \sup_{\alpha < \lambda} \varepsilon_\alpha.
+\]
+Verificamos que $\varepsilon_\lambda$ es un punto fijo:
+\[
+  \omega^{\varepsilon_\lambda}
+  = \omega^{\sup_{\alpha < \lambda}\varepsilon_\alpha}
+  = \sup_{\alpha < \lambda} \omega^{\varepsilon_\alpha}
+  = \sup_{\alpha < \lambda} \varepsilon_\alpha
+  = \varepsilon_\lambda. \checkmark
+\]
+\end{proof}
+
+\subsection{Los primeros ordinales épsilon}
+
+\begin{ejemplo}{Los primeros $\varepsilon_\alpha$}{primeroseps}
+\begin{align*}
+  \varepsilon_0 &= \sup\{\omega, \omega^\omega, \omega^{\omega^\omega}, \ldots\}
+    &&\text{(primer punto fijo de $\alpha \mapsto \omega^\alpha$),} \\
+  \varepsilon_1 &= \sup\{\varepsilon_0+1,\; \omega^{\varepsilon_0+1},\; \omega^{\omega^{\varepsilon_0+1}},\; \ldots\}
+    &&\text{(segundo punto fijo),} \\
+  \varepsilon_2 &= \sup\{\varepsilon_1+1,\; \omega^{\varepsilon_1+1},\; \ldots\}
+    &&\text{(tercer punto fijo),} \\
+  \varepsilon_\omega &= \sup_{n < \omega} \varepsilon_n
+    &&\text{(primer punto fijo límite de la jerarquía $\varepsilon$),} \\
+  \varepsilon_{\varepsilon_0} &
+    &&\text{(un ordinal épsilon cuyo índice es él mismo un ordinal épsilon).}
+\end{align*}
+La jerarquía épsilon crece sin cota: para cada $\alpha$, $\varepsilon_\alpha < \varepsilon_{\alpha+1}$ estrictamente.
+\end{ejemplo}
+
+\begin{proposicion}{Propiedades de la jerarquía épsilon}{propseps}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item La función $\alpha \mapsto \varepsilon_\alpha$ es estrictamente creciente y continua.
+  \item Para todo $\alpha$, $\varepsilon_\alpha$ es un ordinal límite.
+  \item Para todo $\alpha$, $\alpha < \varepsilon_\alpha$.
+  \item Para todo $\alpha$ y todo $\beta < \varepsilon_\alpha$, se tiene $\omega^\beta < \varepsilon_\alpha$.
+  \item La clase de todos los ordinales épsilon es una clase propia.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(ii)} Si $\varepsilon_\alpha$ fuera sucesor, $\varepsilon_\alpha = \gamma + 1$, entonces $\omega^{\varepsilon_\alpha} = \omega^{\gamma+1} = \omega^\gamma \cdot \omega > \gamma + 1 = \varepsilon_\alpha$ para $\gamma$ infinito, contradicción.
+
+\textbf{(iii)} Por inducción: $\varepsilon_0 \geq \omega > 0$, y si $\alpha < \varepsilon_\alpha$ entonces $\alpha + 1 \leq \varepsilon_\alpha < \varepsilon_{\alpha+1}$.
+
+\textbf{(v)} Si la clase fuera un conjunto $E$, sea $\varepsilon = \sup E$. Entonces $\omega^\varepsilon = \sup_{\alpha \in E} \omega^{\varepsilon_\alpha} = \sup_{\alpha \in E} \varepsilon_\alpha = \varepsilon$, luego $\varepsilon$ sería un ordinal épsilon no en $E$, contradicción.
+\end{proof}
+
+\subsection{La función de Veblen y la jerarquía más allá de $\varepsilon$}
+
+\begin{observacion}{La función $\varphi$ de Veblen}{veblen}
+La jerarquía épsilon puede verse como los puntos fijos de $\varphi_0(\alpha) = \omega^\alpha$. Si definimos $\varphi_1(\alpha) = \varepsilon_\alpha$ (el $\alpha$-ésimo punto fijo de $\varphi_0$), podemos luego considerar $\varphi_2(\alpha) = $ el $\alpha$-ésimo punto fijo de $\varphi_1$, etc. Esta es la \textbf{función de Veblen}, que produce ordinales cada vez mayores:
+\[
+  \varphi_0(\alpha) = \omega^\alpha, \quad
+  \varphi_1(\alpha) = \varepsilon_\alpha, \quad
+  \varphi_2(\alpha) = \text{$\alpha$-ésimo punto fijo de $\varphi_1$}, \quad \ldots
+\]
+El ordinal $\Gamma_0 = \varphi_{\Gamma_0}(0)$ (primer punto fijo del proceso de Veblen a través de todos sus niveles) es la llamada \textbf{constante de Feferman-Schütte}, que aparece en la teoría de la prueba como cota de la prueba de sistemas como la aritmética predicativa. Esto ilustra cómo la jerarquía de ordinales transfinitos tiene profundas conexiones con la teoría de la demostración \cite{pohlers1989, smorynski1991}.
+\end{observacion}
+
+% ===========================================================
+\section{Cofinalidad de un ordinal}
+% ===========================================================
+
+\subsection{Motivación: ordinales límite de «distintos ritmos»}
+
+Los ordinales límite no son todos iguales desde el punto de vista de cómo son «alcanzados» por sucesiones de ordinales menores. Compárense:
+
+\begin{itemize}[leftmargin=2em]
+  \item $\omega = \sup\{0, 1, 2, 3, \ldots\}$: alcanzado por una sucesión de tipo $\omega$ (enumerable, bien ordenada por su tipo).
+  \item $\omega_1$ (el primer ordinal no numerable): no puede alcanzarse por ninguna sucesión de tipo $\omega$; se necesita una sucesión de longitud $\omega_1$ para «agotar» $\omega_1$.
+  \item $\omega_\omega = \sup\{\omega_0, \omega_1, \omega_2, \ldots\}$: aunque es un ordinal límite extremadamente grande, es alcanzado por una sucesión de tipo $\omega$ (la sucesión $\omega_0, \omega_1, \omega_2, \ldots$).
+\end{itemize}
+
+Esta observación motiva la siguiente definición.
+
+\subsection{Definición formal de cofinalidad}
+
+\begin{definicion}{Función cofinala y cofinalidad}{cofinalidad}
+Sea $\lambda$ un ordinal límite.
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Una función $f: \alpha \to \lambda$ es \textbf{cofinal en $\lambda$} si para todo $\xi < \lambda$ existe $i < \alpha$ con $f(i) \geq \xi$ (equivalentemente, $\sup_{\iota < \alpha} f(\iota) = \lambda$, aunque $\lambda$ no se alcanza como valor).
+  \item La \textbf{cofinalidad} de $\lambda$, denotada $\mathrm{cf}(\lambda)$, es el menor ordinal $\alpha$ tal que existe una función cofinal $f: \alpha \to \lambda$.
+\end{enumerate}
+Para ordinales sucesor y para $0$ se define $\mathrm{cf}(\lambda) = 1$ si $\lambda > 0$ (son alcanzados en un solo paso) y $\mathrm{cf}(0) = 0$.
+\end{definicion}
+
+\begin{observacion}{Reformulación equivalente}{cofequiv}
+$\mathrm{cf}(\lambda)$ es el menor cardinal $\kappa$ tal que $\lambda$ es unión de $\kappa$ muchos conjuntos de ordinales, cada uno acotado en $\lambda$. También puede definirse como el mínimo longitud de una sucesión estrictamente creciente $\langle \alpha_i \rangle_{i < \kappa}$ de ordinales $< \lambda$ cuyo supremo es $\lambda$.
+\end{observacion}
+
+\subsection{Ejemplos de cofinalidad}
+
+\begin{ejemplo}{Cofinalidad de los primeros ordinales}{cofprimerosord}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\mathrm{cf}(\omega) = \omega$: la sucesión $0, 1, 2, 3, \ldots$ es cofinal en $\omega$ y tiene longitud $\omega$. No hay sucesión finita cofinal en $\omega$ (toda sucesión finita tiene un máximo, que no puede ser cota superior de todos los naturales).
+
+  \item $\mathrm{cf}(\omega + \omega) = \omega$: la sucesión $\omega, \omega+1, \omega+2, \ldots$ es cofinal en $\omega+\omega$ con longitud $\omega$.
+
+  \item $\mathrm{cf}(\omega^\omega) = \omega$: la sucesión $\omega^0, \omega^1, \omega^2, \ldots$ es cofinal en $\omega^\omega$ con longitud $\omega$.
+
+  \item $\mathrm{cf}(\varepsilon_0) = \omega$: la sucesión $\omega, \omega^\omega, \omega^{\omega^\omega}, \ldots$ es cofinal en $\varepsilon_0$ con longitud $\omega$.
+
+  \item $\mathrm{cf}(\omega_1) = \omega_1$: no existe ninguna sucesión de longitud $< \omega_1$ cofinal en $\omega_1$ (esto es equivalente a afirmar que $\omega_1$ no es numerable, lo cual es su definición).
+\end{enumerate}
+\end{ejemplo}
+
+\begin{definicion}{Ordinal regular y ordinal singular}{regular}
+Un ordinal límite $\lambda$ es:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Regular} si $\mathrm{cf}(\lambda) = \lambda$.
+  \item \textbf{Singular} si $\mathrm{cf}(\lambda) < \lambda$.
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Ordinales regulares y singulares}{regsingjemplo}
+\begin{itemize}[leftmargin=2em]
+  \item $\omega$ es regular: $\mathrm{cf}(\omega) = \omega$.
+  \item $\omega + \omega$ es singular: $\mathrm{cf}(\omega + \omega) = \omega < \omega + \omega$.
+  \item $\omega^\omega$ es singular: $\mathrm{cf}(\omega^\omega) = \omega < \omega^\omega$.
+  \item $\varepsilon_0$ es singular: $\mathrm{cf}(\varepsilon_0) = \omega < \varepsilon_0$.
+  \item $\omega_1$ (el primer ordinal no numerable) es regular: $\mathrm{cf}(\omega_1) = \omega_1$. (Esto se probará formalmente al estudiar cardinales.)
+  \item $\omega_\omega = \sup_{n < \omega} \omega_n$ es singular: $\mathrm{cf}(\omega_\omega) = \omega < \omega_\omega$.
+\end{itemize}
+\end{ejemplo}
+
+\subsection{Propiedades básicas de la cofinalidad}
+
+\begin{proposicion}{La cofinalidad es un cardinal regular}{cofregular}
+Para todo ordinal límite $\lambda$, $\mathrm{cf}(\lambda)$ es un cardinal regular, es decir, $\mathrm{cf}(\mathrm{cf}(\lambda)) = \mathrm{cf}(\lambda)$.
+\end{proposicion}
+
+\begin{proof}
+Sea $\kappa = \mathrm{cf}(\lambda)$ y sea $f: \kappa \to \lambda$ cofinal. Si $\mathrm{cf}(\kappa) = \mu < \kappa$, sea $g: \mu \to \kappa$ cofinal. Entonces $f \circ g: \mu \to \lambda$ sería cofinal (pues para todo $\xi < \lambda$ existe $i < \kappa$ con $f(i) \geq \xi$, y existe $j < \mu$ con $g(j) \geq i$, luego $f(g(j)) \geq f(i) \geq \xi$). Esto contradice la minimalidad de $\kappa$. Luego $\mathrm{cf}(\kappa) = \kappa$.
+\end{proof}
+
+\begin{proposicion}{Cofinalidad y potencias de $\omega$}{cofpotomega}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\mathrm{cf}(\omega^\alpha) = \omega$ para todo $\alpha \geq 1$ finito.
+  \item $\mathrm{cf}(\omega^\omega) = \omega$.
+  \item $\mathrm{cf}(\varepsilon_\alpha) = \omega$ para todo $\alpha$ numerable.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Para $\alpha = n \geq 1$ finito, la sucesión $(\omega^{n-1} \cdot k)_{k < \omega}$ (o más directamente $(\omega^{n-1} \cdot k)_{k \in \omega}$) es cofinal en $\omega^n$ y tiene longitud $\omega$.
+
+\textbf{(ii)} La sucesión $\omega^n$ para $n \in \omega$ es cofinal en $\omega^\omega$.
+
+\textbf{(iii)} Para $\alpha$ numerable, la construcción de $\varepsilon_\alpha$ involucra un supremo de una sucesión de tipo $\omega$ o $\omega \cdot \alpha$ (enumerable), por lo que $\mathrm{cf}(\varepsilon_\alpha) = \omega$.
+\end{proof}
+
+\begin{observacion}{Cofinalidad e inaccessibilidad}{cofinacc}
+Un cardinal $\kappa > \omega$ que es regular y es límite fuerte (es decir, $2^\lambda < \kappa$ para todo $\lambda < \kappa$) recibe el nombre de \textbf{cardinal fuertemente inaccesible}. Estos cardinales no pueden demostrarse que existan en ZFC; su existencia es una hipótesis adicional. La cofinalidad es el primer paso para entender este tipo de fenómenos en la jerarquía cardinal \cite{kanamori2003, jech2003}.
+\end{observacion}
+
+\subsection{La cofinalidad y la forma normal de Cantor}
+
+\begin{proposicion}{Cofinalidad desde la forma normal}{cofinfn}
+Sea $\alpha > 0$ con forma normal $\alpha = \omega^{\beta_1} c_1 + \cdots + \omega^{\beta_k} c_k$.
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Si $\beta_k = 0$ (el último término es finito), entonces $\alpha$ es sucesor y $\mathrm{cf}(\alpha) = 1$.
+  \item Si $\beta_k > 0$ y $\beta_k$ es sucesor, entonces $\mathrm{cf}(\alpha) = \omega$.
+  \item Si $\beta_k > 0$ y $\beta_k$ es un ordinal límite, entonces $\mathrm{cf}(\alpha) = \mathrm{cf}(\beta_k)$.
+  \item En particular, para $\alpha = \omega^\beta$ con $\beta$ límite, $\mathrm{cf}(\omega^\beta) = \mathrm{cf}(\beta)$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Ya probado: $\alpha$ es sucesor si y solo si termina en un coeficiente finito con exponente $0$.
+
+\textbf{(ii)} Si $\beta_k = \gamma + 1$, entonces $\omega^{\beta_k} = \omega^{\gamma+1} = \omega^\gamma \cdot \omega$ es un ordinal de cofinalidad $\omega$ (la sucesión $\omega^\gamma \cdot n$ para $n \in \omega$ es cofinal), y el término $\omega^{\beta_k} \cdot c_k$ tiene también cofinalidad $\omega$. Como este es el término dominante (el «final»), $\mathrm{cf}(\alpha) = \omega$.
+
+\textbf{(iii) y (iv)} Si $\beta_k$ es límite, $\omega^{\beta_k} = \sup_{\gamma < \beta_k} \omega^\gamma$, y la cofinalidad de $\omega^{\beta_k}$ coincide con la de $\beta_k$.
+\end{proof}
+
+% ===========================================================
+\section{Visión panorámica de la jerarquía ordinal}
+% ===========================================================
+
+\subsection{Estratos de la jerarquía}
+
+La siguiente descripción sintetiza los distintos «estratos» de la jerarquía ordinal que hemos estudiado:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{lll}
+\hline
+\textbf{Ordinal} & \textbf{Descripción} & \textbf{Cofinalidad} \\
+\hline
+$0, 1, 2, \ldots, n, \ldots$ & Ordinales finitos & $1$ (sucesores), $0$ ($=0$) \\
+$\omega$ & Primer ordinal infinito & $\omega$ (regular) \\
+$\omega+1, \omega+2, \ldots$ & Sucesores de $\omega$ & $1$ \\
+$\omega \cdot 2, \omega \cdot 3, \ldots$ & Múltiplos de $\omega$ & $\omega$ \\
+$\omega^2, \omega^3, \ldots, \omega^n$ & Potencias finitas de $\omega$ & $\omega$ \\
+$\omega^\omega$ & Primera potencia transfinita & $\omega$ \\
+$\omega^{\omega^\omega}$ & Torre de tres $\omega$'s & $\omega$ \\
+$\varepsilon_0$ & Primer punto fijo de $\alpha \mapsto \omega^\alpha$ & $\omega$ \\
+$\varepsilon_1, \varepsilon_2, \ldots$ & Jerarquía épsilon & $\omega$ \\
+$\varepsilon_\omega$ & Primer épsilon-límite & $\omega$ \\
+$\omega_1$ & Primer ordinal no numerable & $\omega_1$ (regular) \\
+$\omega_\omega$ & El $\omega$-ésimo cardinal infinito & $\omega$ (singular) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Comparación: forma normal y sus límites}
+
+\begin{importante}
+La forma normal de Cantor proporciona una representación única para cada ordinal, pero tiene un límite preciso: es completamente efectiva (sin «autorreferencia») solo para los ordinales estrictamente menores que $\varepsilon_0$. Los ordinales $\geq \varepsilon_0$ tienen formas normales que involucran a sí mismos como exponentes.
+
+Esto tiene consecuencias en la teoría de la prueba: el sistema de aritmética de Peano ($\mathrm{PA}$) puede demostrar la consistencia de sistemas más débiles usando ordinales $< \varepsilon_0$ para medir «rangos de prueba». Sin embargo, la consistencia de $\mathrm{PA}$ mismo requiere ordinales $\geq \varepsilon_0$ (Teorema de Gentzen, 1936 \cite{gentzen1936}).
+\end{importante}
+
+\begin{ejemplo}{Notación de Knuth y $\varepsilon_0$}{knuth}
+La «notación de flecha de Knuth» $\uparrow\uparrow$ para torres exponenciales en los naturales es un reflejo informal de la construcción que lleva a $\varepsilon_0$:
+\[
+  2 \uparrow\uparrow 3 = 2^{2^2} = 16,
+  \quad
+  2 \uparrow\uparrow 4 = 2^{2^{2^2}} = 2^{65536}.
+\]
+El límite ordinal $\varepsilon_0$ corresponde a la «$\omega$-torre» $\omega \uparrow\uparrow \omega$ en el universo ordinal, un límite que los números naturales solo pueden aproximar finítamente.
+\end{ejemplo}
+
+% ===========================================================
+\section{Resumen de la clase}
+% ===========================================================
+
+\begin{importante}
+\textbf{Resultados principales de la Clase~6:}
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item La \textbf{potenciación ordinal} $\alpha^\beta$ satisface leyes de exponentes análogas a las naturales: $\alpha^{\beta+\gamma} = \alpha^\beta \cdot \alpha^\gamma$ y $(\alpha^\beta)^\gamma = \alpha^{\beta\gamma}$. Sin embargo, $(\alpha\beta)^\gamma \neq \alpha^\gamma \beta^\gamma$ en general.
+
+  \item El \textbf{Teorema de la Forma Normal de Cantor}: todo ordinal $\alpha > 0$ se escribe de manera única como $\alpha = \omega^{\beta_1}c_1 + \cdots + \omega^{\beta_k}c_k$ con $\beta_1 > \cdots > \beta_k$ y $c_i \in \mathbb{N}^+$.
+
+  \item La función $\alpha \mapsto \omega^\alpha$ es estrictamente creciente, continua (para límites), y satisface $\alpha < \omega^\alpha$ para todo $\alpha \geq 1$.
+
+  \item El ordinal $\varepsilon_0 = \sup\{\omega, \omega^\omega, \omega^{\omega^\omega}, \ldots\}$ es el \textbf{mínimo punto fijo} de $\alpha \mapsto \omega^\alpha$, es decir, $\omega^{\varepsilon_0} = \varepsilon_0$.
+
+  \item La \textbf{jerarquía épsilon} $\{\varepsilon_\alpha : \alpha \in \mathbf{ON}\}$ forma una clase propia de puntos fijos de $\alpha \mapsto \omega^\alpha$, definida por recursión transfinita.
+
+  \item La \textbf{cofinalidad} $\mathrm{cf}(\lambda)$ de un ordinal límite $\lambda$ es el mínimo tipo de orden de una sucesión cofinal en $\lambda$. Un ordinal límite es \textbf{regular} si $\mathrm{cf}(\lambda) = \lambda$, y \textbf{singular} en caso contrario.
+
+  \item $\mathrm{cf}(\omega) = \omega$ (regular); $\mathrm{cf}(\omega^\omega) = \omega$ (singular); $\mathrm{cf}(\varepsilon_0) = \omega$ (singular). El primer cardinal regular no numerable es $\omega_1$.
+
+  \item La forma normal de Cantor es «completa» para ordinales $< \varepsilon_0$; para ordinales $\geq \varepsilon_0$ involucra autoexponentes, lo que conecta con la teoría de la prueba (Teorema de Gentzen).
+\end{enumerate}
+\end{importante}
+
+En la Clase~7 estudiaremos los \textbf{números cardinales} desde el punto de vista ordinal: definiremos los cardinales como ordinales iniciales, los \textbf{alephs} $\aleph_0, \aleph_1, \aleph_2, \ldots$, y desarrollaremos la aritmética cardinal, que presenta sus propias reglas y sorpresas.
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\begin{enumerate}[leftmargin=2.5em, label=\textbf{\arabic*.}]
+
+  \item \textbf{(Potenciación ordinal: cálculos básicos.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcule los siguientes ordinales, justificando cada paso mediante la definición recursiva:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\omega^2 \cdot \omega$.
+      \item $(\omega+1)^2$.
+      \item $(\omega+1)^\omega$.
+      \item $2^{\omega+1}$.
+      \item $\omega^{\omega \cdot 2}$.
+    \end{enumerate}
+    \item Demuestre que $\omega^{\omega+1} = \omega^\omega \cdot \omega$.
+    \item Demuestre que $(\omega+1)^\omega = \omega^\omega$ sin usar la ley $(\alpha\beta)^\gamma = \alpha^\gamma \beta^\gamma$.
+    \item Calcule $(\omega \cdot 2)^\omega$ y $(2 \cdot \omega)^\omega$. ¿Son iguales? Justifique.
+  \end{enumerate}
+
+  \item \textbf{(Leyes de exponentes ordinales.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre por inducción transfinita en $\gamma$ que $\alpha^{\beta+\gamma} = \alpha^\beta \cdot \alpha^\gamma$.
+    \item Demuestre por inducción transfinita en $\gamma$ que $(\alpha^\beta)^\gamma = \alpha^{\beta\gamma}$.
+    \item Encuentre un contraejemplo a la ley $(\alpha \cdot \beta)^\gamma = \alpha^\gamma \cdot \beta^\gamma$ con $\alpha, \beta, \gamma$ ordinales infinitos.
+    \item ¿Es cierto que $\alpha^\beta \cdot \alpha^\gamma = \alpha^{\beta+\gamma}$ cuando $\alpha = 0$? Considere todos los casos ($\beta, \gamma$ cero, sucesor, límite).
+  \end{enumerate}
+
+  \item \textbf{(Forma Normal de Cantor.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Escriba en forma normal de Cantor los siguientes ordinales:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\omega^5 + \omega^3 \cdot 7 + \omega^2 + \omega \cdot 4 + 11$.
+      \item $\omega^{\omega+3} + \omega^\omega \cdot 6 + \omega^4$.
+      \item $\omega^{\omega^2 + \omega} + \omega^{\omega^2} \cdot 3$.
+    \end{enumerate}
+    \item Dados $\alpha = \omega^3 \cdot 4 + \omega \cdot 2 + 5$ y $\beta = \omega^3 \cdot 2 + \omega^2 + 3$, calcule:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\alpha + \beta$.
+      \item $\beta + \alpha$.
+      \item $\alpha \cdot \omega$.
+      \item $\alpha \cdot 3$.
+    \end{enumerate}
+    \item Demuestre que si $\alpha = \omega^{\beta_1}c_1 + \cdots + \omega^{\beta_k}c_k$ es la forma normal y $\beta_k \geq 1$, entonces $\alpha$ es un ordinal límite.
+    \item (Desafío) Complete la prueba de la unicidad en el Teorema de la Forma Normal de Cantor para el caso en que $\alpha$ tiene dos o más términos.
+    \item (Desafío) Demuestre que la suma ordinal de dos ordinales en forma normal puede calcularse mediante el algoritmo del Corolario~\ref{cor:algsuma}.
+  \end{enumerate}
+
+  \item \textbf{(El ordinal $\varepsilon_0$.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcule los primeros cinco términos de la sucesión $\varphi_0 = \omega$, $\varphi_{n+1} = \omega^{\varphi_n}$. Escriba $\varphi_2, \varphi_3$ en términos de torres exponenciales.
+    \item Demuestre que $\varphi_n < \varphi_{n+1}$ para todo $n \in \omega$.
+    \item Demuestre directamente desde la definición que $\varepsilon_0 = \sup_{n \in \omega} \varphi_n$ satisface $\omega^{\varepsilon_0} = \varepsilon_0$.
+    \item Demuestre que $\varepsilon_0$ es el \emph{mínimo} ordinal $\varepsilon$ con $\omega^\varepsilon = \varepsilon$, sin suponer que ya conocemos ningún punto fijo.
+    \item (Desafío) Demuestre que para todo $n \in \omega$ se tiene $\varphi_n < \varepsilon_0$, y que todo ordinal $\alpha < \varepsilon_0$ satisface $\alpha < \varphi_n$ para algún $n$.
+  \end{enumerate}
+
+  \item \textbf{(Jerarquía épsilon.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Describa (sin demostración formal) cómo se construye $\varepsilon_1$ a partir de $\varepsilon_0$ por un proceso análogo al de $\varepsilon_0$ a partir de $\omega$.
+    \item Demuestre que $\varepsilon_\omega = \sup_{n < \omega} \varepsilon_n$ satisface $\omega^{\varepsilon_\omega} = \varepsilon_\omega$.
+    \item ¿Es $\varepsilon_0 + 1$ un punto fijo de $\alpha \mapsto \omega^\alpha$? Justifique.
+    \item Demuestre que entre cualesquiera dos ordinales épsilon consecutivos $\varepsilon_\alpha < \varepsilon_{\alpha+1}$ existen ordinales que no son puntos fijos de $\alpha \mapsto \omega^\alpha$. Exhiba uno explícitamente.
+    \item (Desafío) Demuestre que la clase de todos los ordinales épsilon es una clase propia.
+  \end{enumerate}
+
+  \item \textbf{(Cofinalidad.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Determine $\mathrm{cf}(\alpha)$ para cada uno de los siguientes ordinales, justificando su respuesta exhibiendo una sucesión cofinal:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\omega \cdot \omega$.
+      \item $\omega^3$.
+      \item $\omega^\omega + \omega^3$.
+      \item $\varepsilon_0$.
+      \item $\varepsilon_\omega$.
+    \end{enumerate}
+    \item Demuestre que $\mathrm{cf}(\omega) = \omega$ mostrando que no existe una función cofinal $f: n \to \omega$ con $n$ finito.
+    \item Demuestre que $\mathrm{cf}(\lambda) \leq \lambda$ para todo ordinal límite $\lambda$.
+    \item Demuestre que $\mathrm{cf}(\mathrm{cf}(\lambda)) = \mathrm{cf}(\lambda)$ (la cofinalidad de la cofinalidad es idempotente).
+    \item Sea $f: \alpha \to \beta$ estrictamente creciente y cofinal. Demuestre que $\mathrm{cf}(\alpha) = \mathrm{cf}(\beta)$.
+  \end{enumerate}
+
+  \item \textbf{(Ordinales regulares y singulares.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item ¿Cuáles de los siguientes ordinales son regulares? $\omega$, $\omega+\omega$, $\omega^\omega$, $\varepsilon_0$, $\omega_1$. Justifique.
+    \item Demuestre que $\omega$ es el único ordinal límite regular que es numerable.
+    \item Enuncie (sin demostrar) el resultado que afirma que todo cardinal acessible $\omega_\alpha$ con $\alpha$ sucesor es regular.
+    \item (Investigación) Consulte \cite{jech2003} y describa brevemente qué es un cardinal débilmente inaccesible y por qué su existencia no puede probarse en ZFC.
+  \end{enumerate}
+
+  \item \textbf{(Conexión con la teoría de la prueba.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Enuncie el Teorema de Gentzen (1936) que afirma que la consistencia de la aritmética de Peano es equivalente a la buena fundación de los ordinales $< \varepsilon_0$ bajo el sistema de notación de Cantor.
+    \item Explique informalmente por qué $\varepsilon_0$ actúa como «medida de la fuerza» de la aritmética de Peano en la escala transfinita.
+    \item (Proyecto) Consulte \cite{pohlers1989} o \cite{smorynski1991} y redacte un resumen de 1--2 páginas sobre el \emph{análisis de la prueba} (\textit{proof-theoretic ordinals}) para los sistemas formales más comunes.
+  \end{enumerate}
+
+  \item \textbf{(Síntesis general.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Ubique cada uno de los siguientes ordinales en la jerarquía $\omega < \omega^\omega < \varepsilon_0 < \varepsilon_1 < \varepsilon_\omega < \cdots$, indicando con precisión entre cuáles de estos hitos se encuentra:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\omega^{\omega^3} + \omega^5$.
+      \item $\omega^{\varepsilon_0}$.
+      \item $\varepsilon_0 \cdot 2$.
+      \item $\varepsilon_0 + \varepsilon_0$.
+      \item $\varepsilon_0^{\varepsilon_0}$.
+    \end{enumerate}
+    \item ¿Cuál es la forma normal de Cantor de $\varepsilon_0 + \omega^{\varepsilon_0+1}$?
+    \item Determine $\mathrm{cf}(\varepsilon_0^{\varepsilon_0})$.
+    \item (Desafío) Determine el menor ordinal $\alpha$ tal que $\varepsilon_\alpha = \alpha$ (un «punto fijo de la jerarquía épsilon»). ¿Es este ordinal igual a alguno de los $\varepsilon_\beta$?
+  \end{enumerate}
+
+  \item \textbf{(Investigación y exploración.)}
+  Consulte al menos dos de las referencias indicadas al final de esta clase y redacte una exposición de 1--2 páginas sobre \textbf{uno} de los siguientes temas:
+  \begin{enumerate}[label=(\alph*)]
+    \item La \textbf{función de Veblen} $\varphi_\alpha(\beta)$: defínala, calcule sus primeros valores y describa los ordinales $\Gamma_0$ (constante de Feferman-Schütte).
+    \item Los \textbf{ordinales de Church-Kleene}: los ordinales recursivos y la notación $\omega_1^{CK}$ (el primer ordinal no recursivo).
+    \item La \textbf{hipótesis del continuo} y su relación con los cardinales regulares y singulares.
+  \end{enumerate}
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias bibliográficas de esta clase}
+% ===========================================================
+
+Los resultados desarrollados en esta clase se encuentran tratados con rigor y detalle en las siguientes fuentes:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Forma Normal de Cantor:} El resultado original se encuentra en \cite{cantor1897}, artículo en el que Cantor establece la representación en «base $\omega$» de los ordinales transfinitos. Presentaciones modernas accesibles se hallan en \cite{enderton1977}, \cite{hrbacek1999} y \cite{devlin1993}. La prueba completa con unicidad aparece en \cite{sierpinski1958} y en \cite{levy1979}.
+
+  \item \textbf{Potenciación ordinal y aritmética avanzada:} La fuente más sistemática sigue siendo \cite{sierpinski1958}; los textos modernos de referencia son \cite{jech2003} (capítulo 2) y \cite{kunen2011} (capítulo I). Para una visión más introductoria, véase \cite{suppes1972}.
+
+  \item \textbf{El ordinal $\varepsilon_0$ y los ordinales épsilon:} La jerarquía épsilon se estudia en detalle en \cite{jech2003} y \cite{levy1979}. La conexión con la función de Veblen se describe en \cite{pohlers1989}; la introducción más asequible es \cite{hrbacek1999}.
+
+  \item \textbf{Función de Veblen y jerarquía más allá de $\varepsilon_0$:} La función de Veblen fue introducida por Oswald Veblen en 1908; su tratamiento moderno aparece en \cite{pohlers1989} y \cite{smorynski1991}.
+
+  \item \textbf{Cofinalidad:} La noción de cofinalidad se trata en todos los textos avanzados de teoría de conjuntos; los mejores desarrollos para este nivel están en \cite{jech2003} (sección 3) y \cite{kunen2011}. Una presentación más introductoria se encuentra en \cite{hrbacek1999} y \cite{devlin1993}.
+
+  \item \textbf{Conexión con teoría de la prueba y el Teorema de Gentzen:} El resultado de Gentzen (1936) sobre la consistencia de la aritmética de Peano mediante $\varepsilon_0$ se expone en \cite{gentzen1936}; presentaciones modernas accesibles aparecen en \cite{smorynski1991} y en el primer capítulo de \cite{pohlers1989}.
+
+  \item \textbf{Grandes cardinales y cofinalidad:} La conexión entre cofinalidad, regularidad e inaccesibilidad se desarrolla en \cite{kanamori2003}, cuyo capítulo inicial sirve como referencia estándar.
+
+  \item \textbf{Texto introductorio recomendado:} Para una primera lectura, \cite{halmos1960} y \cite{enderton1977} son las referencias de entrada más amigables; \cite{hrbacek1999} es el texto de nivel intermedio más completo para cubrir todos los temas de esta clase.
+\end{itemize}
