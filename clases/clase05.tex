@@ -1,0 +1,775 @@
+% ===========================================================
+\chapter{Clase 5: Números Ordinales — Definición, Jerarquía y Aritmética Elemental}
+% ===========================================================
+
+Los \textbf{números ordinales} constituyen uno de los logros más profundos de la teoría de conjuntos moderna. Si los números cardinales miden \emph{cuántos} elementos tiene un conjunto, los números ordinales codifican algo más sutil: el \emph{tipo de orden} de un conjunto bien ordenado. Así, mientras que el cardinal $\aleph_0$ mide el «tamaño» de $\mathbb{N}$, el ordinal $\omega$ captura la estructura específica del orden natural de $\mathbb{N}$: un elemento mínimo, cada elemento con un sucesor inmediato, y ningún elemento máximo.
+
+La idea de representar un número ordinal como el conjunto de todos los ordinales que lo preceden fue formulada por \textbf{John von Neumann} en 1923 \cite{vonneumann1923}. Esta representación canónica tiene la virtud de hacer que el orden entre ordinales coincida exactamente con la pertenencia: $\alpha < \beta$ si y solo si $\alpha \in \beta$. El resultado es una clase absolutamente estándar, libremente comparable y axiomáticamente transparente.
+
+Esta clase construye la teoría de los números ordinales desde sus cimientos. Comenzamos con la definición formal de ordinal en ZFC, clasificamos los ordinales en sucesor y límite, introducimos $\omega$ como el primer ordinal transfinito, desarrollamos la inducción y la recursión transfinita en toda su generalidad, y concluimos con la aritmética ordinal, destacando en qué medida difiere de la aritmética de los naturales \cite{jech2003, kunen2011, enderton1977, hrbacek1999}.
+
+% ===========================================================
+\section{Ordinales de von Neumann}
+% ===========================================================
+
+\subsection{Motivación: tipos de orden bien fundado}
+
+En la Clase~3 se demostró que todo conjunto bien ordenado $(W, <)$ admite un único isomorfismo con su «tipo ordinal»; la tarea ahora es elegir un representante canónico para cada tipo de orden. Informalmente:
+
+\begin{itemize}[leftmargin=2em]
+  \item El tipo de orden del conjunto vacío es $0$.
+  \item El tipo de orden de un conjunto de un solo elemento es $1$.
+  \item El tipo de orden de $\{0, 1, 2, \ldots, n-1\}$ (con el orden usual) es $n$.
+  \item El tipo de orden de $\mathbb{N}$ (con el orden usual) es $\omega$.
+\end{itemize}
+
+La idea de von Neumann es hacer que cada tipo de orden \emph{sea} el conjunto de todos los tipos de orden que lo preceden. De este modo, el ordinal $3$ es el conjunto $\{0, 1, 2\}$, es decir, el conjunto formado por los tres ordinales anteriores, que son precisamente $0 = \emptyset$, $1 = \{\emptyset\}$ y $2 = \{\emptyset, \{\emptyset\}\}$.
+
+\subsection{Conjuntos transitivos}
+
+\begin{definicion}{Conjunto transitivo}{conjtrans}
+Un conjunto $T$ se dice \textbf{transitivo} si todo elemento de un elemento de $T$ es también un elemento de $T$:
+\[
+  \forall x\,\forall y\;\bigl(x \in y \wedge y \in T \;\to\; x \in T\bigr),
+\]
+o equivalentemente, $\bigcup T \subseteq T$, es decir, todo elemento de $T$ es a su vez un subconjunto de $T$.
+\end{definicion}
+
+\begin{ejemplo}{Conjuntos transitivos}{ejemplotrans}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\emptyset$ es transitivo vacuamente.
+  \item $\{\emptyset\}$ es transitivo: su único elemento es $\emptyset$, y $\emptyset \subseteq \{\emptyset\}$.
+  \item $\{\emptyset, \{\emptyset\}\}$ es transitivo: $\bigcup\{\emptyset,\{\emptyset\}\} = \emptyset \cup \{\emptyset\} = \{\emptyset\} \subseteq \{\emptyset, \{\emptyset\}\}$.
+  \item $\{\{\emptyset\}\}$ \textbf{no} es transitivo: $\emptyset \in \{\emptyset\} \in \{\{\emptyset\}\}$ pero $\emptyset \notin \{\{\emptyset\}\}$.
+  \item Todo número natural de von Neumann es transitivo (se demuestra por inducción).
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Definición formal de número ordinal}
+
+\begin{definicion}{Número ordinal (von Neumann)}{ordinal}
+Un conjunto $\alpha$ es un \textbf{número ordinal} (o simplemente un \textbf{ordinal}) si satisface simultáneamente:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha$ es \textbf{transitivo}: $\forall\beta\,\forall\gamma\;(\gamma \in \beta \in \alpha \to \gamma \in \alpha)$.
+  \item $\alpha$ está \textbf{bien ordenado por} $\in$: la relación $\in \upharpoonright \alpha$ es un bien-orden sobre $\alpha$.
+\end{enumerate}
+Se escribe $\mathbf{ON}$ (o $\mathrm{Ord}$) para denotar la clase de todos los ordinales.
+\end{definicion}
+
+\begin{observacion}{Condición equivalente}{ordequiv}
+Como consecuencia de la Regularidad y la transitividad, la condición (ii) puede reformularse: $\in$ es una relación de \emph{orden total estricto} sobre $\alpha$ (tricotomía + transitividad + irreflexividad), y todo subconjunto no vacío de $\alpha$ tiene un $\in$-mínimo. En presencia de transitividad, la irreflexividad de $\in$ (es decir, $\alpha \notin \alpha$) se sigue del Axioma de Regularidad, y la relación de orden total se reduce a la tricotomía.
+\end{observacion}
+
+\subsection{Los primeros ordinales}
+
+\begin{ejemplo}{Los primeros ordinales de von Neumann}{primerosordes}
+Construimos los ordinales finitos de modo explícito:
+\begin{align*}
+  0 &= \emptyset,\\
+  1 &= \{0\} = \{\emptyset\},\\
+  2 &= \{0,1\} = \{\emptyset,\{\emptyset\}\},\\
+  3 &= \{0,1,2\} = \{\emptyset,\{\emptyset\},\{\emptyset,\{\emptyset\}\}\},\\
+  n+1 &= \{0,1,\ldots,n\} = n \cup \{n\}.
+\end{align*}
+En cada caso, el ordinal $n$ es transitivo (pues sus elementos son los ordinales $0, 1, \ldots, n-1$, cada uno subconjunto de $n$) y $\in$ es un bien-orden sobre $n$ (el orden es $0 \in 1 \in 2 \in \cdots \in n$, y cualquier subconjunto no vacío de $n$ tiene un mínimo).
+
+Nótese que $n = |\{0, 1, \ldots, n-1\}|$, o sea, el cardinal del ordinal $n$ como conjunto es $n$. Esto ilustra la conveniente dualidad ordinal-cardinal para los naturales.
+\end{ejemplo}
+
+\subsection{La clase $\mathbf{ON}$ y sus propiedades fundamentales}
+
+\begin{teorema}{Propiedades básicas de los ordinales}{propord}
+Sean $\alpha, \beta, \gamma$ ordinales. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha \notin \alpha$ \quad (irreflexividad).
+  \item Si $\alpha \in \beta$ y $\beta \in \gamma$, entonces $\alpha \in \gamma$ \quad (transitividad de $\in$).
+  \item $\alpha \in \beta$, $\alpha = \beta$ o $\beta \in \alpha$ \quad (tricotomía: comparabilidad total).
+  \item Si $\alpha \in \beta$, entonces $\alpha \subsetneq \beta$ \quad (todo elemento es subconjunto propio).
+  \item Si $A \subseteq \mathbf{ON}$ es un conjunto de ordinales, entonces $\bigcup A$ es un ordinal y $\bigcup A = \sup A$.
+  \item Todo subconjunto no vacío de $\mathbf{ON}$ tiene un elemento $\in$-mínimo.
+  \item $\mathbf{ON}$ es una clase propia (no es un conjunto).
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+Probamos las partes más relevantes.
+
+\textbf{(i)} Por el Axioma de Regularidad, ningún conjunto puede ser elemento de sí mismo: $\alpha \notin \alpha$.
+
+\textbf{(ii)} Si $\alpha \in \beta$ y $\beta \in \gamma$, como $\gamma$ es transitivo, $\alpha \in \gamma$.
+
+\textbf{(iii)} La tricotomía requiere un argumento más elaborado. Se define $\gamma = \alpha \cap \beta$ y se muestra que $\gamma$ es un ordinal, que $\gamma \in \alpha$ o $\gamma = \alpha$, y que $\gamma \in \beta$ o $\gamma = \beta$. Del análisis de los cuatro casos posibles, solo pueden ocurrir tres: $\alpha \in \beta$, $\alpha = \beta$, o $\beta \in \alpha$ (los casos $\alpha \in \beta$ y $\beta \in \alpha$ simultáneos conducirían a $\alpha \in \alpha$ por (ii), violando (i)).
+
+\textbf{(iv)} Si $\alpha \in \beta$, entonces $\alpha \subseteq \beta$ por transitividad de $\beta$ (ya que $\alpha$ es elemento de $\beta$, todo elemento de $\alpha$ está en $\beta$). La inclusión es propia pues $\alpha \in \beta$ pero $\alpha \notin \alpha$.
+
+\textbf{(vii)} Si $\mathbf{ON}$ fuera un conjunto, como es transitivo y bien ordenado por $\in$, sería él mismo un ordinal, luego $\mathbf{ON} \in \mathbf{ON}$, contradiciendo (i). Esta es la \textbf{paradoja de Burali-Forti}.
+\end{proof}
+
+\begin{importante}
+La identificación $\alpha < \beta \iff \alpha \in \beta$ es la clave de la representación de von Neumann. Gracias a ella, el orden entre ordinales es simplemente la relación de pertenencia, y el ordinal $\alpha$ es \emph{literalmente} el conjunto de todos los ordinales menores que $\alpha$:
+\[
+  \alpha = \{\beta \in \mathbf{ON} : \beta < \alpha\}.
+\]
+\end{importante}
+
+% ===========================================================
+\section{Ordinales sucesor y ordinales límite}
+% ===========================================================
+
+\subsection{El ordinal sucesor}
+
+\begin{definicion}{Ordinal sucesor}{ordsucesor}
+Para cada ordinal $\alpha$, su \textbf{sucesor} es el ordinal
+\[
+  S(\alpha) = \alpha^{+} = \alpha \cup \{\alpha\}.
+\]
+Un ordinal $\beta$ se llama \textbf{ordinal sucesor} si existe un ordinal $\alpha$ tal que $\beta = S(\alpha)$; en ese caso $\alpha$ se llama el \textbf{predecesor} de $\beta$.
+\end{definicion}
+
+\begin{proposicion}{El sucesor es un ordinal}{sucesordinal}
+Para todo ordinal $\alpha$, el conjunto $\alpha \cup \{\alpha\}$ es un ordinal y es el menor ordinal estrictamente mayor que $\alpha$.
+\end{proposicion}
+
+\begin{proof}
+\textbf{Transitividad:} Sea $x \in y \in \alpha \cup \{\alpha\}$. Si $y \in \alpha$, entonces $x \in y \in \alpha$ y por transitividad de $\alpha$, $x \in \alpha \subseteq \alpha \cup \{\alpha\}$. Si $y = \alpha$, entonces $x \in \alpha \subseteq \alpha \cup \{\alpha\}$.
+
+\textbf{Bien-orden por $\in$:} Cualquier subconjunto no vacío $T \subseteq \alpha \cup \{\alpha\}$ es de la forma $T = T' \cup \{\alpha\}$ con $T' \subseteq \alpha$, o bien $T \subseteq \alpha$. Si $T' \neq \emptyset$, el mínimo de $T'$ (que existe porque $\alpha$ es ordinal) es también el mínimo de $T$. Si $T' = \emptyset$, entonces $T = \{\alpha\}$ y su mínimo es $\alpha$.
+
+\textbf{Es el menor sucesor:} Claramente $\alpha \in \alpha \cup \{\alpha\}$, así que $\alpha < S(\alpha)$. Si $\alpha < \gamma < S(\alpha) = \alpha \cup \{\alpha\}$, entonces $\gamma \in \alpha \cup \{\alpha\}$, es decir $\gamma \in \alpha$ o $\gamma = \alpha$. En el primer caso $\gamma < \alpha$, contradicción. En el segundo $\gamma = \alpha$, contradicción con $\alpha < \gamma$.
+\end{proof}
+
+\begin{ejemplo}{Los primeros ordinales sucesor}{ej-sucesor}
+\begin{align*}
+  S(0) &= 0 \cup \{0\} = \emptyset \cup \{\emptyset\} = \{\emptyset\} = 1,\\
+  S(1) &= 1 \cup \{1\} = \{\emptyset\} \cup \{\{\emptyset\}\} = \{\emptyset, \{\emptyset\}\} = 2,\\
+  S(2) &= 2 \cup \{2\} = \{\emptyset, \{\emptyset\}\} \cup \{\{\emptyset, \{\emptyset\}\}\} = \{\emptyset, \{\emptyset\}, \{\emptyset, \{\emptyset\}\}\} = 3,\\
+  S(n) &= n \cup \{n\} = n+1 \quad\text{(para todo natural } n\text{)}.
+\end{align*}
+\end{ejemplo}
+
+\subsection{Ordinales límite}
+
+\begin{definicion}{Ordinal límite}{ordlimite}
+Un ordinal $\lambda$ es un \textbf{ordinal límite} si $\lambda \neq 0$ y $\lambda$ no es un ordinal sucesor, es decir, no existe ningún ordinal $\alpha$ con $\lambda = S(\alpha)$.
+
+Equivalentemente, $\lambda$ es límite si y solo si $\lambda = \bigcup \lambda = \sup\{\alpha : \alpha < \lambda\}$, es decir, $\lambda$ es igual a la unión de todos sus elementos.
+\end{definicion}
+
+\begin{observacion}{Tricotomía de ordinales}{tricordinal}
+Cada ordinal $\alpha$ pertenece exactamente a una de tres categorías:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha = 0 = \emptyset$: el ordinal cero.
+  \item $\alpha = S(\beta)$ para algún ordinal $\beta$: ordinal sucesor.
+  \item $\alpha$ es un ordinal límite: $\alpha \neq 0$ y $\alpha = \bigcup \alpha$.
+\end{enumerate}
+Esta tricotomía es la base de todos los argumentos por inducción y recursión transfinita.
+\end{observacion}
+
+\begin{ejemplo}{Identificación de tipos de ordinales}{ej-tipos}
+\begin{itemize}[leftmargin=2em]
+  \item $0 = \emptyset$: es el ordinal cero.
+  \item $1, 2, 3, 4, \ldots, n, \ldots$: todos son ordinales sucesor ($n = S(n-1)$).
+  \item $\omega = \{0, 1, 2, 3, \ldots\}$: es el primer ordinal límite (véase la sección siguiente).
+  \item $\omega + 1 = S(\omega)$: ordinal sucesor.
+  \item $\omega \cdot 2 = \omega + \omega$: ordinal límite.
+  \item $\omega^2, \omega^3, \ldots$: ordinales límite.
+  \item $\omega^\omega$: ordinal límite.
+  \item $\varepsilon_0 = \sup\{\omega, \omega^\omega, \omega^{\omega^\omega}, \ldots\}$: ordinal límite.
+\end{itemize}
+\end{ejemplo}
+
+% ===========================================================
+\section{\texorpdfstring{$\omega$}{omega} como primer ordinal infinito}
+% ===========================================================
+
+\subsection{El Axioma del Infinito y la existencia de $\omega$}
+
+Los axiomas ZFC presentados en la Clase~2 garantizan la existencia de conjuntos infinitos mediante el \textbf{Axioma del Infinito}:
+\[
+  \exists I\;\Bigl(\emptyset \in I \;\wedge\; \forall x \in I\;\bigl(x \cup \{x\} \in I\bigr)\Bigr).
+\]
+Este axioma asegura que existe un conjunto que contiene $0, 1, 2, 3, \ldots$ (todos los naturales de von Neumann). A partir de él, se define:
+
+\begin{definicion}{El ordinal $\omega$}{defomega}
+El ordinal $\omega$ es el menor conjunto inductivo, es decir,
+\[
+  \omega = \bigcap\{I : I \text{ es inductivo}\} = \bigcap\bigl\{I : \emptyset \in I \;\wedge\; \forall x \in I\,(x \cup \{x\} \in I)\bigr\}.
+\]
+Equivalentemente, $\omega$ es el conjunto de todos los ordinales finitos (ordinales que se obtienen mediante sucesor a partir de $0$ en un número finito de pasos).
+\end{definicion}
+
+\begin{teorema}{$\omega$ es un ordinal límite}{omegaordlimite}
+El conjunto $\omega$ es un ordinal límite. Es decir:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\omega$ es un ordinal.
+  \item $\omega \neq 0$.
+  \item $\omega$ no es sucesor de ningún ordinal.
+  \item $\omega = \bigcup \omega$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{(i) Transitividad:} Si $n \in \omega$ (es decir, $n$ es un natural de von Neumann), entonces $n$ es un ordinal finito, luego $n \subseteq \omega$ (todos los elementos de $n$ son naturales, pues $n = \{0,1,\ldots,n-1\}$).
+
+\textbf{(i) Bien-orden:} Todo subconjunto no vacío $S \subseteq \omega$ tiene un elemento con el menor número de predecesores; ese es el mínimo con respecto a $\in$.
+
+\textbf{(ii)} $0 = \emptyset \in \omega$, luego $\omega \neq \emptyset = 0$.
+
+\textbf{(iii)} Si $\omega = S(\alpha) = \alpha \cup \{\alpha\}$ para algún $\alpha \in \omega$, entonces $\alpha \in \omega$ y $S(\alpha) \in \omega$ (por ser $\omega$ inductivo). Pero $\omega = S(\alpha)$ implicaría $\omega \in \omega$, lo que viola la Regularidad.
+
+\textbf{(iv)} $\bigcup \omega = \bigcup_{n \in \omega} n = \omega$ (pues $\bigcup \omega \subseteq \omega$ por transitividad, y para cada $n \in \omega$, $n \in S(n) \subseteq \omega$, luego $n \in \bigcup \omega$).
+\end{proof}
+
+\begin{proposicion}{$\omega$ es el menor ordinal infinito}{omegaminimo}
+Si $\lambda$ es un ordinal límite, entonces $\omega \leq \lambda$. En particular, si $\alpha < \omega$, entonces $\alpha$ es un ordinal finito.
+\end{proposicion}
+
+\begin{proof}
+Sea $\lambda$ cualquier ordinal límite. Si $\omega \not\leq \lambda$, entonces $\lambda < \omega$, luego $\lambda \in \omega$, lo que significa que $\lambda$ es un natural de von Neumann y por tanto tiene un predecesor, contradiciendo que $\lambda$ es límite. Luego $\omega \leq \lambda$.
+\end{proof}
+
+\subsection{Los naturales como ordinales finitos}
+
+\begin{proposicion}{Identificación con los naturales}{natordfinitos}
+Los ordinales finitos son exactamente los elementos de $\omega$: $\{0, 1, 2, 3, \ldots\} = \omega$. En particular, los axiomas de Peano son válidos para $\omega$ con la función sucesor $S(\alpha) = \alpha \cup \{\alpha\}$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $0 \in \omega$.
+  \item $\forall n \in \omega,\; S(n) \in \omega$.
+  \item $\forall n \in \omega,\; S(n) \neq 0$.
+  \item $\forall m, n \in \omega,\; S(m) = S(n) \to m = n$.
+  \item \textbf{Inducción:} $\forall A \subseteq \omega\;\bigl[0 \in A \;\wedge\; \forall n \in \omega\,(n \in A \to S(n) \in A)\bigr] \to A = \omega$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{ejemplo}{La estructura de $\omega$}{estructuraomega}
+El ordinal $\omega$ como conjunto es:
+\[
+  \omega = \{0, 1, 2, 3, 4, \ldots\} = \bigl\{\emptyset,\, \{\emptyset\},\, \{\emptyset,\{\emptyset\}\},\, \{\emptyset,\{\emptyset\},\{\emptyset,\{\emptyset\}\}\},\, \ldots\bigr\}.
+\]
+El orden dado por $\in$ coincide con el orden usual de los naturales: $0 < 1 < 2 < 3 < \cdots$. El tipo de orden de este conjunto bien ordenado es precisamente $\omega$.
+
+Comparemos $\omega$ con los ordinales que lo suceden:
+\[
+  \omega < \omega+1 < \omega+2 < \cdots < \omega+\omega < \cdots
+\]
+donde $\omega + 1 = S(\omega) = \omega \cup \{\omega\}$, etc.
+\end{ejemplo}
+
+% ===========================================================
+\section{Inducción y Recursión Transfinita}
+% ===========================================================
+
+\subsection{Principio de inducción transfinita}
+
+La inducción ordinaria (sobre los naturales) es el caso $\alpha \in \omega$ de la inducción transfinita. La versión transfinita extiende este principio a toda la clase $\mathbf{ON}$.
+
+\begin{teorema}{Inducción transfinita}{inducciontransfinita}
+Sea $P(\alpha)$ una propiedad sobre ordinales. Supongamos que para todo ordinal $\alpha$ se cumple:
+\[
+  \bigl[\,\forall \beta < \alpha,\; P(\beta)\,\bigr] \;\Longrightarrow\; P(\alpha).
+\]
+(Es decir, si $P$ vale para todos los ordinales menores que $\alpha$, entonces vale para $\alpha$.) Entonces $P(\alpha)$ vale para todo ordinal $\alpha$.
+\end{teorema}
+
+\begin{proof}
+Supongamos, por reducción al absurdo, que existe algún ordinal para el que $P$ falla. Sea $A = \{\alpha \in \mathbf{ON} : \neg P(\alpha)\} \neq \emptyset$. Como $\mathbf{ON}$ es bien ordenado por $\in$, el conjunto $A$ tiene un elemento $\in$-mínimo $\alpha_0$. Por mínimalidad, $P(\beta)$ vale para todo $\beta < \alpha_0$. La hipótesis del teorema implica entonces $P(\alpha_0)$, contradicción.
+\end{proof}
+
+\begin{observacion}{La hipótesis de inducción es fuerte}{hipfuerte}
+A diferencia de la inducción ordinaria, donde se asume solo $P(n)$ para demostrar $P(n+1)$, la inducción transfinita asume $P(\beta)$ para \emph{todos} los $\beta < \alpha$. Esta versión se conoce como \textbf{inducción fuerte} (o \textbf{inducción completa}). En el contexto transfinito, la distinción entre inducción débil y fuerte desaparece: la condición «$P$ vale para todos los predecesores» es la única natural, porque los ordinales límite no tienen predecesor inmediato.
+\end{observacion}
+
+\subsection{Formulación en casos: sucesor y límite}
+
+En la práctica, la inducción transfinita se aplica verificando tres casos:
+
+\begin{importante}
+\begin{teorema}{Inducción transfinita por casos}{inducciontresCasos}
+Sea $P(\alpha)$ una propiedad sobre ordinales. $P(\alpha)$ vale para todo ordinal $\alpha$ si y solo si:
+\begin{enumerate}[leftmargin=2em, label=(\Roman*)]
+  \item \textbf{Caso base:} $P(0)$.
+  \item \textbf{Caso sucesor:} Para todo ordinal $\alpha$, si $P(\alpha)$ entonces $P(\alpha+1)$.
+  \item \textbf{Caso límite:} Para todo ordinal límite $\lambda$, si $P(\beta)$ para todo $\beta < \lambda$, entonces $P(\lambda)$.
+\end{enumerate}
+\end{teorema}
+\end{importante}
+
+\begin{proof}
+La suficiencia se deduce del Teorema~\ref{teo:inducciontransfinita}: si $\alpha$ es un ordinal y $P$ vale para todos los $\beta < \alpha$, distinguimos tres subcasos según la tricotomía. Si $\alpha = 0$, aplicamos (I). Si $\alpha = \beta + 1$ para algún $\beta$, entonces $\beta < \alpha$, luego $P(\beta)$ y por (II), $P(\alpha)$. Si $\alpha$ es límite, (III) da $P(\alpha)$.
+
+La necesidad es trivial: (I) es el caso $\alpha = 0$; (II) es el caso $\alpha$ sucesor con un solo predecesor inmediato; (III) es el caso $\alpha$ límite.
+\end{proof}
+
+\begin{ejemplo}{Inducción transfinita: todo ordinal es transitivo}{ejinductrans}
+Demostraremos por inducción transfinita que todo ordinal es un conjunto transitivo.
+
+Sea $P(\alpha)$: «$\alpha$ es transitivo».
+
+\textbf{Caso base:} $P(0)$: $\emptyset$ es transitivo vacuamente. \checkmark
+
+\textbf{Caso sucesor:} Asumamos $P(\alpha)$, es decir, $\alpha$ es transitivo. Queremos ver que $\alpha + 1 = \alpha \cup \{\alpha\}$ es transitivo. Sea $x \in y \in \alpha \cup \{\alpha\}$.
+\begin{itemize}
+  \item Si $y \in \alpha$: como $\alpha$ es transitivo y $x \in y \in \alpha$, se sigue $x \in \alpha \subseteq \alpha \cup \{\alpha\}$.
+  \item Si $y = \alpha$: entonces $x \in \alpha \subseteq \alpha \cup \{\alpha\}$.
+\end{itemize}
+Luego $\alpha \cup \{\alpha\}$ es transitivo. \checkmark
+
+\textbf{Caso límite:} Sea $\lambda$ un ordinal límite y supongamos que $P(\beta)$ vale para todo $\beta < \lambda$. Sea $x \in y \in \lambda = \bigcup_{\beta < \lambda} \beta$. Entonces existe $\beta_0 < \lambda$ con $y \in \beta_0$. Por transitividad de $\beta_0$, $x \in \beta_0 \subseteq \lambda$. Luego $\lambda$ es transitivo. \checkmark
+
+Por el Teorema~\ref{teo:inducciontresCasos}, todo ordinal es transitivo.
+\end{ejemplo}
+
+\subsection{Recursión transfinita}
+
+La recursión transfinita es el análogo del principio de definición por recursión sobre los naturales, extendido a toda la clase de ordinales. Permite definir funciones cuyo dominio es $\mathbf{ON}$ (o un segmento inicial de $\mathbf{ON}$) especificando:
+\begin{itemize}
+  \item el valor en $0$,
+  \item el valor en $\alpha + 1$ en función del valor en $\alpha$,
+  \item el valor en un límite $\lambda$ en función de los valores en todos los $\beta < \lambda$.
+
+\end{itemize}
+
+\begin{teorema}{Recursión transfinita (forma general)}{recursiongeneral}
+Sea $G: V \to V$ un operador de clase (dado por una fórmula de ZFC). Entonces existe una única función de clase $F: \mathbf{ON} \to V$ tal que, para todo ordinal $\alpha$:
+\[
+  F(\alpha) = G\bigl(F \upharpoonright \alpha\bigr),
+\]
+donde $F \upharpoonright \alpha$ denota la restricción de $F$ a $\{0, 1, \ldots, \beta, \ldots : \beta < \alpha\}$.
+\end{teorema}
+
+\begin{proof}[Esquema de demostración]
+La unicidad se establece por inducción transfinita: si $F$ y $F'$ son dos funciones que satisfacen la ecuación de recursión, entonces el conjunto $\{\alpha : F(\alpha) \neq F'(\alpha)\}$ tiene un mínimo $\alpha_0$. Pero $F \upharpoonright \alpha_0 = F' \upharpoonright \alpha_0$ por mínimalidad, luego $F(\alpha_0) = G(F \upharpoonright \alpha_0) = G(F' \upharpoonright \alpha_0) = F'(\alpha_0)$, contradicción.
+
+La existencia se prueba mostrando que para cada ordinal $\alpha$ existe una única función $f_\alpha: \alpha \to V$ con $f_\alpha(\beta) = G(f_\alpha \upharpoonright \beta)$ para todo $\beta < \alpha$. Estas funciones locales son compatibles y su unión define $F$.
+\end{proof}
+
+\begin{observacion}{Formulación por casos de la recursión}{recporc}
+En la práctica, la recursión transfinita se especifica en tres casos:
+\begin{align*}
+  F(0) &= a_0 & &\text{(valor inicial)},\\
+  F(\alpha + 1) &= h\bigl(F(\alpha)\bigr) & &\text{(paso sucesor, para alguna función } h\text{)},\\
+  F(\lambda) &= \sup_{\beta < \lambda} F(\beta) & &\text{(paso límite, para } \lambda \text{ límite)}.
+\end{align*}
+El paso límite puede tomar otras formas (unión, ínfimo, etc.), según el contexto.
+\end{observacion}
+
+\begin{ejemplo}{Recursión transfinita: la jerarquía acumulativa $V_\alpha$}{ejrecursion}
+La \textbf{jerarquía acumulativa} de von Neumann se define por recursión transfinita:
+\begin{align*}
+  V_0 &= \emptyset,\\
+  V_{\alpha+1} &= \mathcal{P}(V_\alpha),\\
+  V_\lambda &= \bigcup_{\alpha < \lambda} V_\alpha \quad\text{(para } \lambda \text{ límite)}.
+\end{align*}
+Los primeros niveles son:
+\begin{align*}
+  V_0 &= \emptyset,\\
+  V_1 &= \{\emptyset\},\\
+  V_2 &= \{\emptyset, \{\emptyset\}\},\\
+  V_3 &= \{\emptyset, \{\emptyset\}, \{\{\emptyset\}\}, \{\emptyset, \{\emptyset\}\}\},\\
+  V_\omega &= \bigcup_{n \in \omega} V_n = \text{todos los conjuntos hereditariamente finitos}.
+\end{align*}
+El \textbf{Teorema de Acumulación}: todo conjunto $x$ pertenece a algún $V_\alpha$ (equivalentemente, $V = \bigcup_{\alpha \in \mathbf{ON}} V_\alpha$). El ordinal mínimo $\alpha$ con $x \in V_\alpha$ es el \textbf{rango} de $x$.
+\end{ejemplo}
+
+% ===========================================================
+\section{Aritmética Ordinal}
+% ===========================================================
+
+La aritmética ordinal define suma, producto y potencia para ordinales mediante recursión transfinita. A diferencia de la aritmética natural, estas operaciones \textbf{no son conmutativas}, como veremos mediante ejemplos concretos.
+
+\subsection{Suma ordinal}
+
+\begin{definicion}{Suma ordinal}{sumaordinal}
+Para cada ordinal $\alpha$, la \textbf{suma} $\alpha + \beta$ se define por recursión transfinita en $\beta$:
+\begin{align*}
+  \alpha + 0 &= \alpha,\\
+  \alpha + (\beta + 1) &= (\alpha + \beta) + 1,\\
+  \alpha + \lambda &= \sup_{\beta < \lambda}(\alpha + \beta) \quad\text{(para } \lambda \text{ límite)}.
+\end{align*}
+\end{definicion}
+
+\begin{ejemplo}{Cálculo de sumas ordinales}{ejsumas}
+Calculamos algunas sumas con $\omega$.
+
+\textbf{$1 + \omega$:} Por definición, $1 + \omega = \sup_{n < \omega}(1 + n)$.
+\begin{align*}
+  1 + 0 &= 1,\\
+  1 + 1 &= 2,\\
+  1 + 2 &= 3,\\
+  &\vdots\\
+  1 + n &= n+1 \;\text{ para cada } n \in \omega.
+\end{align*}
+Luego $1 + \omega = \sup\{1, 2, 3, \ldots\} = \omega$.
+
+\textbf{$\omega + 1$:} Por definición directa, $\omega + 1 = (\omega + 0) + 1 = \omega + 1$. Como conjunto, $\omega + 1 = S(\omega) = \omega \cup \{\omega\}$, que contiene a $\omega$ como elemento.
+
+\textbf{Comparación:}
+\[
+  1 + \omega = \omega \neq \omega + 1.
+\]
+Por tanto, \textbf{la suma ordinal no es conmutativa}.
+
+\textbf{$\omega + \omega$:} $\omega + \omega = \sup_{n < \omega}(\omega + n) = \sup\{\omega, \omega+1, \omega+2, \ldots\}$. Este ordinal se denota también $\omega \cdot 2$.
+\end{ejemplo}
+
+\begin{proposicion}{Propiedades de la suma ordinal}{propsuma}
+Para todos los ordinales $\alpha, \beta, \gamma$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Asociatividad:} $(\alpha + \beta) + \gamma = \alpha + (\beta + \gamma)$.
+  \item \textbf{Elemento neutro:} $\alpha + 0 = 0 + \alpha = \alpha$.
+  \item \textbf{Monotonía (derecha):} $\beta < \gamma \implies \alpha + \beta < \alpha + \gamma$.
+  \item \textbf{Monotonía (izquierda):} $\beta < \gamma \implies \beta + \alpha \leq \gamma + \alpha$ \quad (puede ser igualdad).
+  \item \textbf{No conmutatividad:} En general, $\alpha + \beta \neq \beta + \alpha$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Por inducción transfinita en $\gamma$.
+
+\textit{Base:} $(\alpha+\beta)+0 = \alpha+\beta = \alpha+(\beta+0)$.
+
+\textit{Sucesor:} $(\alpha+\beta)+(\gamma+1) = ((\alpha+\beta)+\gamma)+1 = (\alpha+(\beta+\gamma))+1 = \alpha+((\beta+\gamma)+1) = \alpha+(\beta+(\gamma+1))$.
+
+\textit{Límite:} $(\alpha+\beta)+\lambda = \sup_{\gamma < \lambda}((\alpha+\beta)+\gamma) = \sup_{\gamma < \lambda}(\alpha+(\beta+\gamma)) = \alpha + \sup_{\gamma < \lambda}(\beta+\gamma) = \alpha+(\beta+\lambda)$.
+
+\textbf{(ii)} $\alpha + 0 = \alpha$ por definición. Para $0 + \alpha$, se prueba por inducción transfinita en $\alpha$: $0+0 = 0$; $0+(\alpha+1) = (0+\alpha)+1 = \alpha+1$; $0+\lambda = \sup_{\beta < \lambda}(0+\beta) = \sup_{\beta < \lambda} \beta = \lambda$.
+
+\textbf{(iii) y (v)} son consecuencia directa de las definiciones y se dejan como ejercicio (ver Problemas).
+\end{proof}
+
+\begin{ejemplo}{No conmutatividad de la suma: interpretación geométrica}{noconmsuma}
+La suma ordinal $\alpha + \beta$ puede visualizarse como yuxtaposición de tipos de orden: primero se ponen los elementos con tipo de orden $\alpha$ y luego los de tipo $\beta$.
+
+\begin{itemize}[leftmargin=2em]
+  \item $1 + \omega$: un punto, seguido de una cadena de tipo $\omega$. El punto queda absorbido «al principio»; el tipo resultante es indistinguible de $\omega$. (No hay elemento máximo, y el conjunto es isomorfo a $\mathbb{N}$.)
+  \item $\omega + 1$: una cadena de tipo $\omega$ seguida de un punto extra. Ahora el tipo resultante tiene un elemento máximo, lo que lo hace distinto de $\omega$.
+\end{itemize}
+
+Así, $1 + \omega = \omega < \omega + 1$: añadir un punto al principio de una cadena infinita no cambia el tipo de orden, pero añadirlo al final sí lo cambia.
+\end{ejemplo}
+
+\subsection{Producto ordinal}
+
+\begin{definicion}{Producto ordinal}{productordinal}
+Para cada ordinal $\alpha$, el \textbf{producto} $\alpha \cdot \beta$ se define por recursión transfinita en $\beta$:
+\begin{align*}
+  \alpha \cdot 0 &= 0,\\
+  \alpha \cdot (\beta + 1) &= (\alpha \cdot \beta) + \alpha,\\
+  \alpha \cdot \lambda &= \sup_{\beta < \lambda}(\alpha \cdot \beta) \quad\text{(para } \lambda \text{ límite)}.
+\end{align*}
+\end{definicion}
+
+\begin{ejemplo}{Cálculo de productos ordinales}{ejproductos}
+\textbf{$2 \cdot \omega$:} $2 \cdot \omega = \sup_{n < \omega}(2 \cdot n) = \sup\{0, 2, 4, 6, \ldots\} = \omega$.
+
+\textbf{$\omega \cdot 2$:} $\omega \cdot 2 = (\omega \cdot 1) + \omega = \omega + \omega$.
+
+\textbf{Comparación:}
+\[
+  2 \cdot \omega = \omega \neq \omega + \omega = \omega \cdot 2.
+\]
+Por tanto, \textbf{el producto ordinal no es conmutativo}.
+
+\textbf{$\omega \cdot \omega = \omega^2$:} $\omega^2 = \sup_{n < \omega}(\omega \cdot n)$. Este ordinal tiene el tipo de orden del conjunto $\omega \times \omega$ ordenado lexicográficamente.
+\end{ejemplo}
+
+\begin{proposicion}{Propiedades del producto ordinal}{propprod}
+Para todos los ordinales $\alpha, \beta, \gamma$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Asociatividad:} $(\alpha \cdot \beta) \cdot \gamma = \alpha \cdot (\beta \cdot \gamma)$.
+  \item $\alpha \cdot 0 = 0$ y $\alpha \cdot 1 = \alpha$.
+  \item \textbf{Distributividad izquierda:} $\alpha \cdot (\beta + \gamma) = (\alpha \cdot \beta) + (\alpha \cdot \gamma)$.
+  \item \textbf{Distributividad derecha falla:} En general, $(\alpha + \beta) \cdot \gamma \neq (\alpha \cdot \gamma) + (\beta \cdot \gamma)$.
+  \item \textbf{No conmutatividad:} En general, $\alpha \cdot \beta \neq \beta \cdot \alpha$.
+  \item \textbf{Anulación:} $0 \cdot \alpha = 0$ para todo $\alpha$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(iii)} Por inducción en $\gamma$.
+
+\textit{Base:} $\alpha \cdot (\beta + 0) = \alpha \cdot \beta = (\alpha \cdot \beta) + 0 = (\alpha \cdot \beta) + (\alpha \cdot 0)$.
+
+\textit{Sucesor:} $\alpha \cdot (\beta + (\gamma+1)) = \alpha \cdot ((\beta+\gamma)+1) = (\alpha \cdot (\beta+\gamma)) + \alpha$. Por hipótesis de inducción: $= ((\alpha\cdot\beta)+(\alpha\cdot\gamma))+\alpha = (\alpha\cdot\beta)+((\alpha\cdot\gamma)+\alpha) = (\alpha\cdot\beta)+(\alpha\cdot(\gamma+1))$.
+
+\textit{Límite:} $\alpha \cdot (\beta+\lambda) = \alpha \cdot \sup_{\gamma<\lambda}(\beta+\gamma) = \sup_{\gamma<\lambda}(\alpha \cdot (\beta+\gamma)) = \sup_{\gamma<\lambda}((\alpha\cdot\beta)+(\alpha\cdot\gamma)) = (\alpha\cdot\beta) + \sup_{\gamma<\lambda}(\alpha\cdot\gamma) = (\alpha\cdot\beta)+(\alpha\cdot\lambda)$.
+
+\textbf{(iv)} Contraejemplo: $(1+1)\cdot\omega = 2\cdot\omega = \omega$, pero $(1\cdot\omega)+(1\cdot\omega) = \omega+\omega \neq \omega$.
+\end{proof}
+
+\begin{ejemplo}{No conmutatividad del producto: interpretación}{noconmprod}
+El producto ordinal $\alpha \cdot \beta$ puede interpretarse como el tipo de orden del conjunto $\beta \times \alpha$ ordenado lexicográficamente (primero por la coordenada izquierda $\beta$, luego por $\alpha$):
+\[
+  \alpha \cdot \beta \;\cong\; \beta \times \alpha \;\text{ con orden lexicográfico.}
+\]
+\begin{itemize}[leftmargin=2em]
+  \item $2 \cdot \omega$: tipo de orden de $\omega \times 2 = \{(0,0),(0,1),(1,0),(1,1),(2,0),(2,1),\ldots\}$ con orden lexicográfico. El orden es $(0,0),(0,1),(1,0),(1,1),(2,0),(2,1),\ldots$, que es isomorfo a $\omega$.
+  \item $\omega \cdot 2$: tipo de orden de $2 \times \omega$ con orden lexicográfico: $(0,0),(0,1),(0,2),\ldots,(1,0),(1,1),(1,2),\ldots$, que es isomorfo a $\omega + \omega$.
+\end{itemize}
+La diferencia ilustra que el orden en que se «copian» las cadenas importa.
+\end{ejemplo}
+
+\subsection{Potencia ordinal}
+
+\begin{definicion}{Potencia ordinal}{potenciaordinal}
+Para cada ordinal $\alpha$, la \textbf{potencia} $\alpha^\beta$ se define por recursión transfinita en $\beta$:
+\begin{align*}
+  \alpha^0 &= 1,\\
+  \alpha^{\beta+1} &= \alpha^\beta \cdot \alpha,\\
+  \alpha^\lambda &= \sup_{\beta < \lambda} \alpha^\beta \quad\text{(para } \lambda \text{ límite)}.
+\end{align*}
+\end{definicion}
+
+\begin{ejemplo}{Potencias de $\omega$}{ejpotenciasomega}
+\begin{align*}
+  \omega^0 &= 1,\\
+  \omega^1 &= \omega,\\
+  \omega^2 &= \omega \cdot \omega = \sup_{n < \omega} \omega \cdot n = \omega^2\;\text{ (tipo de orden de } \omega \times \omega\text{)},\\
+  \omega^3 &= \omega^2 \cdot \omega,\\
+  \omega^\omega &= \sup_{n < \omega} \omega^n.
+\end{align*}
+El ordinal $\omega^\omega$ es el tipo de orden de los polinomios con coeficientes naturales ordenados lexicográficamente. Es un ordinal límite mayor que todos los $\omega^n$ ($n \in \omega$).
+
+La \textbf{primera épsilon-ordinal} $\varepsilon_0$ se define como el menor ordinal $\varepsilon$ tal que $\omega^\varepsilon = \varepsilon$:
+\[
+  \varepsilon_0 = \sup\bigl\{\omega, \omega^\omega, \omega^{\omega^\omega}, \ldots\bigr\}.
+\]
+\end{ejemplo}
+
+\subsection{La forma normal de Cantor}
+
+\begin{teorema}{Forma normal de Cantor}{formanormal}
+Todo ordinal $\alpha > 0$ se escribe de manera única en la \textbf{forma normal de Cantor}:
+\[
+  \alpha = \omega^{\beta_1} \cdot c_1 + \omega^{\beta_2} \cdot c_2 + \cdots + \omega^{\beta_k} \cdot c_k,
+\]
+donde $k \geq 1$, $\alpha \geq \beta_1 > \beta_2 > \cdots > \beta_k$, y $c_1, c_2, \ldots, c_k$ son enteros positivos.
+\end{teorema}
+
+\begin{ejemplo}{Forma normal de Cantor}{ejcantor}
+\begin{align*}
+  5 &= \omega^0 \cdot 5,\\
+  \omega &= \omega^1,\\
+  \omega + 3 &= \omega^1 \cdot 1 + \omega^0 \cdot 3,\\
+  \omega^2 + \omega \cdot 4 + 2 &= \omega^2 \cdot 1 + \omega^1 \cdot 4 + \omega^0 \cdot 2,\\
+  \omega^\omega &= \omega^\omega \cdot 1.
+\end{align*}
+La forma normal de Cantor generaliza la representación decimal de los enteros al reino transfinito. Sin embargo, el exponente $\beta_1$ puede ser en sí mismo un ordinal transfinito; en ese caso la representación no es «finita» en el mismo sentido.
+\end{ejemplo}
+
+\subsection{Tabla comparativa: aritmética ordinal vs.\ aritmética natural}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lcc}
+\hline
+\textbf{Propiedad} & \textbf{$\mathbb{N}$} & \textbf{Ordinales} \\
+\hline
+Conmutatividad de $+$ & \checkmark & $\times$ \\
+Conmutatividad de $\cdot$ & \checkmark & $\times$ \\
+Asociatividad de $+$ & \checkmark & \checkmark \\
+Asociatividad de $\cdot$ & \checkmark & \checkmark \\
+Distributividad izquierda: $a(b+c) = ab+ac$ & \checkmark & \checkmark \\
+Distributividad derecha: $(a+b)c = ac+bc$ & \checkmark & $\times$ \\
+Cancelación izquierda de $+$: $a+b = a+c \Rightarrow b=c$ & \checkmark & \checkmark \\
+Cancelación derecha de $+$: $b+a = c+a \Rightarrow b=c$ & \checkmark & $\times$ \\
+Ley de absorción: $n + \omega = \omega$ para $n$ finito & $\times$ & \checkmark \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{observacion}{Absorción a la izquierda}{absorcion}
+La ley $n + \omega = \omega$ para $n \in \omega$ es un fenómeno exclusivamente transfinito: un número finito de pasos queda «absorbido» por la cadena infinita que viene a continuación. En cambio, $\omega + n > \omega$ para $n > 0$, ilustrando la asimetría fundamental de la suma ordinal.
+\end{observacion}
+
+% ===========================================================
+\section{Segmentos iniciales y tipo de orden}
+% ===========================================================
+
+\begin{definicion}{Segmento inicial propio}{segmentoinicial}
+Sea $(A, <)$ un conjunto bien ordenado y $a \in A$. El \textbf{segmento inicial propio} determinado por $a$ es
+\[
+  \text{seg}(A, a) = \{x \in A : x < a\}.
+\]
+\end{definicion}
+
+\begin{teorema}{Representación de bien-órdenes por ordinales}{represbienord}
+Para todo conjunto bien ordenado $(W, <)$ existe un único ordinal $\alpha$ (el \textbf{tipo de orden} de $W$) tal que $(W, <) \cong (\alpha, \in)$. El isomorfismo es también único.
+\end{teorema}
+
+\begin{proof}[Esquema]
+Se define por recursión transfinita: para cada $w \in W$, se asigna $f(w) = \{f(x) : x < w\}$ (el conjunto de los tipos de orden de los segmentos iniciales propios). Se verifica que $f: W \to \mathbf{ON}$ es un isomorfismo con $\text{Im}(f)$, que resulta ser un ordinal. La unicidad se sigue de que dos isomorfismos entre bien-órdenes deben coincidir.
+\end{proof}
+
+\begin{corolario}{Comparabilidad de bien-órdenes}{compbienord}
+Dados dos conjuntos bien ordenados $(A, <_A)$ y $(B, <_B)$, exactamente una de las siguientes alternativas se cumple:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $(A, <_A) \cong (B, <_B)$,
+  \item $(A, <_A) \cong (B', <_B)$ para algún segmento inicial propio $B'$ de $B$,
+  \item $(A', <_A) \cong (B, <_B)$ para algún segmento inicial propio $A'$ de $A$.
+\end{enumerate}
+\end{corolario}
+
+% ===========================================================
+\section{Resumen y panorama}
+% ===========================================================
+
+\begin{importante}
+\textbf{Resumen de los resultados principales de esta clase:}
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item Un \textbf{ordinal} (en el sentido de von Neumann) es un conjunto transitivo bien ordenado por $\in$. El ordinal $\alpha$ es el conjunto de todos los ordinales menores que él: $\alpha = \{\beta : \beta < \alpha\}$.
+  \item Los ordinales se clasifican en tres tipos: el ordinal $0 = \emptyset$, los \textbf{ordinales sucesor} $\alpha + 1 = \alpha \cup \{\alpha\}$, y los \textbf{ordinales límite} $\lambda = \bigcup \lambda$ (distintos de 0).
+  \item El ordinal $\omega$ es el primer ordinal infinito y el primer ordinal límite. Sus elementos son exactamente los números naturales de von Neumann $0, 1, 2, 3, \ldots$
+  \item La \textbf{inducción transfinita} extiende la inducción ordinaria: una propiedad que se preserva bajo sucesor y bajo límites vale para todos los ordinales.
+  \item La \textbf{recursión transfinita} permite definir funciones en $\mathbf{ON}$ especificando el valor en $0$, el paso sucesor y el paso límite.
+  \item La \textbf{suma ordinal} ($\alpha + \beta$), el \textbf{producto ordinal} ($\alpha \cdot \beta$) y la \textbf{potencia ordinal} ($\alpha^\beta$) se definen por recursión transfinita y generalizan la aritmética natural.
+  \item La aritmética ordinal es \textbf{no conmutativa}: $1 + \omega = \omega \neq \omega + 1$; $2 \cdot \omega = \omega \neq \omega + \omega = \omega \cdot 2$.
+  \item La aritmética ordinal es \textbf{asociativa}, la suma y el producto son \textbf{distributivos por la izquierda}, pero \textbf{no por la derecha}.
+  \item Todo ordinal admite una única \textbf{forma normal de Cantor} $\omega^{\beta_1}c_1 + \cdots + \omega^{\beta_k}c_k$.
+\end{enumerate}
+\end{importante}
+
+En la Clase~6 abordaremos los \textbf{números cardinales} desde el punto de vista ordinal: definiremos los cardinales como ordinales iniciales (los ordinales que no son equipotentes a ningún ordinal menor), estudiaremos la sucesión de alephs $\aleph_0, \aleph_1, \aleph_2, \ldots$, y desarrollaremos la aritmética cardinal, que tiene su propio conjunto de propiedades, distintas de la aritmética ordinal.
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\begin{enumerate}[leftmargin=2.5em, label=\textbf{\arabic*.}]
+
+  \item \textbf{(Conjuntos transitivos.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Determine cuáles de los siguientes conjuntos son transitivos. Justifique.
+    \begin{enumerate}[label=(\roman*)]
+      \item $\emptyset$.
+      \item $\{\emptyset, \{\emptyset\}\}$.
+      \item $\{\{\emptyset\}, \{\{\emptyset\}\}\}$.
+      \item $\{\emptyset, \{\emptyset\}, \{\emptyset, \{\emptyset\}\}\}$.
+      \item $\mathcal{P}(\mathcal{P}(\emptyset))$.
+    \end{enumerate}
+    \item Demuestre que la unión de dos conjuntos transitivos es transitiva.
+    \item Demuestre que la intersección de dos conjuntos transitivos es transitiva.
+    \item Demuestre que $\mathcal{P}(T)$ es transitivo siempre que $T$ lo sea.
+    \item (Desafío) Demuestre que para todo conjunto $X$ existe el menor conjunto transitivo que contiene a $X$ (llamado la \emph{clausura transitiva} de $X$, denotada $\mathrm{TC}(X)$). Demuestre que $\mathrm{TC}(X) = X \cup \bigcup X \cup \bigcup\bigcup X \cup \cdots$
+  \end{enumerate}
+
+  \item \textbf{(Los primeros ordinales.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Escriba explícitamente como conjuntos los ordinales $0, 1, 2, 3, 4$.
+    \item Verifique que $4 = \{0, 1, 2, 3\}$ es un conjunto transitivo bien ordenado por $\in$.
+    \item Demuestre por inducción (ordinaria, sobre $n \in \mathbb{N}$) que el ordinal $n$ (de von Neumann) tiene exactamente $n$ elementos.
+    \item Demuestre que si $\alpha$ es un ordinal, entonces $\alpha \notin \alpha$ (use el Axioma de Regularidad).
+    \item Demuestre que si $\alpha$ y $\beta$ son ordinales con $\alpha \subsetneq \beta$, entonces $\alpha \in \beta$.
+  \end{enumerate}
+
+  \item \textbf{(Ordinales sucesor y límite.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que $\alpha \cup \{\alpha\}$ es un ordinal para todo ordinal $\alpha$.
+    \item Demuestre que $\omega$ no es un ordinal sucesor. (Sugerencia: si $\omega = \beta \cup \{\beta\}$, entonces $\beta \in \omega$, luego $\beta$ es un natural, lo que llevaría a $\omega = \beta+1$ siendo un natural, absurdo.)
+    \item Demuestre directamente desde la definición que $\omega = \bigcup \omega$.
+    \item Clasifique los siguientes ordinales como $0$, sucesor o límite, justificando: $\omega, \omega+1, \omega+\omega, \omega\cdot\omega, \omega^{\omega}, \omega^{\omega}+1$.
+    \item Demuestre que si $\lambda$ es un ordinal límite, entonces para todo $\alpha < \lambda$ se tiene $\alpha + 1 < \lambda$.
+  \end{enumerate}
+
+  \item \textbf{(Inducción transfinita.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre por inducción transfinita que todo ordinal finito es igual a $0$ o es sucesor de otro ordinal finito.
+    \item Demuestre por inducción transfinita que para todo ordinal $\alpha$ se tiene $\alpha \subseteq \beta$ o $\beta \subseteq \alpha$ (comparabilidad de subconjuntos de ordinales).
+    \item Demuestre por inducción transfinita que $0 + \alpha = \alpha$ para todo ordinal $\alpha$.
+    \item Demuestre por inducción transfinita que la función $f: \mathbf{ON} \to \mathbf{ON}$ definida por $f(\alpha) = \omega + \alpha$ es estrictamente creciente.
+    \item (Desafío) Demuestre por inducción transfinita que el conjunto de ordinales límite $\leq \alpha$ tiene cardinalidad $|\alpha|$ para todo ordinal infinito $\alpha$.
+  \end{enumerate}
+
+  \item \textbf{(Aritmética ordinal — Suma.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcule, justificando paso a paso:
+    \begin{enumerate}[label=(\roman*)]
+      \item $3 + \omega$.
+      \item $\omega + 3$.
+      \item $\omega + \omega$.
+      \item $\omega \cdot 2 + \omega$.
+      \item $(\omega + 1) + (\omega + 1)$.
+    \end{enumerate}
+    \item Demuestre que $n + \omega = \omega$ para todo $n \in \omega$ y que $\omega + n > \omega$ para todo $n > 0$.
+    \item Demuestre que la suma ordinal es estrictamente monótona por la derecha: $\beta < \gamma \Rightarrow \alpha + \beta < \alpha + \gamma$.
+    \item Muestre con un contraejemplo que la suma ordinal \emph{no} es estrictamente monótona por la izquierda, es decir, que $\beta < \gamma$ no implica $\beta + \alpha < \gamma + \alpha$ en general.
+    \item Demuestre la ley de cancelación izquierda: $\alpha + \beta = \alpha + \gamma \Rightarrow \beta = \gamma$.
+    \item Muestre con un contraejemplo que la cancelación derecha falla: exhiba $\alpha, \beta, \gamma$ con $\beta + \alpha = \gamma + \alpha$ pero $\beta \neq \gamma$.
+  \end{enumerate}
+
+  \item \textbf{(Aritmética ordinal — Producto.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcule, justificando:
+    \begin{enumerate}[label=(\roman*)]
+      \item $3 \cdot \omega$.
+      \item $\omega \cdot 3$.
+      \item $\omega \cdot \omega$.
+      \item $(\omega + 1) \cdot 2$.
+      \item $2 \cdot (\omega + 1)$.
+    \end{enumerate}
+    \item Demuestre que $n \cdot \omega = \omega$ para todo $n \geq 1$ finito.
+    \item Demuestre la distributividad izquierda: $\alpha(\beta + \gamma) = \alpha\beta + \alpha\gamma$.
+    \item Muestre con un contraejemplo que la distributividad derecha falla: $(1+1)\omega \neq 1\cdot\omega + 1\cdot\omega$.
+    \item Demuestre que $\omega \cdot n = \omega \cdot m \Rightarrow n = m$ para $n, m \in \omega \setminus \{0\}$.
+  \end{enumerate}
+
+  \item \textbf{(Forma normal de Cantor.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Escriba en forma normal de Cantor los siguientes ordinales:
+    \begin{enumerate}[label=(\roman*)]
+      \item $\omega^3 + \omega^2 \cdot 5 + \omega \cdot 3 + 7$.
+      \item $\omega^\omega + \omega^3 + 1$.
+      \item $\omega^{\omega^2}$.
+    \end{enumerate}
+    \item Dados $\alpha = \omega^2 \cdot 3 + \omega \cdot 2 + 1$ y $\beta = \omega^2 + \omega \cdot 4 + 5$, calcule $\alpha + \beta$ y $\beta + \alpha$ usando la forma normal.
+    \item Calcule $\alpha \cdot \omega$ para $\alpha = \omega^2 \cdot 3 + \omega \cdot 2 + 1$.
+    \item (Desafío) Demuestre el Teorema de Cantor de la Forma Normal por inducción transfinita sobre $\alpha$.
+  \end{enumerate}
+
+  \item \textbf{(Recursión transfinita.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item La \textbf{sucesión de Veblen} $(\varphi_0, \varphi_1, \varphi_2, \ldots)$ comienza con $\varphi_0(\alpha) = \omega^\alpha$. Calcule $\varphi_0(0), \varphi_0(1), \varphi_0(\omega), \varphi_0(\omega+1)$.
+    \item Defina por recursión transfinita la función $f: \omega \to \omega$ dada por $f(0) = 1$, $f(n+1) = f(n) + f(n)$. Calcule $f(0), f(1), \ldots, f(4)$ y determine una fórmula cerrada.
+    \item Defina los \textbf{rangos de von Neumann} $V_\alpha$ por recursión transfinita y calcule $V_0, V_1, V_2, V_3, V_\omega$.
+    \item Demuestre por inducción transfinita que $V_\alpha \subseteq V_\beta$ siempre que $\alpha \leq \beta$.
+    \item (Proyecto) Estudie la definición de la función $\alpha \mapsto \omega_\alpha$ (los cardinales alephs) por recursión transfinita en los ordinales. Enuncie la propiedad característica de $\omega_{\alpha+1}$ (ser el menor cardinal mayor que $\omega_\alpha$) y de $\omega_\lambda$ para $\lambda$ límite.
+  \end{enumerate}
+
+  \item \textbf{(Paradoja de Burali-Forti.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Enuncie la paradoja de Burali-Forti: si $\mathbf{ON}$ fuera un conjunto, sería un ordinal, luego $\mathbf{ON} \in \mathbf{ON}$, contradiciendo el Axioma de Regularidad.
+    \item Explique cómo ZFC resuelve esta paradoja: $\mathbf{ON}$ es una \emph{clase propia}, no un conjunto.
+    \item Relacione este fenómeno con la paradoja de Russell: en ambos casos, la «colección demasiado grande» no puede ser un conjunto en ZFC.
+  \end{enumerate}
+
+  \item \textbf{(Investigación: ordinales y tipos de orden.)}
+  Consulte \cite{sierpinski1958} o \cite{rosenstein1982} y redacte una exposición de 1--2 páginas sobre los siguientes puntos:
+  \begin{itemize}[leftmargin=2em]
+    \item ¿Cuántos tipos de orden distintos (no isomorfos como conjuntos bien ordenados) existen sobre un conjunto de $n$ elementos?
+    \item Describa el tipo de orden $\eta$ del conjunto de los racionales con el orden usual. ¿Es $\eta$ un ordinal? ¿Por qué?
+    \item Enuncie el Teorema de Cantor sobre la unicidad del tipo de orden del conjunto denso, sin extremos y numerable.
+  \end{itemize}
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias bibliográficas de esta clase}
+% ===========================================================
+
+Los resultados desarrollados en esta clase se encuentran tratados con rigor y detalle en las siguientes fuentes:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Definición de ordinal y representación de von Neumann:} La fuente histórica original es \cite{vonneumann1923}, en la que von Neumann introduce los ordinales como conjuntos bien ordenados por la pertenencia. Una presentación moderna accesible se encuentra en \cite{enderton1977}; los desarrollos exhaustivos están en \cite{jech2003} y \cite{kunen2011}.
+
+  \item \textbf{Inducción y recursión transfinita:} \cite{enderton1977} contiene una exposición cuidadosa de la recursión transfinita y sus aplicaciones; \cite{hrbacek1999} es un texto introductorio completo; \cite{suppes1972} presenta una formulación axiomática detallada.
+
+  \item \textbf{Aritmética ordinal:} La presentación clásica de la aritmética ordinal y la forma normal de Cantor se encuentra en \cite{sierpinski1958}, que sigue siendo una referencia fundamental; \cite{levy1979} y \cite{jech2003} contienen tratamientos modernos completos.
+
+  \item \textbf{Tipos de orden y bien-órdenes:} \cite{rosenstein1982} es una monografía dedicada a los órdenes lineales, incluyendo los bien-órdenes y sus tipos ordinales; \cite{cantor1883} es el artículo histórico en el que Cantor introduce los ordinales transfinitos.
+
+  \item \textbf{La jerarquía acumulativa $V_\alpha$:} \cite{kunen2011} y \cite{devlin1993} contienen exposiciones detalladas; \cite{jech2003} la desarrolla en el contexto más amplio del universo de von Neumann.
+
+  \item \textbf{Paradoja de Burali-Forti y clases propias:} La paradoja original es de Burali-Forti (1897); una discusión moderna de las clases propias en ZFC se encuentra en \cite{jech2003} y \cite{mendelson2015}.
+
+  \item \textbf{Texto introductorio recomendado:} \cite{halmos1960} proporciona una primera lectura informal y motivadora; \cite{hrbacek1999} y \cite{enderton1977} son los textos de nivel intermedio más recomendados para este curso.
+\end{itemize}
