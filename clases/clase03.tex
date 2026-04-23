@@ -1,0 +1,713 @@
+% ===========================================================
+\chapter{Clase 3: Relaciones, Órdenes y Conjuntos Bien Ordenados}
+% ===========================================================
+
+Las estructuras de orden constituyen el andamiaje conceptual sobre el que se construye toda la teoría transfinita. En esta clase estudiamos, con pleno rigor, las relaciones binarias y sus propiedades fundamentales, los distintos grados de estructura de orden —parcial, total y bien-orden—, los segmentos iniciales y los isomorfismos entre conjuntos ordenados, y culminamos con una introducción al poderoso \textbf{Principio de Inducción Transfinita}. Este último es la herramienta principal que nos permitirá, en la clase siguiente, definir los números ordinales y operar con ellos.
+
+Todo el desarrollo se realiza dentro del sistema axiomático ZFC cuya axiomática se estudió en la Clase~2. En particular, los conceptos de «relación» y «función» son casos especiales de conjuntos, y sus propiedades se demuestran a partir de los axiomas \cite{jech2003, kunen2011, enderton1977}.
+
+% ===========================================================
+\section{Relaciones binarias}
+% ===========================================================
+
+\subsection{Definición y ejemplos}
+
+\begin{definicion}{Relación binaria}{relbin}
+Sean $A$ y $B$ conjuntos. Una \textbf{relación binaria} de $A$ en $B$ es un subconjunto
+\[
+  R \subseteq A \times B.
+\]
+Se escribe $a \mathrel{R} b$ (o también $R(a,b)$) en lugar de $(a,b) \in R$. Cuando $A = B$ se dice que $R$ es una relación binaria \emph{sobre} $A$ (o \emph{en} $A$).
+\end{definicion}
+
+\begin{observacion}{Las relaciones son conjuntos}{relconj}
+En ZFC, el producto cartesiano $A \times B$ se define como
+\[
+  A \times B \;=\; \bigl\{z \mid \exists a \in A\,\exists b \in B\,(z = (a,b))\bigr\},
+\]
+donde el par ordenado se codifica como $(a,b) = \{\{a\}, \{a,b\}\}$ (par de Kuratowski). Por el Axioma de Potencia y el Esquema de Separación, $A \times B$ y toda relación $R \subseteq A \times B$ son conjuntos.
+\end{observacion}
+
+\begin{ejemplo}{Relaciones binarias elementales}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item La relación de \textbf{orden usual} en $\mathbb{N}$:
+  \[
+    {\leq} \;=\; \{(m,n) \in \mathbb{N}\times\mathbb{N} \mid m \leq n\}.
+  \]
+  Por ejemplo, $(2,5) \in {\leq}$ ya que $2 \leq 5$; en cambio $(7,3) \notin {\leq}$.
+
+  \item La \textbf{divisibilidad} en $\mathbb{Z}^+$:
+  \[
+    a \mid b \iff \exists k \in \mathbb{Z}^+\,(b = ka).
+  \]
+  Así $(3,12) \in {\mid}$ pero $(5,7) \notin {\mid}$.
+
+  \item La \textbf{inclusión} en $\mathcal{P}(X)$:
+  \[
+    A \subseteq B \iff \forall x\,(x \in A \to x \in B).
+  \]
+  Esta es una de las relaciones de orden más importantes en teoría de conjuntos.
+
+  \item La relación de \textbf{equicardinalidad}: $A \sim B$ si existe una biyección $f: A \to B$. Veremos en clases posteriores que no siempre $A \sim B$ implica $A = B$.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Propiedades fundamentales de las relaciones}
+
+Sea $R$ una relación binaria sobre un conjunto $A$. Definimos las siguientes propiedades.
+
+\begin{definicion}{Propiedades de las relaciones}{proprel}
+\begin{enumerate}[leftmargin=2em, label=\textbf{(\arabic*)}]
+  \item \textbf{Reflexividad:} $\forall a \in A,\; a \mathrel{R} a$.
+  \item \textbf{Irreflexividad:} $\forall a \in A,\; \neg(a \mathrel{R} a)$.
+  \item \textbf{Simetría:} $\forall a,b \in A,\; a \mathrel{R} b \to b \mathrel{R} a$.
+  \item \textbf{Antisimetría:} $\forall a,b \in A,\; (a \mathrel{R} b \wedge b \mathrel{R} a) \to a = b$.
+  \item \textbf{Asimetría:} $\forall a,b \in A,\; a \mathrel{R} b \to \neg(b \mathrel{R} a)$.
+  \item \textbf{Transitividad:} $\forall a,b,c \in A,\; (a \mathrel{R} b \wedge b \mathrel{R} c) \to a \mathrel{R} c$.
+  \item \textbf{Totalidad (o conexidad):} $\forall a,b \in A,\; a \mathrel{R} b \vee b \mathrel{R} a \vee a = b$.
+  \item \textbf{Tricotomía:} $\forall a,b \in A,\; a \mathrel{R} b \vee a = b \vee b \mathrel{R} a$, y estas tres posibilidades son mutuamente excluyentes.
+  \item \textbf{Buena fundamentación:} Todo subconjunto no vacío $S \subseteq A$ tiene un elemento $R$-minimal, es decir, existe $m \in S$ tal que $\neg\exists x \in S\,(x \mathrel{R} m)$.
+\end{enumerate}
+\end{definicion}
+
+\begin{observacion}{Asimetría implica irreflexividad}{asimirref}
+Si $R$ es asimétrica, entonces es irreflexiva. En efecto, si existiera $a \in A$ con $a \mathrel{R} a$, la asimetría daría $\neg(a \mathrel{R} a)$, contradicción.
+\end{observacion}
+
+\begin{ejemplo}{Comparación de propiedades para relaciones clásicas}{}
+En la tabla siguiente, $\checkmark$ indica que la propiedad se cumple y $\times$ que no.
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcccccc}
+\hline
+\textbf{Relación} & \textbf{Refl.} & \textbf{Simét.} & \textbf{Antisimét.} & \textbf{Transit.} & \textbf{Total} & \textbf{B.F.} \\
+\hline
+$\leq$ en $\mathbb{N}$              & $\checkmark$ & $\times$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+$<$ en $\mathbb{N}$                 & $\times$     & $\times$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+$\leq$ en $\mathbb{R}$              & $\checkmark$ & $\times$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\times$ \\
+$|$ en $\mathbb{Z}^+$               & $\checkmark$ & $\times$ & $\checkmark$ & $\checkmark$ & $\times$     & $\checkmark$ \\
+$\subseteq$ en $\mathcal{P}(X)$     & $\checkmark$ & $\times$ & $\checkmark$ & $\checkmark$ & $\times$     & $\times$ \\
+$\sim$ (equicardinalidad)           & $\checkmark$ & $\checkmark$ & $\times$  & $\checkmark$ & $\times$     & $\times$ \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{Nota:} Las filas con «buena fundamentación» $\times$ admiten subconjuntos no vacíos sin elemento minimal (por ejemplo, $(0,1) \subseteq \mathbb{R}$ con el orden usual). La relación $\sim$ en $\mathcal{P}(X)$ cuando $X$ es infinito es un ejemplo de relación de equivalencia que no es de orden.
+\end{ejemplo}
+
+\subsection{Relaciones de equivalencia y particiones}
+
+Por contraste con las relaciones de orden, recordamos que una relación de equivalencia satisface reflexividad, simetría y transitividad, y genera una partición del conjunto base.
+
+\begin{definicion}{Relación de equivalencia}{releq}
+Una relación $R$ sobre $A$ es una \textbf{relación de equivalencia} si es reflexiva, simétrica y transitiva. La \textbf{clase de equivalencia} de $a \in A$ es $[a]_R = \{b \in A \mid a \mathrel{R} b\}$.
+\end{definicion}
+
+\begin{proposicion}{Equivalencia y partición}{eqpart}
+Si $R$ es una relación de equivalencia sobre $A$, entonces las clases de equivalencia forman una \textbf{partición} de $A$: son subconjuntos no vacíos, mutuamente disjuntos, cuya unión es $A$.
+\end{proposicion}
+
+\begin{proof}
+\textbf{No vacías:} Por reflexividad, $a \in [a]_R$ para todo $a$. \quad \textbf{Disjuntas:} Si $[a]_R \cap [b]_R \neq \emptyset$, sea $c$ en la intersección. Entonces $c \mathrel{R} a$ y $c \mathrel{R} b$; por simetría y transitividad, $a \mathrel{R} b$, de donde $[a]_R = [b]_R$. \quad \textbf{Cubren $A$:} Claramente $\bigcup_{a \in A} [a]_R = A$.
+\end{proof}
+
+% ===========================================================
+\section{Órdenes parciales y totales}
+% ===========================================================
+
+\subsection{Preórdenes y órdenes parciales}
+
+\begin{definicion}{Preorden}{preorden}
+Una relación $\leq$ sobre $A$ es un \textbf{preorden} (o \textbf{cuasiorden}) si es reflexiva y transitiva. El par $(A, \leq)$ se llama un \textbf{conjunto proordenado}.
+\end{definicion}
+
+\begin{definicion}{Orden parcial}{ordparcial}
+Una relación $\leq$ sobre $A$ es un \textbf{orden parcial} (o \textbf{orden parcial no estricto}) si es:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Reflexiva:} $\forall a,\; a \leq a$.
+  \item \textbf{Antisimétrica:} $\forall a,b,\; (a \leq b \wedge b \leq a) \to a = b$.
+  \item \textbf{Transitiva:} $\forall a,b,c,\; (a \leq b \wedge b \leq c) \to a \leq c$.
+\end{enumerate}
+El par $(A, \leq)$ se llama un \textbf{conjunto parcialmente ordenado} o \textbf{poset}.
+
+La relación \textbf{estricta asociada} es $a < b \iff a \leq b \wedge a \neq b$.
+\end{definicion}
+
+\begin{definicion}{Orden parcial estricto}{ordparcest}
+Una relación $<$ sobre $A$ es un \textbf{orden parcial estricto} si es:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Irreflexiva:} $\forall a,\; \neg(a < a)$.
+  \item \textbf{Transitiva:} $\forall a,b,c,\; (a < b \wedge b < c) \to a < c$.
+\end{enumerate}
+Nótese que la transitividad y la irreflexividad implican la asimetría.
+\end{definicion}
+
+\begin{proposicion}{Correspondencia entre órdenes estrictos y no estrictos}{estrictonoestricto}
+Existe una correspondencia biunívoca entre órdenes parciales no estrictos y órdenes parciales estrictos sobre un mismo conjunto $A$:
+\[
+  a \leq b \;\iff\; a < b \vee a = b.
+\]
+Si $\leq$ es un orden parcial no estricto, la relación $<$ definida así es un orden parcial estricto; y recíprocamente.
+\end{proposicion}
+
+\begin{proof}
+($\Rightarrow$) Sean $a < b$ y $b < c$. Entonces $a \leq b$ y $b \leq c$, luego $a \leq c$ por transitividad. Además, $a \neq b$ y $b \neq c$; si fuera $a = c$, entonces $a \leq b \leq a$ y por antisimetría $a = b$, contradicción. Luego $a < c$. La irreflexividad de $<$ es inmediata: $a \leq a$ junto con la antisimetría solo da $a = a$, no $a < a$.
+
+($\Leftarrow$) Sea $\leq$ la relación definida por $a \leq b \iff a < b \vee a = b$. Reflexividad: $a = a$, luego $a \leq a$. Antisimetría: si $a \leq b$ y $b \leq a$, entonces o bien $a = b$ (y estamos listos) o bien $a < b$ y ($b < a$ o $b = a$). Si $a < b$ y $b < a$, por transitividad $a < a$, contradicción con la irreflexividad. Luego $a = b$. Transitividad: análoga.
+\end{proof}
+
+\begin{ejemplo}{Posets fundamentales}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $(\mathbb{N}, \leq)$ con el orden usual. Es un orden parcial (de hecho, total). Los elementos $2, 3$ son comparables: $2 < 3$.
+
+  \item $(\mathcal{P}(\{1,2,3\}), \subseteq)$. Es un orden parcial pero no total: $\{1,2\}$ y $\{1,3\}$ son incomparables (ninguno contiene al otro). El diagrama de Hasse de este poset tiene la forma de un cubo.
+
+  \item $(\mathbb{Z}^+, \mid)$ con la divisibilidad. Es un orden parcial. Los elementos $4$ y $6$ son incomparables ($4 \nmid 6$ y $6 \nmid 4$), pero $2 \mid 4$ y $2 \mid 6$, de modo que $2$ es una cota inferior común.
+
+  \item $(\mathbb{R}, \leq)$ con el orden usual. Es un orden total pero no un bien-orden: el subconjunto $(0,1)$ no tiene elemento mínimo.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{definicion}{Elementos notables en un poset}{notables}
+Sea $(A, \leq)$ un poset. Un elemento $a \in A$ es:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Mínimo} (o \textbf{menor elemento}): $\forall b \in A,\; a \leq b$.
+  \item \textbf{Máximo} (o \textbf{mayor elemento}): $\forall b \in A,\; b \leq a$.
+  \item \textbf{Minimal}: $\nexists b \in A,\; b < a$.
+  \item \textbf{Maximal}: $\nexists b \in A,\; a < b$.
+  \item \textbf{Cota inferior} de $S \subseteq A$: $\forall b \in S,\; a \leq b$.
+  \item \textbf{Ínfimo} (o \textbf{mayor cota inferior}) de $S$: cota inferior $a$ tal que $b \leq a$ para toda cota inferior $b$.
+  \item \textbf{Supremo} (o \textbf{menor cota superior}) de $S$: simétricamente.
+\end{itemize}
+\end{definicion}
+
+\begin{observacion}{Mínimo vs.\ minimal}{minvsmin}
+Todo mínimo es minimal, pero no todo minimal es mínimo. En $(\mathcal{P}(\{1,2,3\}) \setminus \{\emptyset\}, \subseteq)$, los conjuntos $\{1\}$, $\{2\}$ y $\{3\}$ son todos minimales, pero ninguno es mínimo (porque son incomparables entre sí). En $(\mathcal{P}(\{1,2,3\}), \subseteq)$, el conjunto $\emptyset$ es el único mínimo.
+\end{observacion}
+
+\subsection{Órdenes totales (órdenes lineales)}
+
+\begin{definicion}{Orden total (lineal)}{ordtotal}
+Un orden parcial $\leq$ sobre $A$ es un \textbf{orden total} (o \textbf{lineal}) si satisface adicionalmente la propiedad de \textbf{totalidad}:
+\[
+  \forall a,b \in A,\quad a \leq b \;\vee\; b \leq a.
+\]
+El par $(A, \leq)$ se llama \textbf{cadena} o \textbf{conjunto totalmente ordenado}.
+
+De manera equivalente, en la versión estricta, $<$ satisface la \textbf{tricotomía}:
+\[
+  \forall a,b \in A,\quad a < b \;\vee\; a = b \;\vee\; b < a.
+\]
+\end{definicion}
+
+\begin{ejemplo}{Órdenes totales y órdenes no totales}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $(\mathbb{N}, \leq)$, $(\mathbb{Z}, \leq)$, $(\mathbb{Q}, \leq)$ y $(\mathbb{R}, \leq)$ son órdenes totales.
+
+  \item $(\mathcal{P}(X), \subseteq)$ para $|X| \geq 2$ \emph{no} es un orden total. Por ejemplo, $\{a\}$ y $\{b\}$ ($a \neq b$) son incomparables.
+
+  \item El \textbf{orden lexicográfico} en $\mathbb{Z}^2$: $(a_1, a_2) \leq_{\mathrm{lex}} (b_1, b_2)$ si $a_1 < b_1$, o bien $a_1 = b_1$ y $a_2 \leq b_2$. Es un orden total sobre $\mathbb{Z}^2$.
+
+  \item El \textbf{orden lexicográfico} en las cadenas finitas de $\{0,1\}^*$ extiende la idea del diccionario y es un orden total (si las cadenas tienen longitud fija) o un preorden (si pueden tener distinta longitud).
+\end{enumerate}
+\end{ejemplo}
+
+\begin{proposicion}{Caracterización de cadenas en posets}{cadenas}
+Sea $(A, \leq)$ un poset. Un subconjunto $C \subseteq A$ es una \textbf{cadena en $A$} si la restricción de $\leq$ a $C$ es un orden total. Equivalentemente, cualesquiera dos elementos de $C$ son comparables.
+\end{proposicion}
+
+\begin{ejemplo}{Lema de Zorn como herramienta}{}
+Recordando el Lema de Zorn de la Clase~2: si $(A, \leq)$ es un poset no vacío tal que toda cadena en $A$ tiene una cota superior en $A$, entonces $A$ tiene un elemento maximal. Este lema es equivalente al Axioma de Elección y se usará con frecuencia para demostrar la existencia de bien-órdenes.
+\end{ejemplo}
+
+% ===========================================================
+\section{Conjuntos bien ordenados}
+% ===========================================================
+
+\subsection{Definición y primeras propiedades}
+
+\begin{definicion}{Conjunto bien ordenado}{biorden}
+Un orden total $(A, <)$ es un \textbf{bien-orden} (o \textbf{buena ordenación}) si satisface la propiedad de \textbf{buen orden}: todo subconjunto no vacío de $A$ tiene un \textbf{elemento mínimo}. Formalmente:
+\[
+  \forall S \subseteq A,\; \bigl(S \neq \emptyset \to \exists m \in S\,\forall s \in S\,(m \leq s)\bigr).
+\]
+El par $(A, <)$ se llama un \textbf{conjunto bien ordenado}.
+\end{definicion}
+
+\begin{observacion}{El elemento mínimo es único}{minunico}
+En un orden total, el elemento mínimo de un subconjunto no vacío, cuando existe, es \emph{único}. En efecto, si $m$ y $m'$ son ambos mínimos de $S$, entonces $m \leq m'$ y $m' \leq m$, luego $m = m'$ por antisimetría.
+\end{observacion}
+
+\begin{ejemplo}{Conjuntos bien ordenados y no bien ordenados}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $(\mathbb{N}, \leq)$ es un conjunto bien ordenado: todo subconjunto no vacío de $\mathbb{N}$ tiene un mínimo. Este es el \emph{principio del buen orden de los naturales}, equivalente a la inducción matemática ordinaria.
+
+  \item $(\mathbb{Z}, \leq)$ \emph{no} es un bien-orden: el subconjunto $\mathbb{Z}$ mismo no tiene mínimo (para cualquier $n \in \mathbb{Z}$, se tiene $n-1 < n$).
+
+  \item $(\mathbb{Q} \cap [0,1], \leq)$ \emph{no} es un bien-orden: el subconjunto $(0,1) \cap \mathbb{Q}$ no tiene mínimo.
+
+  \item $(\mathbb{R}_{\geq 0}, \leq)$ \emph{no} es un bien-orden: el subconjunto $(0, +\infty)$ no tiene mínimo.
+
+  \item El conjunto $\{0, 1, 2, \ldots, \omega, \omega+1\}$ con el orden que extiende $\mathbb{N}$ poniendo todos los naturales antes de $\omega$ y $\omega < \omega+1$ es un bien-orden. (Veremos esto con precisión cuando definamos los ordinales.)
+
+  \item \textbf{Orden antiléxico en $\mathbb{N}^2$:} $(m_1, n_1) \prec (m_2, n_2)$ si $m_1 + n_1 < m_2 + n_2$, o bien $m_1 + n_1 = m_2 + n_2$ y $m_1 < m_2$. Se puede verificar que $(\mathbb{N}^2, \prec)$ es un bien-orden. Los primeros elementos son:
+  \[
+    (0,0) \prec (1,0) \prec (0,1) \prec (2,0) \prec (1,1) \prec (0,2) \prec (3,0) \prec \cdots
+  \]
+\end{enumerate}
+\end{ejemplo}
+
+\begin{proposicion}{El bien orden implica buen fundamento}{bienfund}
+Todo conjunto bien ordenado $(A, <)$ es \textbf{bien fundado}: no existen cadenas descendentes infinitas en $A$, es decir, no existe ninguna sucesión $(a_n)_{n \in \mathbb{N}}$ con $a_0 > a_1 > a_2 > \cdots$
+\end{proposicion}
+
+\begin{proof}
+Supongamos que existe una cadena descendente $a_0 > a_1 > a_2 > \cdots$\ El conjunto $S = \{a_n \mid n \in \mathbb{N}\}$ es un subconjunto no vacío de $A$. Por la propiedad de buen orden, $S$ tiene un elemento mínimo $m = a_k$ para algún $k$. Pero entonces $a_{k+1} < a_k = m$ y $a_{k+1} \in S$, lo que contradice que $m$ sea el mínimo de $S$.
+\end{proof}
+
+\begin{proposicion}{El bien orden implica orden total}{biord-total}
+Si $(A, <)$ es un bien-orden, entonces $(A, <)$ es un orden total.
+\end{proposicion}
+
+\begin{proof}
+Sean $a, b \in A$ con $a \neq b$. El conjunto $\{a, b\}$ es no vacío, luego tiene un mínimo: o $a < b$ o $b < a$. En cualquier caso, $a$ y $b$ son comparables.
+\end{proof}
+
+\begin{teorema}{Principio del mínimo y buen orden}{minbien}
+Sea $(A, <)$ un orden total. Las siguientes afirmaciones son equivalentes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $(A, <)$ es un bien-orden.
+  \item \textbf{Principio del mínimo:} toda propiedad $\varphi$ que se cumple para algún elemento de $A$ se cumple para algún elemento mínimo con respecto a esa propiedad, es decir:
+  \[
+    \exists a \in A\,\varphi(a) \;\implies\; \exists m \in A\,\bigl(\varphi(m) \wedge \forall b < m,\, \neg\varphi(b)\bigr).
+  \]
+  \item \textbf{Principio de inducción:} si $P \subseteq A$ satisface
+  \[
+    \forall a \in A,\; \bigl(\forall b < a,\; b \in P\bigr) \to a \in P,
+  \]
+  entonces $P = A$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{(i) $\Rightarrow$ (ii):} Dado $a \in A$ con $\varphi(a)$, el conjunto $S = \{x \in A \mid \varphi(x)\}$ es no vacío (contiene a $a$). Como $(A,<)$ es un bien-orden, $S$ tiene un mínimo $m$, que satisface $\varphi(m)$ y $\neg\varphi(b)$ para todo $b < m$.
+
+\textbf{(ii) $\Rightarrow$ (iii):} Sea $P \subseteq A$ satisfaciendo la hipótesis de inducción. Supongamos que $P \neq A$, es decir, $A \setminus P \neq \emptyset$. Sea $\varphi(a) = (a \notin P)$. Por (ii), existe $m$ con $m \notin P$ y $b \in P$ para todo $b < m$. Pero entonces la hipótesis inductiva aplicada a $m$ daría $m \in P$, contradicción.
+
+\textbf{(iii) $\Rightarrow$ (i):} Sea $S \subseteq A$ no vacío; queremos mostrar que $S$ tiene un mínimo. Definamos $P = \{a \in A \mid a \notin S\} \cup \{a \in A \mid a \text{ es el mínimo de } S\}$. Un argumento cuidadoso, usando la propiedad (iii) con $P = A \setminus S$ y el hecho de que $S \neq \emptyset$, muestra que el primer elemento de $S$ que «se alcanza» es el mínimo. Formalmente: si $P = \{a \in A \mid \forall b \leq a,\, b \notin S\}$, la hipótesis (iii) implica que o $P = A$ (lo que sería vacíamente posible solo si $S = \emptyset$) o existe un mínimo en $S$.
+\end{proof}
+
+\begin{observacion}{Equivalencia con inducción ordinaria}{equivind}
+Para $A = \mathbb{N}$, la equivalencia del Teorema~\ref{teo:minbien} recupera la equivalencia clásica entre:
+\begin{itemize}[leftmargin=2em]
+  \item El principio del buen orden de $\mathbb{N}$ (todo subconjunto no vacío tiene mínimo).
+  \item El principio de inducción matemática fuerte (si la verdad de $P(n)$ se sigue de $P(k)$ para todo $k < n$, entonces $P$ vale para todos los naturales).
+\end{itemize}
+La inducción transfinita generaliza exactamente este esquema a ordinales arbitrarios.
+\end{observacion}
+
+\subsection{Ejemplos desarrollados de bien-órdenes}
+
+\begin{ejemplo}{El bien-orden de $\mathbb{N} \times \mathbb{N}$}{}
+Definimos el \textbf{orden lexicográfico} en $\mathbb{N} \times \mathbb{N}$:
+\[
+  (m_1, n_1) <_{\mathrm{lex}} (m_2, n_2) \;\iff\; m_1 < m_2, \text{ o } (m_1 = m_2 \text{ y } n_1 < n_2).
+\]
+\textbf{Afirmación:} $(\mathbb{N} \times \mathbb{N}, <_{\mathrm{lex}})$ es un bien-orden.
+
+\textbf{Demostración:} Sea $S \subseteq \mathbb{N} \times \mathbb{N}$ no vacío. Sea $S_1 = \{m \in \mathbb{N} \mid \exists n, (m,n) \in S\}$. Como $S_1 \subseteq \mathbb{N}$ es no vacío, tiene un mínimo $m_0$. Sea $S_2 = \{n \in \mathbb{N} \mid (m_0, n) \in S\}$. Como $S_2 \subseteq \mathbb{N}$ es no vacío, tiene un mínimo $n_0$. Entonces $(m_0, n_0)$ es el elemento mínimo de $S$ en el orden lexicográfico.
+\end{ejemplo}
+
+\begin{ejemplo}{El bien-orden en cadenas de longitud fija}{}
+Sea $\Sigma = \{0, 1\}$ y sea $\Sigma^n = \{0,1\}^n$ el conjunto de cadenas binarias de longitud $n$. El orden lexicográfico en $\Sigma^n$ (comparando coordenada a coordenada) es un bien-orden. Además, el orden lexicográfico en $\Sigma^* = \bigcup_{n \in \mathbb{N}} \Sigma^n$ puede extenderse a un bien-orden de $\Sigma^*$ ordenando primero por longitud y luego lexicográficamente.
+\end{ejemplo}
+
+% ===========================================================
+\section{Segmentos iniciales e isomorfismos de orden}
+% ===========================================================
+
+\subsection{Segmentos iniciales}
+
+\begin{definicion}{Segmento inicial}{seginicial}
+Sea $(A, <)$ un conjunto ordenado. Un subconjunto $I \subseteq A$ es un \textbf{segmento inicial} (o \textbf{sección inicial}) de $A$ si es \emph{cerrado hacia abajo}:
+\[
+  \forall a \in I,\; \forall b \in A,\; b < a \;\implies\; b \in I.
+\]
+Un segmento inicial $I$ es \textbf{propio} si $I \neq A$.
+\end{definicion}
+
+\begin{ejemplo}{Segmentos iniciales en distintos órdenes}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item En $(\mathbb{N}, <)$, los segmentos iniciales son exactamente $\emptyset$ y los conjuntos $\{0, 1, \ldots, n-1\}$ para $n \in \mathbb{N}$, junto con $\mathbb{N}$ mismo.
+
+  \item En $(\mathbb{R}, <)$, los segmentos iniciales son los intervalos $(-\infty, a)$ y $(-\infty, a]$ para $a \in \mathbb{R}$, junto con $\emptyset$ y $\mathbb{R}$.
+
+  \item En $(\mathcal{P}(\{1,2,3\}), \subsetneq)$ (como orden parcial), el conjunto $\{\emptyset, \{1\}, \{2\}\}$ \emph{no} es un segmento inicial porque $\{1,2\} \supset \{1\}$ pero $\{1,2\} \notin \{\emptyset,\{1\},\{2\}\}$. En cambio, $\{\emptyset, \{1\}, \{2\}, \{1,2\}\}$ sí lo es.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{definicion}{Segmento inicial generado por un elemento}{seginelem}
+Sea $(A, <)$ un conjunto ordenado y $a \in A$. El \textbf{segmento inicial generado por $a$} (o \textbf{sección de $a$}) es el conjunto
+\[
+  s(a) \;=\; \mathrm{pred}(a) \;=\; \{b \in A \mid b < a\}.
+\]
+\end{definicion}
+
+\begin{observacion}{Los segmentos iniciales propios en bien-órdenes}{propbien}
+En un bien-orden $(A, <)$, los segmentos iniciales propios son exactamente los conjuntos de la forma $s(a) = \{b \in A \mid b < a\}$ para algún $a \in A$. Esto se demuestra a continuación.
+\end{observacion}
+
+\begin{teorema}{Caracterización de segmentos iniciales en bien-órdenes}{caract-segin}
+Sea $(A, <)$ un bien-orden. Un subconjunto propio $I \subsetneq A$ es un segmento inicial de $A$ si y solo si $I = s(a)$ para algún $a \in A$ (el único $a$ tal que $I = s(a)$ es $a = \min(A \setminus I)$).
+\end{teorema}
+
+\begin{proof}
+\textbf{($\Leftarrow$)} $s(a)$ es un segmento inicial: si $b \in s(a)$ y $c < b$, entonces $c < b < a$ luego $c < a$ por transitividad, de modo que $c \in s(a)$. Y $s(a) \neq A$ porque $a \notin s(a)$.
+
+\textbf{($\Rightarrow$)} Sea $I \subsetneq A$ un segmento inicial propio. El conjunto $A \setminus I$ es no vacío; como $(A,<)$ es un bien-orden, tiene un mínimo $a = \min(A \setminus I)$.
+
+\emph{Afirmamos que $I = s(a)$.}
+\begin{itemize}[leftmargin=2em]
+  \item $I \subseteq s(a)$: Si $b \in I$, entonces $b \notin A \setminus I$, luego $b \neq a$ y $b \not\geq a$ (pues $a$ es el mínimo de $A \setminus I$). Por totalidad del orden, $b < a$, es decir, $b \in s(a)$.
+  \item $s(a) \subseteq I$: Si $b < a$, entonces $b \notin A \setminus I$ (pues $a = \min(A \setminus I)$), luego $b \in I$.
+\end{itemize}
+Por tanto $I = s(a)$. La unicidad de $a$ es clara: si $s(a) = s(a')$ con $a \neq a'$, entonces (suponiendo $a < a'$) tendríamos $a \in s(a') = s(a)$, lo que daría $a < a$, contradicción.
+\end{proof}
+
+\begin{corolario}{Ningún bien-orden es isomorfo a un segmento inicial propio suyo}{nobien-iso}
+Sea $(A, <)$ un bien-orden. Entonces $A$ no es isomorfo (como orden) a ningún segmento inicial propio $s(a)$ con $a \in A$.
+\end{corolario}
+
+\begin{proof}
+Ver Teorema~\ref{teo:unicidadiso} más adelante.
+\end{proof}
+
+\subsection{Isomorfismos de orden}
+
+\begin{definicion}{Homomorfismo e isomorfismo de orden}{isoord}
+Sean $(A, <_A)$ y $(B, <_B)$ dos conjuntos ordenados. Una función $f: A \to B$ es:
+\begin{itemize}[leftmargin=2em]
+  \item Un \textbf{homomorfismo de orden} (o \textbf{función estrictamente creciente}) si preserva el orden: $a <_A a' \implies f(a) <_B f(a')$.
+  \item Un \textbf{isomorfismo de orden} si es una biyección y preserva el orden en ambas direcciones:
+  \[
+    a <_A a' \;\iff\; f(a) <_B f(a').
+  \]
+\end{itemize}
+Se escribe $(A, <_A) \cong (B, <_B)$ cuando existe un isomorfismo de orden entre $A$ y $B$.
+\end{definicion}
+
+\begin{observacion}{Todo homomorfismo estrictamente creciente es inyectivo}{homoinj}
+Si $f: A \to B$ es estrictamente creciente y $a \neq a'$ en $A$, entonces o $a < a'$ (luego $f(a) < f(a')$ y $f(a) \neq f(a')$) o $a' < a$ (simétricamente). Luego $f$ es inyectiva.
+\end{observacion}
+
+\begin{proposicion}{Inversa de un isomorfismo de orden}{inviso}
+Si $f: (A, <_A) \to (B, <_B)$ es un isomorfismo de orden, entonces su inversa $f^{-1}: B \to A$ también es un isomorfismo de orden.
+\end{proposicion}
+
+\begin{proof}
+Como $f$ es biyección, $f^{-1}$ existe y es biyección. Sean $b, b' \in B$ con $b <_B b'$. Sean $a = f^{-1}(b)$ y $a' = f^{-1}(b')$. Por la propiedad de $f$: $a <_A a'$ (de lo contrario $f(a) \geq_B f(a')$, contradiciendo $b <_B b'$). Luego $f^{-1}(b) <_A f^{-1}(b')$.
+\end{proof}
+
+\begin{ejemplo}{Isomorfismos de orden entre órdenes conocidos}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $(\mathbb{N}, <) \cong (\mathbb{N}_{\text{par}}, <)$ donde $\mathbb{N}_{\text{par}} = \{0, 2, 4, \ldots\}$, mediante $f(n) = 2n$.
+
+  \item $(\mathbb{Q} \cap (0,1), <) \cong (\mathbb{Q}, <)$: la función $f(q) = \tan(\pi q - \pi/2)$ es un isomorfismo de orden (de $\mathbb{Q} \cap (0,1)$ en su imagen, que es densa en $\mathbb{R}$; pero aquí se usa una biyección explícita que preserva el orden racional, cuya construcción requiere la teoría de DLO).
+
+  \item $(\{0,1,2\}, <) \ncong (\{0,1,2,3\}, <)$: el primer conjunto tiene $3$ elementos y el segundo $4$; como un isomorfismo es una biyección, no pueden ser isomorfos.
+
+  \item $(\omega, <)$ (naturales con orden usual) $\ncong$ $(\omega + 1, <)$ (que incluye un elemento $\omega$ mayor que todos los naturales): el segundo tiene un elemento máximo, el primero no; un isomorfismo preservaría la propiedad de tener máximo, luego no pueden ser isomorfos.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Teoremas fundamentales sobre isomorfismos de bien-órdenes}
+
+Los siguientes teoremas son los resultados más importantes de esta clase y prepararan directamente la definición de número ordinal.
+
+\begin{teorema}{Rigidez de los bien-órdenes}{rigidez}
+Sea $(A, <)$ un bien-orden. El único isomorfismo de orden de $A$ en sí mismo (automorfismo) es la identidad.
+\end{teorema}
+
+\begin{proof}
+Sea $f: A \to A$ un isomorfismo de orden. Supongamos que $f \neq \mathrm{id}_A$. Sea $S = \{a \in A \mid f(a) \neq a\}$, que por hipótesis es no vacío. Como $(A,<)$ es un bien-orden, $S$ tiene un mínimo $m$.
+
+Como $f$ es isomorfismo, $m$ y $f(m)$ son comparables. Distinguimos casos:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Caso $f(m) < m$:} Sea $b = f(m) < m$. Como $b < m$, por minimalidad de $m$, $b \notin S$, es decir, $f(b) = b$. Pero $f(f(m)) = f(b) = b = f(m)$, y como $f$ es inyectiva, $f(m) = m$, contradicción.
+  \item \textbf{Caso $f(m) > m$:} Sea $b = f(m) > m$. Tenemos $f(m) = b$ y aplicando $f$: $f(b) = f(f(m))$. Como $f$ preserva el orden y $m < b$, $f(m) < f(b)$, es decir, $b < f(b)$, lo que significa $f(b) > b$, luego $f(b) \neq b$ y $b \in S$. Pero $b > m$, contradiciendo que $m$ es el mínimo de $S$.
+\end{itemize}
+En ambos casos llegamos a una contradicción. Luego $S = \emptyset$ y $f = \mathrm{id}_A$.
+\end{proof}
+
+\begin{teorema}{Unicidad del isomorfismo entre bien-órdenes}{unicidadiso}
+Sean $(A, <_A)$ y $(B, <_B)$ bien-órdenes. Existe \textbf{a lo sumo un} isomorfismo de orden $f: A \to B$.
+\end{teorema}
+
+\begin{proof}
+Si $f, g: A \to B$ son isomorfismos de orden, entonces $g^{-1} \circ f: A \to A$ es un automorfismo del bien-orden $A$. Por el Teorema~\ref{teo:rigidez}, $g^{-1} \circ f = \mathrm{id}_A$, luego $f = g$.
+\end{proof}
+
+\begin{teorema}{Tricotomía de bien-órdenes}{tricobien}
+Sean $(A, <_A)$ y $(B, <_B)$ bien-órdenes. Se cumple exactamente una de las siguientes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $(A, <_A) \cong (B, <_B)$ (son isomorfos).
+  \item $(A, <_A) \cong (s_B(b), <_B)$ para algún $b \in B$ (es isomorfo a un segmento inicial propio de $B$).
+  \item $(B, <_B) \cong (s_A(a), <_A)$ para algún $a \in A$ (es isomorfo a un segmento inicial propio de $A$).
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+Consideremos el conjunto de todas las funciones de orden entre segmentos iniciales de $A$ y segmentos iniciales de $B$:
+\[
+  \mathcal{F} = \{f: s_A(a) \to s_B(b) \mid f \text{ es isomorfismo de orden, } a \in A \cup \{A\},\, b \in B \cup \{B\}\}.
+\]
+La unión $F = \bigcup_{f \in \mathcal{F}} f$ (como conjunto de pares) es una función (pues dos isomorfismos en $\mathcal{F}$ que coincidan en un punto coinciden en todo su dominio, por la unicidad). Sea $D = \mathrm{dom}(F)$ y $R = \mathrm{ran}(F)$.
+
+\textbf{$D$ es un segmento inicial de $A$:} Si $a' \in D$ y $a <_A a'$, entonces $a \in \mathrm{dom}(f)$ para cualquier $f \in \mathcal{F}$ con $a' \in \mathrm{dom}(f)$, luego $a \in D$.
+
+\textbf{$R$ es un segmento inicial de $B$:} Simétricamente.
+
+\textbf{$F: D \to R$ es un isomorfismo de orden.}
+
+Por el Teorema~\ref{teo:caract-segin}, $D = A$ o $D = s_A(a_0)$ para algún $a_0$; análogamente $R = B$ o $R = s_B(b_0)$. Si $D = s_A(a_0)$ y $R = s_B(b_0)$, entonces $F$ se extiende mapeando $a_0 \mapsto b_0$, contradiciendo la maximalidad. Luego se cumple exactamente una de las tres opciones del enunciado.
+\end{proof}
+
+\begin{corolario}{Ningún bien-orden es isomorfo a un segmento inicial propio suyo}{nobienisopropio}
+Si $(A, <)$ es un bien-orden y $a \in A$, entonces $A \ncong s(a)$.
+\end{corolario}
+
+\begin{proof}
+Si $f: A \to s(a)$ fuera un isomorfismo, como $s(a) \subsetneq A$, definiríamos $g: A \to A$ como $g = \iota \circ f$ donde $\iota: s(a) \hookrightarrow A$ es la inclusión. Entonces $g$ sería un homomorfismo estrictamente creciente de $A$ en $A$ con imagen contenida en $s(a)$. En particular $g(a) < a$. Pero por inducción sobre el bien-orden (aplicando el principio del mínimo al conjunto $\{x \in A \mid g(x) < x\}$ y notando que si $g(x) < x$ para el mínimo tal $x$, obtenemos $g(g(x)) < g(x) < x$, contradiciendo la minimalidad de $x$) se puede mostrar que cualquier tal función satisface $g(x) \geq x$ para todo $x$. Contradicción.
+\end{proof}
+
+% ===========================================================
+\section{Inducción transfinita: introducción preliminar}
+% ===========================================================
+
+\subsection{Motivación: más allá de los naturales}
+
+La inducción matemática ordinaria en $\mathbb{N}$ afirma que si una propiedad $P$ es verdadera para $0$ y se hereda al sucesor (de $P(n)$ se sigue $P(n+1)$), entonces $P$ es verdadera para todos los naturales. Esta es una consecuencia directa del buen orden de $\mathbb{N}$.
+
+El \textbf{principio de inducción transfinita} generaliza esta idea a cualquier conjunto bien ordenado, y en particular a los números ordinales que definiremos en la Clase~4. Lo enunciamos aquí en su versión general.
+
+\subsection{El principio de inducción transfinita}
+
+\begin{teorema}{Principio de inducción transfinita}{induct-transfinita}
+Sea $(A, <)$ un bien-orden y sea $P \subseteq A$ un subconjunto tal que
+\[
+  \forall a \in A,\quad \bigl(\forall b \in A,\; b < a \implies b \in P\bigr) \;\implies\; a \in P.
+\]
+Entonces $P = A$.
+\end{teorema}
+
+\begin{proof}
+Este es precisamente el principio (iii) del Teorema~\ref{teo:minbien}, cuya equivalencia con el buen orden ya demostramos. La hipótesis dice que $P$ contiene a $a$ siempre que $P$ contiene a todos los predecesores de $a$. Si $P \neq A$, el conjunto $A \setminus P$ es no vacío y tiene un mínimo $m$. Por la hipótesis de inducción aplicada a $m$: todo $b < m$ satisface $b \in P$ (pues $m$ es el mínimo de $A \setminus P$). Pero entonces la condición del enunciado da $m \in P$, contradicción.
+\end{proof}
+
+\begin{observacion}{Tres formas de la inducción transfinita}{tresformas}
+Al igual que en la inducción ordinaria, la inducción transfinita suele presentarse en tres formas, dependiendo del tipo de conjunto bien ordenado:
+\begin{enumerate}[leftmargin=2em, label=(\arabic*)]
+  \item \textbf{Forma básica (válida para cualquier bien-orden):} La enunciada en el Teorema~\ref{teo:induct-transfinita}.
+
+  \item \textbf{Forma para ordinales con distinción de tipos:} Cuando el bien-orden es el de los ordinales, los elementos se clasifican en \emph{ordinales sucesor} ($\alpha = \beta + 1$) y \emph{ordinales límite} (no son el sucesor de ningún otro). En este caso, la inducción transfinita tiene tres pasos:
+  \begin{itemize}[leftmargin=2em]
+    \item \textbf{Caso base:} Demostrar $P(0)$.
+    \item \textbf{Paso sucesor:} Demostrar que $P(\alpha) \implies P(\alpha+1)$.
+    \item \textbf{Paso límite:} Demostrar que si $P(\beta)$ para todo $\beta < \lambda$ (donde $\lambda$ es un ordinal límite), entonces $P(\lambda)$.
+  \end{itemize}
+
+  \item \textbf{Recursión transfinita:} Permite \emph{definir} funciones $f: A \to C$ en un conjunto bien ordenado $A$ especificando el valor $f(a)$ en términos de los valores $\{f(b) \mid b < a\}$ ya calculados. Esto se tratará con detalle en la Clase~4.
+\end{enumerate}
+\end{observacion}
+
+\begin{ejemplo}{Aplicación de la inducción transfinita: propiedades de $\mathbb{N}$}{}
+Demostraremos que $\forall n \in \mathbb{N},\; n + 0 = n$ usando inducción transfinita (que para $\mathbb{N}$ coincide con la inducción fuerte).
+
+Sea $P = \{n \in \mathbb{N} \mid n + 0 = n\}$. Supongamos que $P$ contiene a todos los predecesores de $n$ (es decir, a todos los $k < n$); debemos mostrar que $n \in P$.
+\begin{itemize}[leftmargin=2em]
+  \item Si $n = 0$: $0 + 0 = 0$ por definición de la suma (caso base).
+  \item Si $n = k+1$ para algún $k$: tenemos $k \in P$ por hipótesis, es decir, $k + 0 = k$. Entonces $(k+1) + 0 = k + 0 + 1 = k + 1$ (usando la recursión de la suma).
+\end{itemize}
+Por inducción transfinita, $P = \mathbb{N}$.
+\end{ejemplo}
+
+\begin{ejemplo}{Primer ejemplo transfinito: ordenar $\mathbb{N} \cup \{\omega\}$}{}
+Consideremos el conjunto $A = \mathbb{N} \cup \{\omega\}$ con el orden $n < \omega$ para todo $n \in \mathbb{N}$ y el orden usual en $\mathbb{N}$. Verifiquemos que $(A, <)$ es un bien-orden.
+
+Sea $S \subseteq A$ no vacío. Si $S \cap \mathbb{N} \neq \emptyset$, entonces $S \cap \mathbb{N}$ tiene un mínimo $m$ en $\mathbb{N}$ (pues $(\mathbb{N}, <)$ es un bien-orden); como todo $n \in \mathbb{N}$ satisface $n < \omega$, el elemento $m$ es también el mínimo de $S$ en $A$. Si $S \cap \mathbb{N} = \emptyset$, entonces $S = \{\omega\}$, cuyo único elemento es $\omega$, que es trivialmente el mínimo.
+
+Ahora realizamos inducción transfinita para mostrar que toda propiedad hereditaria se cumple en $A$. Sea $P \subseteq A$ con la propiedad: para todo $a \in A$, si $P$ contiene a todos los predecesores de $a$ entonces $a \in P$.
+\begin{itemize}[leftmargin=2em]
+  \item Para $0 \in \mathbb{N}$: $0$ no tiene predecesores, luego la hipótesis es vacuamente cierta, y $0 \in P$.
+  \item Para $n+1 \in \mathbb{N}$: los predecesores de $n+1$ son $0,1,\ldots,n$. Si todos están en $P$, en particular $n \in P$; si la hipótesis dice que de $P(n)$ se sigue $P(n+1)$, concluimos.
+  \item Para $\omega$: los predecesores de $\omega$ son todos los naturales. Si $\mathbb{N} \subseteq P$, la hipótesis da $\omega \in P$.
+\end{itemize}
+Luego $P = A$. Este es un ejemplo concreto de inducción transfinita que va \emph{más allá} de los naturales.
+\end{ejemplo}
+
+\subsection{Recursión transfinita (enunciado)}
+
+\begin{teorema}{Principio de recursión transfinita}{recursion}
+Sea $(A, <)$ un bien-orden y sea $G$ una función que a cada conjunto de la forma $\{(b, f(b)) \mid b < a\}$ (la «historia» de $f$ hasta $a$) le asigna un valor en un conjunto dado $C$. Entonces existe una \textbf{única} función $f: A \to C$ tal que
+\[
+  f(a) = G\bigl(\{(b, f(b)) \mid b < a\}\bigr) \quad \text{para todo } a \in A.
+\]
+\end{teorema}
+
+\begin{proof}
+La demostración completa usa inducción transfinita para construir la función $f$ por etapas, y se estudiará en la Clase~4 junto con su aplicación a la aritmética de ordinales.
+\end{proof}
+
+\begin{importante}
+La inducción transfinita y la recursión transfinita son las herramientas fundamentales de la teoría de ordinales. Permiten definir la suma, el producto y la potencia de ordinales de manera recursiva, extender construcciones de los naturales a todos los ordinales, y demostrar resultados sobre la jerarquía del universo de conjuntos $V = \bigcup_{\alpha} V_\alpha$.
+\end{importante}
+
+% ===========================================================
+\section{El Teorema del Buen Orden revisitado}
+% ===========================================================
+
+\begin{teorema}{Teorema del Buen Orden (Zermelo, 1904)}{teobienord}
+Todo conjunto puede ser bien ordenado. Formalmente, para todo conjunto $A$ existe una relación $<$ sobre $A$ tal que $(A, <)$ es un bien-orden.
+\end{teorema}
+
+\begin{proof}
+La demostración usa el Axioma de Elección en su forma equivalente (se vio en la Clase~2: AC $\iff$ TBO). Presentamos la idea principal.
+
+Sea $A$ un conjunto. Por el Axioma de Elección, existe una función de elección $f: \mathcal{P}(A) \setminus \{\emptyset\} \to A$ con $f(S) \in S$ para todo $S \neq \emptyset$.
+
+Se define inductivamente la enumeración: $a_0 = f(A)$, $a_1 = f(A \setminus \{a_0\})$, y en general $a_\alpha = f(A \setminus \{a_\beta \mid \beta < \alpha\})$ (para ordinales $\alpha$ tales que $A \setminus \{a_\beta \mid \beta < \alpha\} \neq \emptyset$). Este proceso termina en algún ordinal, dando una enumeración bien ordenada de $A$. El detalle técnico requiere la teoría de ordinales que desarrollaremos en la Clase~4.
+\end{proof}
+
+\begin{observacion}{Consecuencias del TBO para la teoría de órdenes}{consTBO}
+El Teorema del Buen Orden implica que todo orden parcial está contenido en un orden total (se puede extender cualquier orden parcial a un orden total), y en particular, todo conjunto tiene al menos un bien-orden. Sin embargo, salvo para conjuntos muy específicos, no existe un procedimiento efectivo para construir dicho bien-orden.
+\end{observacion}
+
+% ===========================================================
+\section{Resumen y conexiones hacia la siguiente clase}
+% ===========================================================
+
+En esta clase hemos construido el marco teórico para la definición de los números ordinales. Los resultados más importantes que debemos recordar son:
+
+\begin{importante}
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item \textbf{Bien-orden $\Leftrightarrow$ Principio del mínimo $\Leftrightarrow$ Inducción transfinita} (Teorema~\ref{teo:minbien}).
+
+  \item \textbf{Los segmentos iniciales propios de un bien-orden son exactamente los $s(a)$} (Teorema~\ref{teo:caract-segin}).
+
+  \item \textbf{Ningún bien-orden es isomorfo a uno de sus segmentos iniciales propios} (Corolario~\ref{cor:nobienisopropio}).
+
+  \item \textbf{Unicidad del isomorfismo:} entre dos bien-órdenes, si existe un isomorfismo de orden, es único (Teorema~\ref{teo:unicidadiso}).
+
+  \item \textbf{Tricotomía de bien-órdenes:} dos bien-órdenes cualesquiera son comparables (uno es isomorfo a un segmento inicial propio del otro, o son isomorfos) (Teorema~\ref{teo:tricobien}).
+\end{enumerate}
+\end{importante}
+
+En la \textbf{Clase~4} usaremos estas propiedades para definir los \emph{números ordinales de von Neumann}: cada ordinal es el conjunto de todos los ordinales menores, y los bien-órdenes dan a cada conjunto un «tipo ordinal» que lo caracteriza salvo isomorfismo.
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+
+  \item \textbf{(Propiedades de relaciones.)}
+  Sea $A = \{1, 2, 3, 4\}$ y sea $R = \{(1,1),(1,2),(2,3),(1,3),(3,4),(2,4),(1,4),(2,2),(3,3),(4,4)\}$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Verifica, directamente desde la definición, que $R$ es reflexiva, antisimétrica y transitiva. Concluye que $(A, R)$ es un poset.
+    \item ¿Es $R$ un orden total? Justifica.
+    \item Dibuja el diagrama de Hasse de $(A, R)$.
+    \item Determina el mínimo, el máximo, los elementos minimales y los maximales (si existen) de $A$.
+  \end{enumerate}
+
+  \item \textbf{(Poset de divisibilidad.)}
+  Considera el conjunto $D_{30} = \{1, 2, 3, 5, 6, 10, 15, 30\}$ (divisores de $30$) con la relación de divisibilidad $\mid$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Verifica que $(D_{30}, \mid)$ es un poset.
+    \item Dibuja el diagrama de Hasse de $(D_{30}, \mid)$.
+    \item Determina, para cada par $\{a,b\} \subseteq D_{30}$, el ínfimo (máximo común divisor) y el supremo (mínimo común múltiplo) en el poset. ¿Es $(D_{30}, \mid)$ un reticulado? (\emph{Recuerda: un reticulado es un poset donde todo par de elementos tiene ínfimo y supremo.})
+    \item ¿Es $(D_{30}, \mid)$ isomorfo (como orden) a $(\mathcal{P}(\{p_1, p_2, p_3\}), \subseteq)$ donde $p_1 = 2$, $p_2 = 3$, $p_3 = 5$ son los factores primos de $30$? Exhibe un isomorfismo o demuestra que no existe.
+  \end{enumerate}
+
+  \item \textbf{(Cadenas y anticiclos.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $(A, \leq)$ un poset. Una \textbf{anticadena} en $A$ es un subconjunto $S \subseteq A$ tal que cualesquiera dos elementos de $S$ son incomparables. Encuentra una anticadena de tamaño máximo en $(\mathcal{P}(\{1,2,3,4\}), \subseteq)$.
+    \item Enuncia y demuestra el \textbf{Teorema de Dilworth}: en cualquier poset finito, el tamaño máximo de una anticadena es igual al número mínimo de cadenas necesarias para cubrir el poset.
+    \item Aplica el Teorema de Dilworth al poset $(D_{30}, \mid)$ del problema anterior.
+  \end{enumerate}
+
+  \item \textbf{(Bien-órdenes: verificación directa.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que el orden lexicográfico en $\mathbb{N}^n$ (cadenas de $n$ naturales, con orden lexicográfico coordinada a coordinada) es un bien-orden, por inducción sobre $n$.
+    \item Demuestra que la unión $A \cup B$ de dos bien-órdenes disjuntos (donde todo elemento de $A$ precede a todo elemento de $B$) es un bien-orden. ¿Es necesaria la condición de disjunción?
+    \item Sea $f: (A, <_A) \to (B, <_B)$ un isomorfismo de orden. Demuestra que si $(B, <_B)$ es un bien-orden, entonces $(A, <_A)$ también lo es.
+  \end{enumerate}
+
+  \item \textbf{(Segmentos iniciales.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $(A, <)$ un bien-orden y sea $I \subseteq A$ un segmento inicial. Demuestra que $(I, <\!\restriction_I)$ también es un bien-orden (donde $<\!\restriction_I$ es la restricción del orden a $I$).
+    \item Sean $I$ y $J$ dos segmentos iniciales de un bien-orden $(A, <)$. Demuestra que $I \subseteq J$ o $J \subseteq I$ (es decir, los segmentos iniciales de un bien-orden forman una cadena bajo inclusión).
+    \item Demuestra que la intersección de cualquier familia de segmentos iniciales es un segmento inicial, y que la unión también lo es.
+    \item Usa el inciso anterior para demostrar que $I = \bigcap\{J \mid J \text{ es segmento inicial y } a \in J\} = s(a) \cup \{a\}$ para todo $a \in A$.
+  \end{enumerate}
+
+  \item \textbf{(Isomorfismos de orden.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que la relación $\cong$ (ser isomorfos como órdenes) es una relación de equivalencia en la clase de conjuntos bien ordenados.
+    \item Sea $f: (A, <_A) \to (B, <_B)$ un homomorfismo de orden inyectivo entre bien-órdenes. Demuestra que $f(A)$ es un segmento inicial de $B$ o $f(A) = B$.
+    \item Usa el Teorema de Tricotomía para demostrar que si $(A, <_A)$ y $(B, <_B)$ son bien-órdenes finitos con $|A| = |B|$, entonces $A \cong B$.
+  \end{enumerate}
+
+  \item \textbf{(Inducción transfinita: aplicaciones.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $(A, <)$ un bien-orden y sea $f: A \to A$ un homomorfismo de orden (no necesariamente biyectivo). Demuestra por inducción transfinita que $f(a) \geq a$ para todo $a \in A$.
+    \item Usa el resultado anterior para probar el Corolario~\ref{cor:nobienisopropio}: ningún bien-orden es isomorfo a uno de sus segmentos iniciales propios.
+    \item Sea $P \subseteq \mathbb{N}$ tal que: (i) $0 \in P$; (ii) si $n \in P$ entonces $n+1 \in P$; (iii) si $n > 0$ y $k \in P$ para todo $k < n$, entonces $n \in P$. Demuestra que $P = \mathbb{N}$ usando el Teorema~\ref{teo:induct-transfinita}.
+  \end{enumerate}
+
+  \item \textbf{(El orden de Cantor-Bendixson.)}
+  Sea $(X, \tau)$ un espacio topológico. El \textbf{conjunto derivado} $X'$ de $X$ es el conjunto de todos los puntos de acumulación de $X$. Define inductivamente:
+  \[
+    X^{(0)} = X, \quad X^{(1)} = X', \quad X^{(\alpha+1)} = \bigl(X^{(\alpha)}\bigr)', \quad X^{(\lambda)} = \bigcap_{\alpha < \lambda} X^{(\alpha)} \text{ para } \lambda \text{ límite.}
+  \]
+  \begin{enumerate}[label=(\alph*)]
+    \item Verifica que para $X = [0,1]$ con la topología usual, $X^{(\alpha)} = [0,1]$ para todo ordinal $\alpha$. ¿Por qué no se estabiliza?
+    \item Sea $X = \{1/n \mid n \in \mathbb{N}^+\} \cup \{0\}$ con la topología del subespacio de $\mathbb{R}$. Calcula $X^{(0)}, X^{(1)}, X^{(2)}$ y $X^{(\alpha)}$ para $\alpha \geq 2$.
+    \item Explica por qué este proceso de derivación es un ejemplo concreto de recursión transfinita.
+  \end{enumerate}
+
+  \item \textbf{(Construcción de un bien-orden explícito.)}
+  Sea $A = \mathbb{Q} \cap [0,1]$. El Teorema del Buen Orden garantiza que $A$ puede ser bien ordenado, pero no nos da un bien-orden explícito. No obstante:
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestra que existe una biyección $g: \mathbb{N} \to \mathbb{Q} \cap [0,1]$ (es decir, $\mathbb{Q} \cap [0,1]$ es numerable). Puedes usar la diagonalización de Cantor.
+    \item Usa $g$ para definir un bien-orden en $\mathbb{Q} \cap [0,1]$: $q \prec q' \iff g^{-1}(q) < g^{-1}(q')$ en $\mathbb{N}$. Demuestra que $(\mathbb{Q} \cap [0,1], \prec)$ es un bien-orden.
+    \item ¿Es el bien-orden $\prec$ compatible con el orden usual $\leq$ de los racionales? Justifica.
+  \end{enumerate}
+
+  \item \textbf{(Proyecto: el tipo de orden y los ordinales.)}
+  Investiga y redacta un resumen de 2--3 páginas sobre los siguientes puntos, anticipando la Clase~4:
+  \begin{itemize}[leftmargin=2em]
+    \item La definición de \textbf{número ordinal} de von Neumann: $\alpha$ es un ordinal si es un conjunto transitivo bien ordenado por $\in$.
+    \item Cómo el Teorema de Tricotomía garantiza que cada clase de isomorfismo de bien-órdenes contiene exactamente un ordinal de von Neumann.
+    \item Los primeros ordinales: $0 = \emptyset$, $1 = \{0\}$, $2 = \{0,1\}$, $\ldots$, $\omega = \mathbb{N}$, $\omega+1$, $\omega \cdot 2$, $\omega^2$, $\omega^\omega$, $\varepsilon_0$.
+    \item Qué significa que $\omega$ sea el «primer ordinal infinito» y en qué sentido $(\mathbb{N}, <)$ y $(\omega, \in)$ son isomorfos.
+  \end{itemize}
+  \textbf{Fuentes sugeridas:} \cite{jech2003}, \cite{kunen2011}, \cite{enderton1977}.
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias bibliográficas de esta clase}
+% ===========================================================
+
+Los temas tratados en esta clase se desarrollan con mayor profundidad y detalle en las siguientes fuentes principales:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Teoría de conjuntos y órdenes (tratamiento avanzado):} \cite{jech2003} contiene la presentación canónica de bien-órdenes, ordinales y el principio de inducción transfinita; \cite{kunen2011} es preciso y exhaustivo en los aspectos formales de la axiomática.
+
+  \item \textbf{Introducción a la teoría de conjuntos:} \cite{enderton1977} ofrece una presentación accesible y rigurosa de relaciones, órdenes y ordinales, ideal para el nivel de este curso; \cite{halmos1960} es clásico e intuitivo.
+
+  \item \textbf{Órdenes lineales y bien-órdenes:} \cite{rosenstein1982} es una monografía dedicada íntegramente a los órdenes lineales, con una discusión profunda de los tipos de orden y los ordinales; \cite{sierpinski1958} cubre con detalle la teoría clásica de los números ordinales y cardinales.
+
+  \item \textbf{Inducción transfinita y recursión:} \cite{devlin1993} presenta la recursión transfinita de forma clara y con aplicaciones; \cite{hrbacek1999} es un texto introductorio muy recomendable para el estudiante que se acerca por primera vez a la teoría transfinita.
+
+  \item \textbf{Contexto histórico:} \cite{cantor1883} es el artículo seminal de Cantor donde se introducen los números ordinales transfinitos; \cite{kanamori2003} ofrece una perspectiva histórica y técnica del desarrollo de la jerarquía de ordinales y la inducción transfinita.
+\end{itemize}
