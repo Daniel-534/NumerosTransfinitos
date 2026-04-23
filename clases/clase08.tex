@@ -1,0 +1,754 @@
+% ===========================================================
+\chapter{Clase 8: Aritmética Cardinal Transfinita}
+% ===========================================================
+
+La \textbf{aritmética de cardinales infinitos} es, en muchos sentidos, más simple que la aritmética de ordinales: la suma y el producto de dos cardinales infinitos cualesquiera colapsa al mayor de ellos. Sin embargo, la \textbf{potenciación cardinal} $\kappa^\lambda$ exhibe una riqueza genuina que escapa a este principio de absorción, y cuyo comportamiento general aún no está completamente determinado en ZFC. El teorema de König —una desigualdad estricta para sumas y productos de familias de cardinales— es la herramienta central que permite extraer consecuencias no triviales de la potenciación. Su corolario más sorprendente afirma que $2^{\aleph_0}$ no puede tener cofinalidad numerable: el continuo no puede ser $\aleph_\omega$, ni $\aleph_{\omega \cdot 2}$, ni ningún cardinal de cofinalidad $\omega$.
+
+La clasificación de los cardinales infinitos en \textbf{regulares} y \textbf{singulares} según su cofinalidad es la noción transversal de esta clase. Los cardinales sucesores $\aleph_{\alpha+1}$ son siempre regulares; los cardinales límite como $\aleph_\omega$, $\aleph_{\omega^2}$, $\aleph_{\varepsilon_0}$ son singulares. Esta distinción tiene consecuencias profundas tanto en la aritmética cardinal elemental como en la teoría de grandes cardinales.
+
+La Clase~6 introdujo la cofinalidad para ordinales y la Clase~7 presentó la jerarquía aleph y las primeras propiedades de la aritmética cardinal. Esta clase profundiza todos esos temas y los organiza en un marco coherente.
+
+La exposición sigue los tratamientos clásicos de \cite{jech2003, kunen2011, enderton1977, hrbacek1999}, con especial atención a los detalles técnicos de las demostraciones y a la intuición geométrica y combinatoria detrás de cada resultado.
+
+% ===========================================================
+\section{Suma y producto de cardinales infinitos}
+% ===========================================================
+
+\subsection{Definiciones formales}
+
+Recordamos que los números cardinales son ordinales iniciales, y que la aritmética cardinal difiere conceptualmente de la ordinal: la suma y el producto cardinales se definen mediante biyecciones entre conjuntos, no mediante concatenación ni iteración de orden.
+
+\begin{definicion}{Suma cardinal}{sumacardinal}
+Sean $\kappa$ y $\lambda$ cardinales. La \textbf{suma cardinal} $\kappa + \lambda$ es el cardinal del conjunto
+\[
+  (\kappa \times \{0\}) \cup (\lambda \times \{1\}),
+\]
+es decir, la unión disjunta de dos conjuntos de cardinalidades $\kappa$ y $\lambda$. Formalmente:
+\[
+  \kappa + \lambda := \bigl|(\kappa \times \{0\}) \cup (\lambda \times \{1\})\bigr|.
+\]
+\end{definicion}
+
+\begin{definicion}{Producto cardinal}{productocardinal}
+Sean $\kappa$ y $\lambda$ cardinales. El \textbf{producto cardinal} $\kappa \cdot \lambda$ es el cardinal del producto cartesiano:
+\[
+  \kappa \cdot \lambda := |\kappa \times \lambda|.
+\]
+\end{definicion}
+
+\begin{observacion}{Diferencia con la aritmética ordinal}{diffcardord}
+La suma ordinal $\omega + \omega$ y la suma cardinal $\aleph_0 + \aleph_0$ son objetos distintos. Como ordinal, $\omega + \omega \neq \omega$; como cardinal, $\aleph_0 + \aleph_0 = \aleph_0$. La razón es que la suma ordinal recuerda el \emph{orden} de la concatenación, mientras que la suma cardinal solo mide la \emph{cardinalidad} de la unión disjunta: ambas copias de $\mathbb{N}$ pueden entrelazarse en una sola copia de $\mathbb{N}$.
+\end{observacion}
+
+\subsection{La ley de absorción: todo colapsа al máximo}
+
+El resultado central de la aritmética cardinal para cardinales infinitos es que ni la suma ni el producto producen cardinales nuevos: siempre se obtiene el máximo de los dos operandos.
+
+\begin{teorema}{Ley de absorción cardinal}{leyabsorcion}
+Sea $\kappa$ un cardinal infinito y $\lambda$ un cardinal con $1 \leq \lambda \leq \kappa$. Entonces:
+\[
+  \kappa + \lambda = \kappa \cdot \lambda = \kappa.
+\]
+En particular:
+\[
+  \kappa + \kappa = \kappa, \qquad \kappa \cdot \kappa = \kappa.
+\]
+\end{teorema}
+
+La demostración del caso $\kappa \cdot \kappa = \kappa$ es el corazón del teorema. Presentamos la demostración clásica basada en el \textbf{Teorema de Hessenberg}, que utiliza un buen orden especial del producto $\kappa \times \kappa$.
+
+\begin{proof}
+\textbf{Paso 1: $\kappa \cdot \kappa = \kappa$ para todo cardinal infinito $\kappa$.}
+
+Procedemos por inducción transfinita en $\kappa$. Tomamos como hipótesis de inducción que $\mu \cdot \mu = \mu$ para todo cardinal infinito $\mu < \kappa$.
+
+\textbf{Base de la inducción.} Para $\kappa = \aleph_0$: el conjunto $\mathbb{N} \times \mathbb{N}$ puede numerarse mediante la diagonal de Cantor. Definimos el orden en $\omega \times \omega$ dado por
+\[
+  (\alpha_1, \beta_1) \prec (\alpha_2, \beta_2)
+  \;\iff\;
+  \max(\alpha_1,\beta_1) < \max(\alpha_2,\beta_2),
+\]
+y para igual máximo, por el orden lexicográfico. Bajo este orden, $\omega \times \omega$ tiene tipo ordinal $\omega$, lo que da una biyección $\omega \times \omega \to \omega$, es decir, $\aleph_0 \cdot \aleph_0 = \aleph_0$.
+
+\textbf{Paso de inducción para $\kappa$ sucesor.} Si $\kappa = \mu^+$ para algún cardinal $\mu$, consideramos el orden de Hessenberg en $\kappa \times \kappa$:
+\[
+  (\alpha_1, \beta_1) \prec (\alpha_2, \beta_2)
+  \;\iff\;
+  \max(\alpha_1, \beta_1) < \max(\alpha_2, \beta_2),
+\]
+y para igual máximo, orden lexicográfico. Para cada $\gamma < \kappa$, el segmento inicial
+\[
+  \{(\alpha, \beta) \in \kappa \times \kappa : \max(\alpha,\beta) \leq \gamma\}
+  = (\gamma+1) \times (\gamma+1)
+\]
+tiene cardinalidad $|\gamma+1|^2$. Si $\gamma < \kappa$, entonces $|\gamma| < \kappa$ y por hipótesis de inducción (si $|\gamma|$ es infinito) $|\gamma|^2 = |\gamma| < \kappa$; si $|\gamma|$ es finito, $|\gamma|^2$ es finito, luego $< \kappa$. En todo caso, cada segmento inicial propio tiene cardinalidad $< \kappa$. El tipo ordinal de $(\kappa \times \kappa, \prec)$ es entonces un ordinal $\leq \kappa$ cuyos segmentos iniciales propios tienen cardinalidad $< \kappa$, y como el tipo ordinal de un buen orden de cardinalidad $\kappa \cdot \kappa$ es al menos $\kappa$, se obtiene que el tipo ordinal es exactamente $\kappa$, lo que da $\kappa \cdot \kappa = \kappa$.
+
+\textbf{Paso de inducción para $\kappa$ límite.} Sea $\kappa$ un cardinal límite infinito. Para cualquier $\mu < \kappa$ tenemos $\mu \cdot \mu = \mu < \kappa$ (por hipótesis de inducción o por ser finito). Entonces
+\[
+  \kappa \cdot \kappa = \left|\bigcup_{\mu < \kappa} \mu\right|^2 \leq \kappa \cdot \kappa,
+\]
+y de manera más precisa: toda función $\kappa \times \kappa \to \kappa$ puede construirse a partir de las biyecciones $\mu \times \mu \to \mu$ para $\mu < \kappa$ encadenadas coherentemente, dando $\kappa \cdot \kappa = \kappa$.
+
+\textbf{Paso 2: $\kappa + \lambda = \kappa$ para $1 \leq \lambda \leq \kappa$.}
+
+Se tiene
+\[
+  \kappa \leq \kappa + \lambda \leq \kappa + \kappa = 2 \cdot \kappa \leq \kappa \cdot \kappa = \kappa.
+\]
+Por tanto $\kappa + \lambda = \kappa$.
+
+\textbf{Paso 3: $\kappa \cdot \lambda = \kappa$ para $1 \leq \lambda \leq \kappa$.}
+
+Se tiene $\kappa \leq \kappa \cdot \lambda \leq \kappa \cdot \kappa = \kappa$, luego $\kappa \cdot \lambda = \kappa$ \cite{jech2003, enderton1977}.
+\end{proof}
+
+\begin{corolario}{Suma y producto de dos alephs}{sumaprodaleph}
+Para cualquier par de cardinales infinitos $\kappa$ y $\lambda$:
+\[
+  \kappa + \lambda = \kappa \cdot \lambda = \max(\kappa, \lambda).
+\]
+\end{corolario}
+
+\begin{proof}
+Sin pérdida de generalidad supongamos $\kappa \leq \lambda$. Entonces $1 \leq \kappa \leq \lambda$, y por el Teorema~\ref{teo:leyabsorcion} aplicado con el papel de $\kappa$ jugado por $\lambda$ y el papel de $\lambda$ jugado por $\kappa$: $\lambda + \kappa = \lambda \cdot \kappa = \lambda = \max(\kappa, \lambda)$.
+\end{proof}
+
+\begin{ejemplo}{Cálculos de suma y producto}{ejsumaprod}
+Calculamos algunos cardinales usando la ley de absorción.
+
+\textbf{(a)} $\aleph_0 + \aleph_1 = \max(\aleph_0, \aleph_1) = \aleph_1$.
+
+\textbf{(b)} $\aleph_3 + \aleph_3 + \aleph_3 = \aleph_3$ (tres sumandos; por inducción, cualquier suma finita de copias de $\aleph_3$ sigue siendo $\aleph_3$).
+
+\textbf{(c)} $\aleph_0 \cdot \aleph_0 = \aleph_0$. Consecuencia: $|\mathbb{N} \times \mathbb{N}| = \aleph_0$, que es la base del hecho de que $\mathbb{Q}$ es numerable.
+
+\textbf{(d)} $\aleph_2 \cdot \aleph_5 = \aleph_5$.
+
+\textbf{(e)} $\aleph_\omega \cdot \aleph_\omega = \aleph_\omega$ (el cardinal $\aleph_\omega$ es infinito, luego $\aleph_\omega \cdot \aleph_\omega = \aleph_\omega$).
+
+\textbf{(f)} El conjunto de todos los polinomios con coeficientes enteros tiene cardinal $\aleph_0$: en efecto, cada polinomio de grado $n$ está determinado por $n+1$ coeficientes enteros, luego el conjunto de polinomios de grado $n$ tiene cardinal $|\mathbb{Z}^{n+1}| = \aleph_0^{n+1} = \aleph_0$. La unión numerable de conjuntos de cardinal $\aleph_0$ tiene cardinal $\aleph_0 \cdot \aleph_0 = \aleph_0$.
+\end{ejemplo}
+
+\begin{ejemplo}{Unión numerable de conjuntos numerables}{unionnum}
+Sea $\{A_n\}_{n \in \mathbb{N}}$ una familia numerable de conjuntos, cada uno de cardinalidad $\leq \aleph_0$. Entonces $\left|\bigcup_{n \in \mathbb{N}} A_n\right| \leq \aleph_0$.
+
+\textit{Demostración.} Para cada $n$, fijamos una inyección $f_n \colon A_n \hookrightarrow \mathbb{N}$. Definimos $g \colon \bigcup_n A_n \to \mathbb{N} \times \mathbb{N}$ poniendo $g(a) = (n_0, f_{n_0}(a))$ donde $n_0 = \min\{n : a \in A_n\}$. Esta $g$ es inyectiva, luego $\left|\bigcup_n A_n\right| \leq |\mathbb{N} \times \mathbb{N}| = \aleph_0$.
+\end{ejemplo}
+
+\begin{ejemplo}{Suma infinita de cardinales iguales}{sumainfiguales}
+Sea $\kappa$ un cardinal infinito y supongamos que sumamos $\kappa$ copias de $\kappa$:
+\[
+  \sum_{\alpha < \kappa} \kappa = \kappa \cdot \kappa = \kappa.
+\]
+Más generalmente, la suma cardinal de $\lambda$ cardinales iguales a $\kappa$ con $1 \leq \lambda \leq \kappa$ es:
+\[
+  \sum_{\alpha < \lambda} \kappa = \kappa \cdot \lambda = \max(\kappa, \lambda) \cdot 1 = \max(\kappa,\lambda) = \kappa.
+\]
+\end{ejemplo}
+
+\subsection{Suma infinita de cardinales distintos}
+
+La ley de absorción se extiende naturalmente a sumas infinitas indexadas por ordinales.
+
+\begin{definicion}{Suma cardinal indexada}{sumacardindexada}
+Sea $\{\kappa_i\}_{i \in I}$ una familia de cardinales indexada por un conjunto $I$. La \textbf{suma cardinal} $\sum_{i \in I} \kappa_i$ es el cardinal de la unión disjunta:
+\[
+  \sum_{i \in I} \kappa_i := \left|\bigsqcup_{i \in I} \kappa_i\right| = \left|\bigcup_{i \in I} (\kappa_i \times \{i\})\right|.
+\]
+\end{definicion}
+
+\begin{proposicion}{Suma cardinal de una familia de cardinales}{sumafamcard}
+Sea $\{\kappa_i\}_{i \in I}$ una familia de cardinales y sea $\kappa = \sup_{i \in I} \kappa_i$. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\sum_{i \in I} \kappa_i \leq |I| \cdot \kappa$.
+  \item Si $|I| \leq \kappa$ y $\kappa_i \leq \kappa$ para todo $i \in I$, entonces $\sum_{i \in I} \kappa_i \leq \kappa$.
+  \item Si existe $i_0 \in I$ con $\kappa_{i_0} = \kappa$ y $|I| \leq \kappa$, entonces $\sum_{i \in I} \kappa_i = \kappa$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Se tiene $\bigsqcup_{i \in I} \kappa_i \hookrightarrow I \times \kappa$ (por la inyección $(x, i) \mapsto (i, f_i(x))$ donde $f_i \colon \kappa_i \hookrightarrow \kappa$), luego $\sum_{i \in I} \kappa_i \leq |I \times \kappa| = |I| \cdot \kappa$.
+
+\textbf{(ii)} Si $|I| \leq \kappa$, entonces $|I| \cdot \kappa = \kappa$, y por (i), $\sum_{i \in I} \kappa_i \leq \kappa$.
+
+\textbf{(iii)} La cota inferior $\kappa \leq \sum_{i \in I} \kappa_i$ se sigue de $\kappa = \kappa_{i_0} \leq \sum_{i \in I}\kappa_i$; la cota superior es (ii).
+\end{proof}
+
+% ===========================================================
+\section{Potenciación cardinal: \texorpdfstring{$\kappa^\lambda$}{κ\^{}λ}}
+% ===========================================================
+
+\subsection{Definición y ejemplos iniciales}
+
+La potenciación cardinal es la operación donde la aritmética transfinita comienza a exhibir complejidad genuina.
+
+\begin{definicion}{Potencia cardinal}{potenciacardinal}
+Sean $\kappa$ y $\lambda$ cardinales. La \textbf{potencia cardinal} $\kappa^\lambda$ es el cardinal del conjunto de todas las funciones de $\lambda$ en $\kappa$:
+\[
+  \kappa^\lambda := |{}^\lambda\kappa| = |\{\,f \mid f \colon \lambda \to \kappa\,\}|.
+\]
+\end{definicion}
+
+\begin{observacion}{Consistencia con la aritmética usual}{consisarith}
+Para cardinales finitos $m$ y $n$, el conjunto ${}^n m$ de funciones de $n$ a $m$ tiene exactamente $m^n$ elementos, consistente con la definición usual. Para $\kappa^\lambda$ con $\kappa = 2$, obtenemos $2^\lambda = |\mathcal{P}(\lambda)|$ (identificando subconjuntos con funciones características), lo que conecta con el Teorema de Cantor: $2^\lambda > \lambda$ para todo $\lambda$.
+\end{observacion}
+
+\begin{proposicion}{Propiedades básicas de la potenciación cardinal}{propbasicpot}
+Sean $\kappa$, $\lambda$, $\mu$ cardinales. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa^{\lambda + \mu} = \kappa^\lambda \cdot \kappa^\mu$.
+  \item $(\kappa \cdot \lambda)^\mu = \kappa^\mu \cdot \lambda^\mu$.
+  \item $(\kappa^\lambda)^\mu = \kappa^{\lambda \cdot \mu}$.
+  \item Si $\lambda \leq \mu$, entonces $\kappa^\lambda \leq \kappa^\mu$.
+  \item Si $\kappa \leq \lambda$, entonces $\kappa^\mu \leq \lambda^\mu$.
+  \item $\kappa^1 = \kappa$ y $\kappa^0 = 1$ y $1^\lambda = 1$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} ${}^{\lambda+\mu}\kappa \cong {}^\lambda\kappa \times {}^\mu\kappa$ mediante la biyección $f \mapsto (f\!\restriction_\lambda, \, f\!\restriction_{[\lambda,\lambda+\mu)})$.
+
+\textbf{(ii)} ${}^\mu(\kappa \times \lambda) \cong {}^\mu\kappa \times {}^\mu\lambda$ mediante $f \mapsto (\pi_1 \circ f, \pi_2 \circ f)$.
+
+\textbf{(iii)} ${}^\mu({}^\lambda\kappa) \cong {}^{\lambda \cdot \mu}\kappa$ mediante la currificación: $(f \colon \mu \to {}^\lambda\kappa) \mapsto \bigl((\alpha, \beta) \mapsto f(\beta)(\alpha)\bigr)$.
+
+\textbf{(iv)-(v)} Se obtienen exhibiendo inyecciones entre los conjuntos de funciones correspondientes.
+
+\textbf{(vi)} Inmediato por las definiciones \cite{enderton1977, hrbacek1999}.
+\end{proof}
+
+\subsection{Valores concretos de potencias cardinales}
+
+\begin{ejemplo}{Potencias de $\aleph_0$}{potenaleph0}
+Calculamos $\aleph_0^\lambda$ para varios valores de $\lambda$.
+
+\textbf{(a) $\aleph_0^n = \aleph_0$ para todo $n$ finito.} En efecto, $\aleph_0^n = \aleph_0 \cdot \aleph_0 \cdots \aleph_0 = \aleph_0$ por la ley de absorción.
+
+\textbf{(b) $\aleph_0^{\aleph_0} = 2^{\aleph_0}$.} Probamos las dos desigualdades.
+\begin{itemize}[leftmargin=2em]
+  \item $2^{\aleph_0} \leq \aleph_0^{\aleph_0}$: la inyección ${}^\omega 2 \hookrightarrow {}^\omega \omega$ es la inclusión (toda función $\omega \to \{0,1\}$ es también función $\omega \to \omega$).
+  \item $\aleph_0^{\aleph_0} \leq 2^{\aleph_0}$: cada función $f \colon \omega \to \omega$ puede codificarse mediante una función $\omega \to \{0,1\}$ (por ejemplo, codificando $f(n) \in \omega$ en binario, o usando la biyección $\omega \times \omega \leftrightarrow \omega$ para construir $F \colon \omega \to 2$). Formalmente, $|\omega^\omega| = |({}^\omega\omega)| \leq |{}^\omega 2^\omega| = |({}^\omega\omega)| \leq 2^{\aleph_0 \cdot \aleph_0} = 2^{\aleph_0}$.
+\end{itemize}
+Por el Teorema de Cantor-Schröder-Bernstein, $\aleph_0^{\aleph_0} = 2^{\aleph_0}$.
+
+\textbf{(c)} En particular, $|\mathbb{R}| = 2^{\aleph_0} = \aleph_0^{\aleph_0}$: la cardinalidad del continuo coincide con la del espacio de sucesiones de naturales.
+\end{ejemplo}
+
+\begin{ejemplo}{Potencias de $\aleph_1$}{potenaleph1}
+\textbf{(a) $\aleph_1^{\aleph_0}$:} Sabemos que $2^{\aleph_0} \leq \aleph_1^{\aleph_0}$. También, $\aleph_1^{\aleph_0} \leq (2^{\aleph_0})^{\aleph_0} = 2^{\aleph_0 \cdot \aleph_0} = 2^{\aleph_0}$. En consecuencia, $\aleph_1^{\aleph_0} = 2^{\aleph_0}$: el valor depende de si $\aleph_1 \leq 2^{\aleph_0}$ o $\aleph_1 > 2^{\aleph_0}$, pero la expresión $\aleph_1^{\aleph_0}$ siempre coincide con $2^{\aleph_0}$.
+
+\textbf{(b)} Si se asume la Hipótesis del Continuo ($2^{\aleph_0} = \aleph_1$), entonces $\aleph_1^{\aleph_0} = 2^{\aleph_0} = \aleph_1$: el exponente $\aleph_0$ no cambia $\aleph_1$.
+
+\textbf{(c) $\aleph_1^{\aleph_1}$:} Se tiene $2^{\aleph_1} \leq \aleph_1^{\aleph_1} \leq (2^{\aleph_1})^{\aleph_1} = 2^{\aleph_1 \cdot \aleph_1} = 2^{\aleph_1}$, luego $\aleph_1^{\aleph_1} = 2^{\aleph_1}$.
+\end{ejemplo}
+
+\begin{proposicion}{Fórmula general para $\kappa^\lambda$}{formulakaplam}
+Sean $\kappa \geq 2$ y $\lambda \geq 1$ cardinales infinitos. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Si $2^\lambda \geq \kappa$, entonces $\kappa^\lambda = 2^\lambda$.
+  \item Si $2^\lambda < \kappa$, entonces $\kappa^\lambda = \kappa^{\mathrm{cf}(\kappa)}$ (solo depende de $\kappa$ y de $\mathrm{cf}(\kappa)$, no de $\lambda$).
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} $2^\lambda \leq \kappa^\lambda \leq (2^\lambda)^\lambda = 2^{\lambda \cdot \lambda} = 2^\lambda$, luego $\kappa^\lambda = 2^\lambda$.
+
+\textbf{(ii)} La demostración completa usa el \emph{Teorema de la Aritmética Cardinal de Easton} y resultados más avanzados sobre la aritmética de cardinales regulares y singulares, y queda fuera del alcance de esta clase \cite{jech2003, shelah1994}.
+\end{proof}
+
+\begin{ejemplo}{La relación $\kappa^\lambda$ y los beth numbers}{bethkaplam}
+Recordemos que los \textbf{beth numbers} se definen por:
+\[
+  \beth_0 = \aleph_0, \qquad \beth_{\alpha+1} = 2^{\beth_\alpha}, \qquad \beth_\lambda = \sup_{\alpha < \lambda} \beth_\alpha.
+\]
+La Hipótesis del Continuo Generalizada (GCH) afirma $\aleph_\alpha = \beth_\alpha$ para todo $\alpha$. Bajo GCH:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\aleph_\alpha^{\aleph_\beta} = \aleph_\alpha$ si $\beta < \alpha$ y $\mathrm{cf}(\aleph_\alpha) > \aleph_\beta$ (la potencia no supera $\kappa$).
+  \item $\aleph_\alpha^{\aleph_\beta} = \aleph_{\alpha+1}$ en los demás casos en que $\aleph_\beta \leq \aleph_\alpha$.
+\end{enumerate}
+Sin GCH, el valor exacto de $2^{\aleph_0}$ —y en general de $\kappa^\lambda$— es independiente de ZFC.
+\end{ejemplo}
+
+% ===========================================================
+\section{El Teorema de König}
+% ===========================================================
+
+\subsection{Formulación e intuición}
+
+El \textbf{Teorema de König} (1905, \cite{konig1905}) es la desigualdad cardinal fundamental. Afirma que una suma de cardinales es estrictamente menor que el producto correspondiente de cardinales mayores. Su enunciado general es la versión transfinita de la afirmación intuitiva: «el producto de cosas más grandes supera la suma de cosas más pequeñas».
+
+\begin{teorema}{Teorema de König}{teokoenig}
+Sea $I$ un conjunto y sean $\{\kappa_i\}_{i \in I}$ y $\{\lambda_i\}_{i \in I}$ dos familias de cardinales tales que $\kappa_i < \lambda_i$ para todo $i \in I$. Entonces:
+\[
+  \sum_{i \in I} \kappa_i < \prod_{i \in I} \lambda_i.
+\]
+\end{teorema}
+
+\begin{proof}
+Necesitamos demostrar dos cosas:
+\begin{enumerate}[leftmargin=2em, label=(\arabic*)]
+  \item $\sum_{i \in I} \kappa_i \leq \prod_{i \in I} \lambda_i$, es decir, existe una inyección $\bigsqcup_{i \in I} \kappa_i \hookrightarrow \prod_{i \in I} \lambda_i$.
+  \item Ninguna función $f \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ puede ser sobreyectiva.
+\end{enumerate}
+
+\textbf{Parte 1 (inyección).} Para cada $i \in I$ fijamos una inyección $\phi_i \colon \kappa_i \hookrightarrow \lambda_i$ (que existe porque $\kappa_i < \lambda_i$ implica $\kappa_i \leq \lambda_i$, es decir, hay una inyección de $\kappa_i$ en $\lambda_i$). Fijamos además un elemento distinguido $d_i \in \lambda_i$ para cada $i$. Definimos $\Phi \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ por:
+\[
+  \Phi(\alpha, j)(i) = \begin{cases} \phi_j(\alpha) & \text{si } i = j, \\ d_i & \text{si } i \neq j. \end{cases}
+\]
+Si $\Phi(\alpha, j) = \Phi(\beta, k)$, evaluando en $i = j$ obtenemos $\phi_j(\alpha) = \Phi(\alpha, j)(j) = \Phi(\beta, k)(j)$. Si $j \neq k$, entonces $\Phi(\beta, k)(j) = d_j$, por lo que $\phi_j(\alpha) = d_j$. Y evaluando en $i = k$, si $j \neq k$ se tendría $\phi_k(\beta) = \Phi(\beta,k)(k) = \Phi(\alpha,j)(k) = d_k$. Esto puede ajustarse para que ambas condiciones sean incompatibles si $j \neq k$ (eligiendo $d_j \notin \mathrm{Im}(\phi_j)$ cuando $\kappa_j < \lambda_j$ lo permite). Una construcción ligeramente diferente que garantiza la inyectividad usa una codificación del índice $j$ en la función, como por ejemplo:
+\[
+  \Phi'(\alpha, j)(i) = \begin{cases} \phi_j(\alpha) & \text{si } i = j, \\ 0_i & \text{si } i \neq j, \end{cases}
+\]
+donde $0_i$ es el elemento mínimo de $\lambda_i$ (como ordinal). Entonces $\Phi'(\alpha, j) = \Phi'(\beta, k)$ implica: evaluando en $j$ si $j \neq k$, $\phi_j(\alpha) = 0_j$ y evaluando en $k$, $\phi_k(\beta) = 0_k$; pero evaluando en $j$ del lado de $(\beta, k)$ obtenemos $0_j$ si $j \neq k$. La inyectividad se verifica con más detalle en \cite{jech2003}; la idea clave es que el «índice» $j$ queda registrado en el soporte de $\Phi'$.
+
+Para un argumento limpio: fijamos para cada $j$ una función $e_j \colon \kappa_j \to \prod_{i} \lambda_i$ definida por $e_j(\alpha)(i) = \phi_j(\alpha)$ si $i = j$ y $e_j(\alpha)(i) = 0_i$ si $i \neq j$. Las imágenes de funciones distintas $e_j$ tienen «soporte» diferente (coordenada $j$ no nula), y dentro de la imagen de $e_j$ la inyectividad se hereda de $\phi_j$. Por tanto la función que manda $(\alpha, j) \mapsto e_j(\alpha)$ es inyectiva.
+
+\textbf{Parte 2 (no sobreyección).} Sea $f \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ una función cualquiera. Debemos exhibir un elemento de $\prod_{i \in I} \lambda_i$ no en la imagen de $f$.
+
+Para cada $i \in I$, consideramos la «sección $i$» de $f$ restringida a $\kappa_i$:
+\[
+  A_i := \{f(\alpha, i)(i) : \alpha \in \kappa_i\} \subseteq \lambda_i.
+\]
+El conjunto $A_i$ tiene cardinal $|A_i| \leq |\kappa_i| = \kappa_i < \lambda_i$. Por tanto $A_i \subsetneq \lambda_i$, y existe
+\[
+  \beta_i \in \lambda_i \setminus A_i.
+\]
+Definimos el elemento diagonal $g \in \prod_{i \in I} \lambda_i$ por $g(i) = \beta_i$ para cada $i \in I$.
+
+Afirmamos que $g \notin \mathrm{Im}(f)$. En efecto, sea $(\alpha, j) \in \bigsqcup_{i \in I} \kappa_i$ cualquiera. Por definición, $f(\alpha, j)(j) \in A_j$, mientras que $g(j) = \beta_j \notin A_j$. Luego $f(\alpha, j) \neq g$ (difieren en la coordenada $j$). Como $(\alpha, j)$ fue arbitrario, $g \notin \mathrm{Im}(f)$.
+
+Combinando las dos partes: $\bigsqcup_{i \in I} \kappa_i$ se inyecta en $\prod_{i \in I} \lambda_i$ pero no hay sobreyección, luego $\sum_i \kappa_i < \prod_i \lambda_i$ \cite{konig1905, jech2003, kunen2011}.
+\end{proof}
+
+\begin{observacion}{El argumento diagonal en König}{diagkoenig}
+La segunda parte de la demostración es una versión del \emph{argumento diagonal de Cantor}: para cada $i$, elegimos $\beta_i$ fuera de la imagen de $f$ en la coordenada $i$. La función $g = (\beta_i)_{i \in I}$ «escapa» a $f$ porque difiere de cada $f(\alpha, i)$ en la coordenada $i$.
+\end{observacion}
+
+\subsection{Consecuencias fundamentales del Teorema de König}
+
+El Teorema de König tiene tres corolarios inmediatos de gran importancia.
+
+\begin{corolario}{König para dos cardinales}{koenigdos}
+Sea $\kappa < \lambda$ y $\mu < \nu$ cardinales. Entonces $\kappa + \mu < \lambda \cdot \nu$.
+\end{corolario}
+
+\begin{proof}
+Aplicar el Teorema de König con $I = \{0, 1\}$, $\kappa_0 = \kappa$, $\kappa_1 = \mu$, $\lambda_0 = \lambda$, $\lambda_1 = \nu$.
+\end{proof}
+
+\begin{corolario}{$\kappa < \kappa^{\mathrm{cf}(\kappa)}$ para cardinales infinitos}{kappacofkappa}
+Para todo cardinal infinito $\kappa$ se tiene:
+\[
+  \kappa < \kappa^{\mathrm{cf}(\kappa)}.
+\]
+\end{corolario}
+
+\begin{proof}
+Sea $\delta = \mathrm{cf}(\kappa)$ y sea $f \colon \delta \to \kappa$ una función cofinal, es decir, $\sup_{\alpha < \delta} f(\alpha) = \kappa$. Para cada $\alpha < \delta$, la imagen $f(\alpha) < \kappa$. Considere la familia:
+\[
+  \kappa_\alpha = f(\alpha) \quad \text{y} \quad \lambda_\alpha = \kappa, \quad \text{para } \alpha < \delta.
+\]
+Entonces $\kappa_\alpha < \lambda_\alpha = \kappa$ y $\sum_{\alpha < \delta} \kappa_\alpha = \sup_{\alpha < \delta} f(\alpha) \cdot \delta = \kappa$ (pues $f$ es cofinal y $\delta \leq \kappa$). Por el Teorema de König:
+\[
+  \kappa = \sum_{\alpha < \delta} \kappa_\alpha < \prod_{\alpha < \delta} \lambda_\alpha = \kappa^\delta = \kappa^{\mathrm{cf}(\kappa)}.
+\]
+\end{proof}
+
+\begin{corolario}{La cofinalidad de $2^\kappa$}{cofinalidadpot}
+Para todo cardinal infinito $\kappa$, la cofinalidad de $2^\kappa$ satisface:
+\[
+  \mathrm{cf}(2^\kappa) > \kappa.
+\]
+En particular, $2^{\aleph_0}$ tiene cofinalidad $> \aleph_0$, es decir, $2^{\aleph_0} \neq \aleph_\omega$.
+\end{corolario}
+
+\begin{proof}
+Supongamos por reducción al absurdo que $\mathrm{cf}(2^\kappa) \leq \kappa$. Entonces existe $\delta = \mathrm{cf}(2^\kappa) \leq \kappa$ y una sucesión cofinal $\{\mu_\alpha\}_{\alpha < \delta}$ de cardinales $\mu_\alpha < 2^\kappa$ con $\sup_{\alpha < \delta} \mu_\alpha = 2^\kappa$. Por el Corolario anterior aplicado a $\lambda = 2^\kappa$:
+\[
+  2^\kappa < (2^\kappa)^{\mathrm{cf}(2^\kappa)} \leq (2^\kappa)^\kappa = 2^{\kappa \cdot \kappa} = 2^\kappa.
+\]
+Contradicción. Luego $\mathrm{cf}(2^\kappa) > \kappa$.
+\end{proof}
+
+\begin{importante}
+Este corolario es notable porque impone una restricción \emph{demostrable en ZFC} sobre el valor del continuo $2^{\aleph_0}$. Por ejemplo:
+\begin{itemize}[leftmargin=2em]
+  \item $2^{\aleph_0} \neq \aleph_\omega$ (pues $\mathrm{cf}(\aleph_\omega) = \aleph_0 \not> \aleph_0$).
+  \item $2^{\aleph_0} \neq \aleph_{\omega^2}$ (pues $\mathrm{cf}(\aleph_{\omega^2}) = \aleph_0$).
+  \item Sí es posible (consistente con ZFC) que $2^{\aleph_0} = \aleph_1$, $\aleph_2$, $\aleph_{\omega_1}$, etc., pues estos tienen cofinalidad $> \aleph_0$.
+\end{itemize}
+\end{importante}
+
+\begin{ejemplo}{Aplicación del Teorema de König a $\aleph_\omega$}{koenigaomega}
+Demostramos que $\aleph_\omega < \aleph_\omega^{\aleph_0}$ usando el Corolario~\ref{cor:kappacofkappa}.
+
+Como $\mathrm{cf}(\aleph_\omega) = \aleph_0$ (lo demostraremos en la Sección~\ref{sec:cardinales-singulares}), el corolario afirma:
+\[
+  \aleph_\omega < \aleph_\omega^{\aleph_0}.
+\]
+Más cuantitativamente, el Teorema de König con $I = \omega$, $\kappa_n = \aleph_n$ y $\lambda_n = \aleph_\omega$ da:
+\[
+  \aleph_\omega = \sum_{n < \omega} \aleph_n < \prod_{n < \omega} \aleph_\omega = \aleph_\omega^{\aleph_0}.
+\]
+No puede determinarse en ZFC el valor exacto de $\aleph_\omega^{\aleph_0}$ más allá de estas cotas. El resultado de Shelah sobre la aritmética cardinal singular \cite{shelah1994} muestra que $\aleph_\omega^{\aleph_0} < \aleph_{\omega_4}$ bajo la hipótesis de que $\aleph_n < \aleph_\omega$ para todo $n < \omega$ (lo cual es evidente), pero este resultado es profundo e involucra la teoría de \emph{pcf} (possible cofinalities).
+\end{ejemplo}
+
+\begin{ejemplo}{König y la hipótesis del continuo generalizada}{koeniggch}
+Bajo la Hipótesis del Continuo Generalizada (GCH), el Teorema de König toma la siguiente forma concreta. Si $\beta < \alpha$:
+\[
+  \aleph_\alpha^{\aleph_\beta} = \aleph_{\alpha+1}
+  \quad \text{si } \mathrm{cf}(\aleph_\alpha) \leq \aleph_\beta,
+  \qquad
+  \aleph_\alpha^{\aleph_\beta} = \aleph_\alpha
+  \quad \text{si } \mathrm{cf}(\aleph_\alpha) > \aleph_\beta.
+\]
+Esto sigue de la fórmula de Easton/König: si $\mathrm{cf}(\aleph_\alpha) \leq \aleph_\beta$, el Teorema de König garantiza $\aleph_\alpha < \aleph_\alpha^{\aleph_\beta}$, y bajo GCH este salto es exactamente $\aleph_{\alpha+1}$.
+\end{ejemplo}
+
+% ===========================================================
+\section{Cofinalidad y cardinales regulares}
+\label{sec:cofinalidad-regular}
+% ===========================================================
+
+\subsection{Cofinalidad cardinal: repaso y profundización}
+
+La cofinalidad fue introducida para ordinales en la Clase~6. Aquí la estudiamos con énfasis en los cardinales infinitos, donde adquiere un significado combinatorio y aritmético preciso.
+
+\begin{definicion}{Cofinalidad de un cardinal límite}{cofinalidadcardlim}
+Sea $\kappa$ un cardinal infinito límite. La \textbf{cofinalidad} de $\kappa$, denotada $\mathrm{cf}(\kappa)$, es el mínimo ordinal $\delta$ tal que existe una función $f \colon \delta \to \kappa$ con $\sup_{\alpha < \delta} f(\alpha) = \kappa$:
+\[
+  \mathrm{cf}(\kappa) := \min\bigl\{\delta \in \mathbf{ON} : \exists\, f \colon \delta \to \kappa,\, \sup f = \kappa\bigr\}.
+\]
+Equivalentemente, $\mathrm{cf}(\kappa)$ es el menor cardinal $\delta$ tal que $\kappa$ es la unión de $\delta$ conjuntos de cardinal $< \kappa$.
+\end{definicion}
+
+\begin{proposicion}{Propiedades básicas de la cofinalidad cardinal}{propcofcard}
+Sea $\kappa$ un cardinal infinito. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\mathrm{cf}(\kappa)$ es un cardinal infinito.
+  \item $\mathrm{cf}(\kappa) \leq \kappa$.
+  \item $\mathrm{cf}(\mathrm{cf}(\kappa)) = \mathrm{cf}(\kappa)$: la cofinalidad es idempotente.
+  \item $\mathrm{cf}(\kappa^+) = \kappa^+$ para todo cardinal $\kappa$ (los cardinales sucesores son siempre regulares).
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} $\mathrm{cf}(\kappa)$ es el tipo ordinal de una sucesión cofinal, que es un ordinal. Que es infinito se sigue de que ninguna sucesión finita puede ser cofinal en $\kappa$ (una sucesión finita tiene un máximo, y $\kappa$ no tiene máximo porque es un cardinal límite).
+
+\textbf{(ii)} La función identidad $\mathrm{id} \colon \kappa \to \kappa$ es cofinal, luego $\mathrm{cf}(\kappa) \leq \kappa$.
+
+\textbf{(iii)} Sea $\delta = \mathrm{cf}(\kappa)$ y $\mu = \mathrm{cf}(\delta)$. Si $g \colon \mu \to \delta$ es cofinal en $\delta$ y $f \colon \delta \to \kappa$ es cofinal en $\kappa$, entonces $f \circ g \colon \mu \to \kappa$ es cofinal en $\kappa$ (pues para cada $\xi < \kappa$ existe $\alpha < \delta$ con $f(\alpha) \geq \xi$, y existe $\beta < \mu$ con $g(\beta) \geq \alpha$, luego $f(g(\beta)) \geq f(\alpha) \geq \xi$). Así $\mathrm{cf}(\kappa) \leq \mu = \mathrm{cf}(\delta)$. Pero $\delta = \mathrm{cf}(\kappa) \leq \mathrm{cf}(\kappa) = \delta$, y la minimalidad de $\mathrm{cf}(\kappa)$ implica que $\mu = \delta$, es decir, $\mathrm{cf}(\delta) = \delta$.
+
+\textbf{(iv)} Sea $\kappa^+$ el sucesor cardinal de $\kappa$. Supongamos que $\mathrm{cf}(\kappa^+) = \delta < \kappa^+$, con $f \colon \delta \to \kappa^+$ cofinal. Para cada $\alpha < \delta$, $f(\alpha) < \kappa^+$, luego $|f(\alpha)| \leq \kappa$. Por tanto:
+\[
+  \kappa^+ = \bigcup_{\alpha < \delta} f(\alpha)
+\]
+y cada $f(\alpha)$ tiene cardinal $\leq \kappa$. Entonces $|\kappa^+| \leq |\delta| \cdot \kappa = \delta \cdot \kappa$. Como $\delta \leq \kappa$ (pues $\delta < \kappa^+$ implica $\delta \leq \kappa$), tenemos $\delta \cdot \kappa = \kappa$, lo que daría $\kappa^+ \leq \kappa$, contradicción. Luego $\mathrm{cf}(\kappa^+) = \kappa^+$.
+\end{proof}
+
+\subsection{Cardinales regulares: definición y caracterización}
+
+\begin{definicion}{Cardinal regular y singular}{cardreg}
+Sea $\kappa$ un cardinal infinito.
+\begin{itemize}[leftmargin=2em]
+  \item $\kappa$ es \textbf{regular} si $\mathrm{cf}(\kappa) = \kappa$.
+  \item $\kappa$ es \textbf{singular} si $\mathrm{cf}(\kappa) < \kappa$.
+\end{itemize}
+\end{definicion}
+
+\begin{teorema}{Cardinales regulares: caracterización combinatoria}{caracregular}
+Sea $\kappa$ un cardinal infinito. Son equivalentes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa$ es regular, es decir, $\mathrm{cf}(\kappa) = \kappa$.
+  \item $\kappa$ no es unión de menos de $\kappa$ conjuntos, cada uno de cardinalidad $< \kappa$. Formalmente: si $\kappa = \bigcup_{i \in I} A_i$ con $|A_i| < \kappa$ para todo $i$, entonces $|I| \geq \kappa$.
+  \item No existe ninguna función $f \colon \lambda \to \kappa$ cofinal con $\lambda < \kappa$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+Las tres condiciones son equivalentes por definición de cofinalidad: $\mathrm{cf}(\kappa) = \kappa$ significa exactamente que la menor longitud de una sucesión cofinal en $\kappa$ es $\kappa$, lo que equivale a (iii). Y (iii) equivale a (ii) porque si $\kappa = \bigcup_{i \in I} A_i$ con $|A_i| < \kappa$ y $|I| < \kappa$, entonces la función $f(i) = \sup A_i$ sería cofinal en $\kappa$ (o se puede ajustar) con dominio de cardinal $< \kappa$.
+\end{proof}
+
+\begin{corolario}{Todo cardinal sucesor es regular}{succregular}
+Para todo cardinal $\kappa$, el sucesor $\kappa^+$ es regular.
+\end{corolario}
+
+\begin{proof}
+Es la proposición~\ref{prop:propcofcard}(iv).
+\end{proof}
+
+\begin{ejemplo}{Los primeros cardinales regulares}{primreg}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\aleph_0 = \omega$ es regular: ninguna sucesión finita es cofinal en $\omega$ (toda sucesión finita tiene un máximo). Así, $\mathrm{cf}(\aleph_0) = \aleph_0$.
+  \item $\aleph_1 = \omega_1$ es regular: es el sucesor cardinal de $\aleph_0$, y los sucesores son regulares.
+  \item $\aleph_2$ es regular: es el sucesor cardinal de $\aleph_1$.
+  \item $\aleph_n$ es regular para todo $n < \omega$: todos son cardinales sucesores.
+  \item $\aleph_{\omega+1}$ es regular: es el sucesor cardinal de $\aleph_\omega$.
+  \item $\aleph_{\alpha+1}$ es regular para todo ordinal $\alpha$: todos los cardinales sucesores son regulares.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{ejemplo}{Verificación directa de la regularidad de $\aleph_1$}{verifregaleph1}
+Comprobamos directamente que $\mathrm{cf}(\aleph_1) = \aleph_1$.
+
+Supongamos que existe $f \colon \omega \to \omega_1$ cofinal (sucesión de tipo $\omega$ cofinal en $\omega_1$). Entonces $\omega_1 = \sup_{n<\omega} f(n)$, es decir, todo ordinal numerable está acotado por algún $f(n)$. Pero la unión $\bigcup_{n<\omega} f(n)$ (como conjunto de ordinales) tiene cardinal
+\[
+  \left|\bigcup_{n < \omega} f(n)\right| \leq \sum_{n<\omega} |f(n)| \leq \aleph_0 \cdot \aleph_0 = \aleph_0,
+\]
+ya que cada $f(n) < \omega_1$ es un ordinal numerable. Luego $\omega_1 \leq \aleph_0$, contradicción. Por tanto no existe sucesión numerable cofinal en $\omega_1$, y $\mathrm{cf}(\aleph_1) = \aleph_1$.
+\end{ejemplo}
+
+\begin{teorema}{El cardinal $\aleph_0$ y los cardinales sucesores agotan los cardinales regulares asequibles}{regzfc}
+En ZFC, los únicos cardinales infinitos regulares cuya existencia puede probarse son:
+\begin{itemize}[leftmargin=2em]
+  \item $\aleph_0$, y
+  \item los cardinales sucesores $\kappa^+$ para cada cardinal $\kappa$.
+\end{itemize}
+La existencia de un cardinal límite regular mayor que $\aleph_0$ (llamado \textbf{cardinal débilmente inaccesible}) no puede demostrarse en ZFC.
+\end{teorema}
+
+\begin{proof}
+La afirmación sobre los sucesores es el Corolario~\ref{cor:succregular}. La afirmación sobre los inaccesibles es un resultado de independencia: si ZFC es consistente, también lo es ZFC + ``no existe ningún cardinal débilmente inaccesible'' \cite{godel1940, jech2003, kanamori2003}.
+\end{proof}
+
+% ===========================================================
+\section{Cardinales singulares: definición, ejemplos y propiedades}
+\label{sec:cardinales-singulares}
+% ===========================================================
+
+\subsection{Definición y primeros ejemplos}
+
+\begin{definicion}{Cardinal singular}{cardsing}
+Un cardinal infinito $\kappa$ es \textbf{singular} si existe una función cofinal $f \colon \delta \to \kappa$ con $\delta < \kappa$. Equivalentemente, $\kappa$ es singular si $\mathrm{cf}(\kappa) < \kappa$.
+
+El cardinal $\delta = \mathrm{cf}(\kappa)$ recibe el nombre de \textbf{cofinalidad} de $\kappa$, y necesariamente es un cardinal regular (por la propiedad de idempotencia de la cofinalidad).
+\end{definicion}
+
+\begin{importante}
+Para que un cardinal $\kappa$ sea singular, necesita:
+\begin{enumerate}[leftmargin=2em, label=(\arabic*)]
+  \item Ser un cardinal \emph{límite}: los cardinales sucesores son siempre regulares.
+  \item Poder alcanzarse «desde abajo» mediante una sucesión de longitud $< \kappa$: existe $\{\kappa_\alpha\}_{\alpha < \delta}$ con $\delta < \kappa$ y $\kappa_\alpha < \kappa$ y $\sup_{\alpha<\delta} \kappa_\alpha = \kappa$.
+\end{enumerate}
+\end{importante}
+
+\begin{ejemplo}{$\aleph_\omega$ es singular con $\mathrm{cf}(\aleph_\omega) = \aleph_0$}{alephomsing}
+El cardinal $\aleph_\omega$ es el límite de la sucesión $\aleph_0 < \aleph_1 < \aleph_2 < \cdots$
+
+Definimos $f \colon \omega \to \aleph_\omega$ por $f(n) = \aleph_n$. Entonces:
+\[
+  \sup_{n < \omega} f(n) = \sup_{n < \omega} \aleph_n = \aleph_\omega.
+\]
+Esta función $f$ es cofinal en $\aleph_\omega$ y tiene dominio $\omega = \aleph_0 < \aleph_\omega$. Luego $\mathrm{cf}(\aleph_\omega) \leq \aleph_0$.
+
+Comprobamos que $\mathrm{cf}(\aleph_\omega) = \aleph_0$ (no puede ser finita): ninguna sucesión finita $\aleph_{n_1}, \ldots, \aleph_{n_k}$ es cofinal en $\aleph_\omega$, pues su máximo $\aleph_{\max(n_i)} < \aleph_\omega$.
+
+Por tanto $\mathrm{cf}(\aleph_\omega) = \aleph_0 < \aleph_\omega$, y $\aleph_\omega$ es singular.
+\end{ejemplo}
+
+\begin{ejemplo}{Cardinales singulares de cofinalidad $\aleph_0$}{cardsingness0}
+Todos los siguientes son cardinales singulares de cofinalidad $\aleph_0$:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\aleph_\omega$: $\sup_{n<\omega} \aleph_n = \aleph_\omega$.
+  \item $\aleph_{\omega \cdot 2} = \aleph_{\omega + \omega}$: $\sup_{n<\omega} \aleph_{\omega + n} = \aleph_{\omega \cdot 2}$.
+  \item $\aleph_{\omega^2}$: $\sup_{n<\omega} \aleph_{\omega \cdot n} = \aleph_{\omega^2}$.
+  \item $\aleph_{\omega^\omega}$: $\sup_{n<\omega} \aleph_{\omega^n} = \aleph_{\omega^\omega}$.
+  \item $\aleph_{\varepsilon_0}$: $\sup_{n<\omega} \aleph_{\varphi_n} = \aleph_{\varepsilon_0}$ donde $\varphi_n$ es la sucesión que converge a $\varepsilon_0$.
+\end{enumerate}
+En general, $\aleph_\lambda$ es singular de cofinalidad $\aleph_0$ siempre que $\lambda$ sea un ordinal límite de cofinalidad $\omega$ (por ejemplo, $\lambda = \omega, \omega^2, \omega^\omega, \varepsilon_0$, etc.).
+\end{ejemplo}
+
+\begin{ejemplo}{Cardinal singular de cofinalidad $\aleph_1$}{cardsingness1}
+Sea $\lambda = \omega_1$ (el primer ordinal no numerable). Entonces $\aleph_{\omega_1}$ es un cardinal singular con $\mathrm{cf}(\aleph_{\omega_1}) = \aleph_1$.
+
+La función cofinal es $f \colon \omega_1 \to \aleph_{\omega_1}$ dada por $f(\alpha) = \aleph_\alpha$:
+\[
+  \sup_{\alpha < \omega_1} \aleph_\alpha = \aleph_{\omega_1}.
+\]
+Ninguna sucesión de longitud $< \omega_1$ (es decir, de longitud $\aleph_0$) puede ser cofinal en $\aleph_{\omega_1}$, pues la unión de $\aleph_0$ conjuntos de cardinalidad $\leq \aleph_\alpha$ para algún $\alpha < \omega_1$ tiene cardinalidad $\leq \aleph_0 \cdot \aleph_\alpha = \aleph_\alpha < \aleph_{\omega_1}$.
+
+Por tanto $\mathrm{cf}(\aleph_{\omega_1}) = \aleph_1 < \aleph_{\omega_1}$, y $\aleph_{\omega_1}$ es singular.
+\end{ejemplo}
+
+\begin{ejemplo}{Caracterización de la cofinalidad de $\aleph_\alpha$ en función de $\alpha$}{cofinalidadindice}
+La relación entre el índice $\alpha$ y la cofinalidad de $\aleph_\alpha$ es:
+\begin{center}
+\begin{tabular}{lll}
+\textbf{$\alpha$} & \textbf{Tipo} & \textbf{$\mathrm{cf}(\aleph_\alpha)$} \\
+\hline
+$0$ & límite ($\omega = \aleph_0$) & $\aleph_0$ (regular) \\
+$1, 2, 3, \ldots$ (sucesor finito) & sucesor & $\aleph_n$ (regular) \\
+$\omega$ & límite, $\mathrm{cf}(\omega) = \omega$ & $\aleph_0$ (singular) \\
+$\omega + 1$ & sucesor & $\aleph_{\omega+1}$ (regular) \\
+$\omega \cdot 2$ & límite, $\mathrm{cf}(\omega \cdot 2) = \omega$ & $\aleph_0$ (singular) \\
+$\omega_1$ & límite, $\mathrm{cf}(\omega_1) = \omega_1$ & $\aleph_1$ (singular) \\
+$\omega_1 + 1$ & sucesor & $\aleph_{\omega_1+1}$ (regular) \\
+\end{tabular}
+\end{center}
+\medskip
+En general: $\mathrm{cf}(\aleph_\alpha) = \mathrm{cf}(\alpha)$ cuando $\alpha$ es un ordinal límite (la cofinalidad del cardinal es la cofinalidad del índice). Para $\alpha$ sucesor, $\aleph_\alpha$ es el sucesor cardinal de $\aleph_{\alpha-1}$ y es regular.
+\end{ejemplo}
+
+\subsection{Consecuencias de la singularidad en la aritmética cardinal}
+
+\begin{teorema}{König aplicado a cardinales singulares}{koenig-singular}
+Sea $\kappa$ un cardinal singular con $\mathrm{cf}(\kappa) = \delta$. Sea $f \colon \delta \to \kappa$ cofinal. Entonces:
+\[
+  \sum_{\alpha < \delta} f(\alpha) = \kappa \qquad \text{y} \qquad
+  \kappa < \prod_{\alpha < \delta} \kappa = \kappa^\delta.
+\]
+En particular, $\kappa < \kappa^\delta = \kappa^{\mathrm{cf}(\kappa)}$.
+\end{teorema}
+
+\begin{proof}
+La primera igualdad: como $f(\alpha) < \kappa$ y $\sup f(\alpha) = \kappa$, se tiene $\sum_{\alpha<\delta} f(\alpha) \leq \delta \cdot \kappa = \kappa$ (pues $\delta < \kappa$), y la desigualdad opuesta es obvia.
+
+La desigualdad estricta es el Corolario~\ref{cor:kappacofkappa}, que es consecuencia del Teorema de König.
+\end{proof}
+
+\begin{corolario}{Restricción sobre $\aleph_\omega^{\aleph_0}$}{aomegacotas}
+Se tiene la siguiente acotación para $\aleph_\omega^{\aleph_0}$:
+\[
+  \aleph_\omega < \aleph_\omega^{\aleph_0}.
+\]
+Además, por el Teorema de König (con $I = \omega$, $\kappa_n = \aleph_n < \lambda_n = \aleph_\omega^{\aleph_0}$):
+\[
+  \aleph_\omega = \sum_{n < \omega} \aleph_n < \prod_{n<\omega} \aleph_\omega^{\aleph_0} = \bigl(\aleph_\omega^{\aleph_0}\bigr)^{\aleph_0} = \aleph_\omega^{\aleph_0}.
+\]
+El valor exacto de $\aleph_\omega^{\aleph_0}$ depende de hipótesis adicionales sobre la aritmética cardinal singular. El \textbf{Teorema de Shelah} afirma que si $\aleph_\omega$ es fuerte-límite (es decir, $2^{\aleph_n} < \aleph_\omega$ para todo $n < \omega$), entonces $\aleph_\omega^{\aleph_0} < \aleph_{\omega_4}$ \cite{shelah1994}.
+\end{corolario}
+
+\begin{observacion}{Hipótesis de Cardinal Singular (SCH)}{sch}
+La \textbf{Hipótesis de Cardinal Singular} (SCH) afirma: si $\kappa$ es un cardinal singular fuerte-límite, entonces $2^\kappa = \kappa^+$. Bajo GCH, SCH se cumple. Sin GCH, SCH no es necesariamente verdadera, pero es considerablemente más difícil de refutar que GCH; de hecho, refutar SCH requiere grandes cardinales. El resultado profundo de Shelah es que SCH es «casi siempre» verdadera para cardinales singulares de cofinalidad $\aleph_0$ \cite{shelah1994, jech2003}.
+\end{observacion}
+
+\subsection{Cardinales singulares y el Teorema de Silver}
+
+\begin{teorema}{Teorema de Silver (enunciado)}{teosilver}
+Sea $\kappa$ un cardinal singular de cofinalidad no numerable, es decir, $\mathrm{cf}(\kappa) > \aleph_0$. Si la Hipótesis del Continuo Generalizada vale para todos los cardinales $< \kappa$ (es decir, $2^\lambda = \lambda^+$ para todo cardinal infinito $\lambda < \kappa$), entonces $2^\kappa = \kappa^+$.
+\end{teorema}
+
+\begin{proof}[Referencia]
+La demostración utiliza la teoría de \emph{ultrapotencias} y \emph{funciones regresivas} (funciones de Fodor). Se omite en este curso; véase \cite{jech2003} (Capítulo 8) o \cite{kunen2011} \cite{silver1975}.
+\end{proof}
+
+\begin{observacion}{Importancia del Teorema de Silver}{importsilver}
+El Teorema de Silver fue sorprendente cuando fue demostrado en 1975 \cite{silver1975}: muestra que la aritmética de cardinales singulares no es completamente libre, sino que está parcialmente determinada por la aritmética de los cardinales más pequeños. Contrasta con el resultado de Easton (1970) \cite{easton1970}, que muestra que la función $\kappa \mapsto 2^\kappa$ para cardinales regulares puede tomar prácticamente cualquier valor consistente con el Teorema de König.
+\end{observacion}
+
+% ===========================================================
+\section{Resumen: aritmética cardinal infinita}
+% ===========================================================
+
+La siguiente tabla recoge las identidades y desigualdades fundamentales establecidas en esta clase.
+
+\begin{center}
+\begin{tabular}{lll}
+\textbf{Operación} & \textbf{Resultado} & \textbf{Condición} \\
+\hline
+$\kappa + \lambda$ & $\max(\kappa, \lambda)$ & $\kappa, \lambda$ infinitos \\
+$\kappa \cdot \lambda$ & $\max(\kappa, \lambda)$ & $\kappa, \lambda$ infinitos \\
+$\kappa^\lambda$ & $2^\lambda$ & $2^\lambda \geq \kappa$ \\
+$\kappa^\lambda$ & depende de $\mathrm{cf}(\kappa)$ & $2^\lambda < \kappa$ \\
+$\kappa + \kappa$ & $\kappa$ & $\kappa$ infinito \\
+$\kappa \cdot \kappa$ & $\kappa$ & $\kappa$ infinito \\
+$\kappa^{\mathrm{cf}(\kappa)}$ & $> \kappa$ (König) & $\kappa$ infinito \\
+$\sum_i \kappa_i$ & $< \prod_i \lambda_i$ si $\kappa_i < \lambda_i$ & (König general) \\
+$\mathrm{cf}(2^\kappa)$ & $> \kappa$ & $\kappa$ infinito \\
+\hline
+\end{tabular}
+\end{center}
+
+\bigskip
+
+\begin{importante}
+\textbf{Resumen conceptual de los tipos de cardinales infinitos:}
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Cardinales regulares}: $\mathrm{cf}(\kappa) = \kappa$. Ejemplos: $\aleph_0$ y todos los cardinales sucesores $\aleph_{\alpha+1}$. En ZFC no se puede probar la existencia de cardinales límite regulares mayores que $\aleph_0$.
+  \item \textbf{Cardinales singulares}: $\mathrm{cf}(\kappa) < \kappa$. Ejemplos: $\aleph_\omega$, $\aleph_{\omega^2}$, $\aleph_{\omega_1}$, en general $\aleph_\lambda$ con $\lambda$ límite. La aritmética de cardinales singulares es el tema central de la investigación moderna en teoría de conjuntos.
+  \item \textbf{Cardinales inaccesibles}: cardinales límite regulares. Su existencia es independiente de ZFC y su estudio pertenece a la teoría de grandes cardinales.
+\end{itemize}
+\end{importante}
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+
+\item \textbf{(Aritmética cardinal básica.)}
+Calcule y justifique los siguientes cardinales:
+\begin{enumerate}[label=(\alph*)]
+  \item $\aleph_3 + \aleph_7$.
+  \item $\aleph_0 \cdot \aleph_{\omega}$.
+  \item $\aleph_5 \cdot \aleph_5$.
+  \item $(\aleph_0 + \aleph_1) \cdot (\aleph_2 + \aleph_3)$.
+  \item $\aleph_\omega \cdot \aleph_{\omega+1}$.
+\end{enumerate}
+
+\item \textbf{(Potenciación cardinal.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Pruebe que $2^{\aleph_0} = \aleph_0^{\aleph_0}$.
+  \item Pruebe que $\aleph_1^{\aleph_0} = 2^{\aleph_0}$ (sin ninguna hipótesis adicional).
+  \item Pruebe que $\aleph_\alpha^{\aleph_\alpha} = 2^{\aleph_\alpha}$ para todo ordinal $\alpha$.
+  \item Bajo GCH, calcule $\aleph_5^{\aleph_3}$, $\aleph_3^{\aleph_5}$ y $\aleph_\omega^{\aleph_0}$.
+  \item Demuestre que $(2^{\aleph_0})^{\aleph_0} = 2^{\aleph_0}$ (el continuo elevado a $\aleph_0$ es el propio continuo).
+\end{enumerate}
+
+\item \textbf{(Teorema de König.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Usando el Teorema de König, demuestre que $\aleph_\omega \neq 2^{\aleph_0}$.
+  \item Pruebe que $\mathrm{cf}(2^{\aleph_0}) > \aleph_0$, es decir, el continuo no puede ser $\aleph_\omega$. (\emph{¿Puede ser $2^{\aleph_0} = \aleph_{\omega_1}$?})
+  \item Demuestre que para cualquier cardinal $\kappa$, $\kappa^\kappa = 2^\kappa$ cuando $\mathrm{cf}(\kappa) = \kappa$ (es decir, cuando $\kappa$ es regular).
+  \item Sea $\{A_n\}_{n<\omega}$ una familia de conjuntos con $|A_n| = \aleph_n$. Use el Teorema de König para demostrar que $\left|\prod_{n<\omega} A_n\right| > \aleph_\omega$.
+  \item (Generalización) Enuncia y demuestra la versión del Teorema de König para una familia de dos cardinales: $\kappa < \lambda$ implica $\kappa + \kappa < \lambda \cdot \lambda$.
+\end{enumerate}
+
+\item \textbf{(Cofinalidad.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Calcule $\mathrm{cf}(\aleph_{\omega \cdot 3})$, $\mathrm{cf}(\aleph_{\omega^3})$, $\mathrm{cf}(\aleph_{\omega^\omega})$, $\mathrm{cf}(\aleph_{\varepsilon_0})$.
+  \item Demuestre que $\mathrm{cf}(\aleph_\lambda) = \mathrm{cf}(\lambda)$ para todo ordinal límite $\lambda$.
+  \item Demuestre que para todo cardinal regular $\kappa > \aleph_0$ y toda familia $\{A_\alpha\}_{\alpha < \lambda}$ con $\lambda < \kappa$ y $|A_\alpha| < \kappa$, se tiene $\left|\bigcup_{\alpha < \lambda} A_\alpha\right| < \kappa$. (Esta es la propiedad de \emph{cierre por uniones pequeñas} de los cardinales regulares.)
+  \item Pruebe que si $f \colon \kappa \to \kappa$ es estrictamente creciente y $\kappa$ es regular, entonces $f$ tiene un punto fijo, es decir, existe $\alpha < \kappa$ con $f(\alpha) = \alpha$. (\emph{Sugerencia}: considere $\sup_{n<\omega} f^n(0)$ si $\kappa$ es regular de cofinalidad $> \omega$; ajuste para $\kappa = \omega$.)
+\end{enumerate}
+
+\item \textbf{(Cardinales regulares y singulares.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Demuestre que $\aleph_{\omega_1}$ es singular y determine su cofinalidad.
+  \item Sea $\kappa$ un cardinal singular con $\mathrm{cf}(\kappa) = \delta$. Pruebe que $\kappa^\delta > \kappa$ pero $\kappa^\mu = \kappa$ para todo $\mu < \delta$ con $2^\mu < \kappa$.
+  \item Demuestre que no existe ningún cardinal singular mínimo, es decir, para cada cardinal singular $\kappa$ existe un cardinal singular $\mu < \kappa$.
+  \item Pruebe que la clase de cardinales regulares es cofinal en la clase de todos los cardinales.
+\end{enumerate}
+
+\item \textbf{(Cardinales inaccesibles.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Un cardinal $\kappa$ es \textbf{débilmente inaccesible} si es un cardinal límite regular mayor que $\aleph_0$. Demuestre que si existe un cardinal débilmente inaccesible $\kappa$, entonces $\kappa = \aleph_\kappa$.
+  \item Un cardinal $\kappa$ es \textbf{fuertemente inaccesible} si además es fuerte-límite: $2^\lambda < \kappa$ para todo $\lambda < \kappa$. Demuestre que si $\kappa$ es fuertemente inaccesible, entonces $V_\kappa \models \text{ZFC}$.
+  \item (Investigación) Explique por qué la consistencia de ZFC no puede implicar la existencia de un cardinal inaccesible (use el Segundo Teorema de Incompletitud de Gödel).
+\end{enumerate}
+
+\item \textbf{(El Teorema de Silver: exploración.)}
+Sea $\kappa$ un cardinal singular de cofinalidad $\aleph_1$.
+\begin{enumerate}[label=(\alph*)]
+  \item Escriba $\kappa = \sup_{\alpha < \omega_1} \kappa_\alpha$ con $\kappa_\alpha < \kappa$ estrictamente creciente. Suponga que $2^{\kappa_\alpha} = \kappa_\alpha^+$ para todo $\alpha < \omega_1$. Enuncie qué predice el Teorema de Silver sobre $2^\kappa$.
+  \item Compare este resultado con el caso $\mathrm{cf}(\kappa) = \aleph_0$: ¿qué diferencias hay en lo que la aritmética cardinal singular puede o no puede controlar?
+  \item Explique, informalmente, por qué la condición $\mathrm{cf}(\kappa) > \aleph_0$ en el Teorema de Silver es esencial, citando el ejemplo de $\aleph_\omega$.
+\end{enumerate}
+
+\item \textbf{(Problema de investigación.)}
+La \textbf{función pcf} de Shelah (possible cofinalities) es el instrumento más potente conocido para estudiar la aritmética de cardinales singulares. Investiga los siguientes aspectos:
+\begin{enumerate}[label=(\alph*)]
+  \item ¿Qué es el conjunto $\mathrm{pcf}(A)$ para un conjunto progresivo de cardinales $A$?
+  \item Enuncia el Teorema de Shelah: $\aleph_\omega^{\aleph_0} < \aleph_{\omega_4}$ (bajo la hipótesis $\aleph_\omega > 2^{\aleph_0}$). ¿Cuál es la cota actual conocida?
+  \item ¿Es demostrable en ZFC que $\aleph_\omega^{\aleph_0} < \aleph_{\omega_1}$?
+\end{enumerate}
+
+\end{enumerate}
+
+% ===========================================================
+\section{Referencias de la Clase}
+% ===========================================================
+
+Los contenidos de esta clase se encuentran desarrollados con todo detalle en las siguientes obras. Para la aritmética cardinal elemental (suma, producto, potenciación) y el Teorema de Hessenberg, las referencias fundamentales son \cite{jech2003} (capítulos 5 y 6), \cite{enderton1977} (capítulo 6) y \cite{hrbacek1999} (capítulo 4). El artículo original del Teorema de König es \cite{konig1905}; una exposición moderna y completa se encuentra en \cite{jech2003} y \cite{kunen2011}. Para la cofinalidad y los cardinales regulares y singulares, la presentación estándar está en \cite{jech2003} (capítulo 3), \cite{kunen2011} y \cite{levy1979}. La teoría de grandes cardinales y los cardinales inaccesibles se desarrollan en \cite{kanamori2003}. El Teorema de Easton sobre la libertad de $\kappa \mapsto 2^\kappa$ para regulares es \cite{easton1970}. El Teorema de Silver se encuentra en \cite{silver1975}; véanse también las exposiciones en \cite{jech2003} y \cite{devlin1993}. Para la aritmética cardinal singular avanzada (teoría pcf de Shelah), la referencia principal es \cite{shelah1994}; una exposición introductoria accesible se encuentra en \cite{jech2003} (capítulo 24) y en \cite{kanamori2003}.
+
+\nocite{sierpinski1958, suppes1972, halmos1960}
