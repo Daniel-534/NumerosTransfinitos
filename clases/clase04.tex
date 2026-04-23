@@ -1,0 +1,848 @@
+% ===========================================================
+\chapter{Clase 4: Funciones, Equipotencia e Infinitud — Primeros Resultados de Cantor}
+% ===========================================================
+
+La noción de \emph{cardinalidad} —el «tamaño» de un conjunto— adquiere su forma definitiva cuando se formaliza mediante \textbf{biyecciones}. La idea central, debida a Georg Cantor en la década de 1870, es radical en su simplicidad: dos conjuntos tienen el mismo número de elementos si y solo si existe una correspondencia uno a uno entre ellos, independientemente de que los conjuntos sean finitos o infinitos. Esta sesión formaliza dicha idea, estudia sus consecuencias inmediatas —la equipotencia como relación de equivalencia y el Teorema de Cantor–Bernstein–Schröder— y culmina con el descubrimiento más sorprendente de Cantor: existen \emph{distintos tamaños de infinito}, en el sentido de que $\mathbb{R}$ no puede ponerse en correspondencia biyectiva con $\mathbb{N}$.
+
+Todo el desarrollo sigue la tradición de la teoría de conjuntos axiomática ZFC tal como se estableció en la Clase~2. En particular, una función es, por definición, un conjunto de pares ordenados que satisface ciertas condiciones \cite{enderton1977, jech2003, kunen2011}.
+
+% ===========================================================
+\section{Funciones: definición formal y tipos}
+% ===========================================================
+
+\subsection{Funciones como relaciones}
+
+\begin{definicion}{Función}{funcion}
+Una \textbf{función} (o \textbf{aplicación}) de $A$ en $B$ es una relación $f \subseteq A \times B$ tal que:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Totalidad:} $\forall a \in A,\; \exists b \in B,\; (a,b) \in f$.
+  \item \textbf{Unicidad:} $\forall a \in A,\; \forall b, b' \in B,\; \bigl[(a,b) \in f \wedge (a,b') \in f \to b = b'\bigr]$.
+\end{enumerate}
+Se escribe $f: A \to B$ y, cuando $(a,b) \in f$, se escribe $f(a) = b$. El conjunto $A$ se llama el \textbf{dominio} de $f$ y $B$ el \textbf{codominio}. La \textbf{imagen} (o \textbf{rango}) de $f$ es
+\[
+  \mathrm{Im}(f) \;=\; f(A) \;=\; \{f(a) \mid a \in A\} \;=\; \{b \in B \mid \exists a \in A,\, f(a) = b\}.
+\]
+\end{definicion}
+
+\begin{observacion}{Las funciones son conjuntos}{funcconjunto}
+En ZFC, toda función $f: A \to B$ es literalmente un conjunto: el conjunto de pares de Kuratowski $\{(a, f(a)) \mid a \in A\}$. La totalidad y la unicidad garantizan que este conjunto «asigna» exactamente un elemento de $B$ a cada elemento de $A$. El conjunto de todas las funciones de $A$ en $B$ se denota $B^A$ o ${}^{A}B$, y su existencia se garantiza mediante el Axioma de Potencia y el Esquema de Separación (pues $B^A \subseteq \mathcal{P}(A \times B)$).
+\end{observacion}
+
+\begin{definicion}{Imagen directa e imagen inversa}{imagenes}
+Sea $f: A \to B$. Para $S \subseteq A$ y $T \subseteq B$, se definen:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Imagen directa:} $f(S) = \{f(a) \mid a \in S\} \subseteq B$.
+  \item \textbf{Preimagen} (o \textbf{imagen inversa}): $f^{-1}(T) = \{a \in A \mid f(a) \in T\} \subseteq A$.
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Imágenes directas e inversas}{}
+Sea $f: \mathbb{Z} \to \mathbb{Z}$ definida por $f(n) = n^2$.
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $f(\{-2, -1, 0, 1, 2\}) = \{0, 1, 4\}$.
+  \item $f(\mathbb{Z}) = \{0, 1, 4, 9, 16, \ldots\} = \{n^2 \mid n \in \mathbb{Z}\}$, el conjunto de cuadrados perfectos no negativos.
+  \item $f^{-1}(\{4\}) = \{-2, 2\}$.
+  \item $f^{-1}(\{3\}) = \emptyset$ (pues $3$ no es cuadrado perfecto).
+  \item $f^{-1}(\{0, 1, 4\}) = \{-2, -1, 0, 1, 2\}$.
+\end{enumerate}
+Nótese que $f^{-1}(\{4\})$ tiene dos elementos: $f$ no es inyectiva.
+\end{ejemplo}
+
+\begin{proposicion}{Propiedades de las imágenes}{propimag}
+Sea $f: A \to B$, $S, S' \subseteq A$ y $T, T' \subseteq B$. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $f(S \cup S') = f(S) \cup f(S')$.
+  \item $f(S \cap S') \subseteq f(S) \cap f(S')$ \quad (la igualdad no siempre se cumple).
+  \item $f^{-1}(T \cup T') = f^{-1}(T) \cup f^{-1}(T')$.
+  \item $f^{-1}(T \cap T') = f^{-1}(T) \cap f^{-1}(T')$.
+  \item $f^{-1}(B \setminus T) = A \setminus f^{-1}(T)$.
+  \item $S \subseteq f^{-1}(f(S))$; la igualdad se cumple si $f$ es inyectiva.
+  \item $f(f^{-1}(T)) \subseteq T$; la igualdad se cumple si $f$ es sobreyectiva.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+Demostramos (i) y (ii); las demás son análogas.
+
+\textbf{(i)} Sea $b \in f(S \cup S')$. Entonces existe $a \in S \cup S'$ con $f(a) = b$. Si $a \in S$, entonces $b \in f(S)$; si $a \in S'$, entonces $b \in f(S')$. En cualquier caso, $b \in f(S) \cup f(S')$. La otra inclusión es evidente.
+
+\textbf{(ii)} Si $b \in f(S \cap S')$, existe $a \in S \cap S'$ con $f(a) = b$; entonces $a \in S$ y $a \in S'$, luego $b \in f(S)$ y $b \in f(S')$. Para ver que la inclusión puede ser estricta, tomemos $A = \{1, 2\}$, $B = \{0\}$, $f(1) = f(2) = 0$, $S = \{1\}$, $S' = \{2\}$. Entonces $f(S \cap S') = f(\emptyset) = \emptyset$ pero $f(S) \cap f(S') = \{0\} \cap \{0\} = \{0\}$.
+\end{proof}
+
+\subsection{Inyectividad, sobreyectividad y biyectividad}
+
+\begin{definicion}{Función inyectiva}{inyectiva}
+Una función $f: A \to B$ es \textbf{inyectiva} (o \textbf{uno a uno}) si
+\[
+  \forall a, a' \in A,\quad f(a) = f(a') \;\implies\; a = a'.
+\]
+Equivalentemente, $a \neq a'$ implica $f(a) \neq f(a')$.
+\end{definicion}
+
+\begin{definicion}{Función sobreyectiva}{sobreyectiva}
+Una función $f: A \to B$ es \textbf{sobreyectiva} (o \textbf{suprayectiva}, o \emph{sobre}) si
+\[
+  \forall b \in B,\quad \exists a \in A,\quad f(a) = b,
+\]
+es decir, $\mathrm{Im}(f) = B$.
+\end{definicion}
+
+\begin{definicion}{Función biyectiva}{biyectiva}
+Una función $f: A \to B$ es \textbf{biyectiva} (o una \textbf{biyección}, o \textbf{correspondencia uno a uno}) si es simultáneamente inyectiva y sobreyectiva.
+\end{definicion}
+
+\begin{observacion}{Intuición geométrica}{intuicionbiy}
+\begin{itemize}[leftmargin=2em]
+  \item \emph{Inyectiva:} distintas entradas producen distintas salidas; «no colapsa elementos».
+  \item \emph{Sobreyectiva:} todo elemento del codominio es «alcanzado»; ningún elemento de $B$ queda sin preimagen.
+  \item \emph{Biyectiva:} empareja perfectamente cada elemento de $A$ con exactamente uno de $B$ y viceversa; es el concepto preciso de «misma cantidad de elementos».
+\end{itemize}
+\end{observacion}
+
+\begin{ejemplo}{Clasificación de funciones}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $f: \mathbb{N} \to \mathbb{N}$, $f(n) = 2n$. Es \textbf{inyectiva} (si $2n = 2m$ entonces $n = m$) pero \textbf{no sobreyectiva} ($1 \notin \mathrm{Im}(f)$).
+
+  \item $g: \mathbb{Z} \to \mathbb{Z}$, $g(n) = n^2$. Es \textbf{no inyectiva} ($g(-2) = g(2) = 4$) y \textbf{no sobreyectiva} ($-1 \notin \mathrm{Im}(g)$).
+
+  \item $h: \mathbb{R} \to \mathbb{R}^+$, $h(x) = e^x$. Es \textbf{inyectiva} (la exponencial es estrictamente creciente) y \textbf{sobreyectiva} (todo $y > 0$ tiene un logaritmo), luego es \textbf{biyectiva}.
+
+  \item La función \textbf{identidad} $\mathrm{id}_A: A \to A$, $\mathrm{id}_A(a) = a$ es siempre biyectiva.
+
+  \item Sea $A = \{1, 2, 3\}$, $B = \{a, b, c\}$. La función $f(1) = a$, $f(2) = a$, $f(3) = b$ es \textbf{no inyectiva} y \textbf{no sobreyectiva} ($c \notin \mathrm{Im}(f)$).
+
+  \item La función \textbf{de Cantor} $\langle \cdot, \cdot \rangle: \mathbb{N} \times \mathbb{N} \to \mathbb{N}$, dada por
+  \[
+    \langle m, n \rangle = \frac{(m+n)(m+n+1)}{2} + m,
+  \]
+  es biyectiva. Esto demuestra que $|\mathbb{N} \times \mathbb{N}| = |\mathbb{N}|$, un hecho aparentemente paradójico.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{ejemplo}{La función de paridad}{paridad}
+Definamos $f: \mathbb{N} \to \{0,1\}$ por $f(n) = n \bmod 2$ (el resto al dividir por 2). Entonces:
+\begin{itemize}[leftmargin=2em]
+  \item $f$ es \textbf{sobreyectiva}: $f(0) = 0$ y $f(1) = 1$.
+  \item $f$ \textbf{no} es inyectiva: $f(0) = f(2) = 0$.
+\end{itemize}
+Las preimágenes son los conjuntos de pares e impares: $f^{-1}(\{0\}) = \{0, 2, 4, \ldots\}$ y $f^{-1}(\{1\}) = \{1, 3, 5, \ldots\}$.
+\end{ejemplo}
+
+\subsection{Composición e inversas}
+
+\begin{definicion}{Composición de funciones}{composicion}
+Sean $f: A \to B$ y $g: B \to C$. La \textbf{composición} $g \circ f: A \to C$ se define por
+\[
+  (g \circ f)(a) = g(f(a)) \qquad \forall a \in A.
+\]
+Como conjunto: $g \circ f = \{(a, c) \in A \times C \mid \exists b \in B,\, (a,b) \in f \wedge (b,c) \in g\}$.
+\end{definicion}
+
+\begin{proposicion}{Composición y tipo de función}{compoinysupr}
+Sea $f: A \to B$ y $g: B \to C$.
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Si $f$ y $g$ son inyectivas, entonces $g \circ f$ es inyectiva.
+  \item Si $f$ y $g$ son sobreyectivas, entonces $g \circ f$ es sobreyectiva.
+  \item Si $f$ y $g$ son biyectivas, entonces $g \circ f$ es biyectiva.
+  \item Si $g \circ f$ es inyectiva, entonces $f$ es inyectiva.
+  \item Si $g \circ f$ es sobreyectiva, entonces $g$ es sobreyectiva.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} Si $(g \circ f)(a) = (g \circ f)(a')$, entonces $g(f(a)) = g(f(a'))$. Como $g$ es inyectiva, $f(a) = f(a')$. Como $f$ es inyectiva, $a = a'$.
+
+\textbf{(ii)} Sea $c \in C$. Como $g$ es sobreyectiva, $\exists b \in B$ con $g(b) = c$. Como $f$ es sobreyectiva, $\exists a \in A$ con $f(a) = b$. Entonces $(g \circ f)(a) = g(b) = c$.
+
+\textbf{(iii)} Sigue de (i) y (ii).
+
+\textbf{(iv)} Si $f(a) = f(a')$, entonces $g(f(a)) = g(f(a'))$, es decir, $(g \circ f)(a) = (g \circ f)(a')$. Como $g \circ f$ es inyectiva, $a = a'$.
+
+\textbf{(v)} Sea $c \in C$. Como $g \circ f$ es sobreyectiva, $\exists a \in A$ con $(g \circ f)(a) = c$, es decir, $g(f(a)) = c$. Tomando $b = f(a) \in B$, tenemos $g(b) = c$.
+\end{proof}
+
+\begin{definicion}{Función inversa}{inversa}
+Sea $f: A \to B$ biyectiva. La \textbf{función inversa} $f^{-1}: B \to A$ se define por
+\[
+  f^{-1}(b) = a \quad \iff \quad f(a) = b.
+\]
+La unicidad de $a$ está garantizada por la inyectividad de $f$; la existencia, por la sobreyectividad.
+\end{definicion}
+
+\begin{proposicion}{Propiedades de la inversa}{propinversa}
+Sea $f: A \to B$ biyectiva. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $f^{-1}$ es biyectiva y $(f^{-1})^{-1} = f$.
+  \item $f^{-1} \circ f = \mathrm{id}_A$ y $f \circ f^{-1} = \mathrm{id}_B$.
+  \item Si $g: B \to C$ también es biyectiva, entonces $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+\textbf{(i)} $f^{-1}$ es inyectiva: si $f^{-1}(b) = f^{-1}(b')$, sea $a$ ese valor común; entonces $f(a) = b$ y $f(a) = b'$, luego $b = b'$. $f^{-1}$ es sobreyectiva: para todo $a \in A$, $f(a) \in B$ y $f^{-1}(f(a)) = a$.
+
+\textbf{(ii)} $(f^{-1} \circ f)(a) = f^{-1}(f(a)) = a$ por definición de $f^{-1}$. Análogamente $(f \circ f^{-1})(b) = f(f^{-1}(b)) = b$.
+
+\textbf{(iii)} $(g \circ f)(a) = c \iff g(f(a)) = c \iff f(a) = g^{-1}(c) \iff a = f^{-1}(g^{-1}(c))$.
+\end{proof}
+
+% ===========================================================
+\section{Conjuntos finitos e infinitos}
+% ===========================================================
+
+\subsection{Conjuntos finitos y la numeración por naturales}
+
+\begin{definicion}{Segmentos iniciales de $\mathbb{N}$}{segnaturales}
+Para cada $n \in \mathbb{N}$, definimos el \textbf{segmento inicial}
+\[
+  [n] \;=\; \{k \in \mathbb{N} \mid k < n\} \;=\; \{0, 1, 2, \ldots, n-1\}.
+\]
+En particular, $[0] = \emptyset$ y $[n]$ tiene exactamente $n$ elementos.
+\end{definicion}
+
+\begin{definicion}{Conjunto finito}{conjfinito}
+Un conjunto $A$ es \textbf{finito} si existe $n \in \mathbb{N}$ y una biyección $f: [n] \to A$. En ese caso, el \textbf{cardinal} de $A$ es $|A| = n$. Un conjunto que no es finito se dice \textbf{infinito}.
+\end{definicion}
+
+\begin{observacion}{El cardinal está bien definido}{cardinalbien}
+Para que la Definición~\ref{def:conjfinito} sea coherente, hay que verificar que si existen biyecciones $f: [m] \to A$ y $g: [n] \to A$, entonces $m = n$. Esto es el llamado \textbf{Principio de las Casillas} (o lema de Dedekind–Cantor para conjuntos finitos) y se prueba por inducción sobre $\min(m,n)$. No lo demostraremos en detalle aquí, pero el resultado es esencial para la consistencia de la noción de cardinalidad finita.
+\end{observacion}
+
+\begin{proposicion}{Propiedades de los conjuntos finitos}{propfinitos}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Todo subconjunto de un conjunto finito es finito.
+  \item La unión finita de conjuntos finitos es finita. En particular, si $|A| = m$ y $|B| = n$ y $A \cap B = \emptyset$, entonces $|A \cup B| = m + n$.
+  \item Si $|A| = m$ y $|B| = n$, entonces $|A \times B| = m \cdot n$.
+  \item Si $|A| = n$, entonces $|\mathcal{P}(A)| = 2^n$.
+  \item No existe biyección entre $[m]$ y $[n]$ para $m \neq n$ (principio de las casillas).
+\end{enumerate}
+\end{proposicion}
+
+\subsection{La definición de Dedekind de conjunto infinito}
+
+La noción de «infinito» puede también caracterizarse desde adentro, sin referencia explícita a $\mathbb{N}$:
+
+\begin{definicion}{Conjunto Dedekind-infinito}{dedinfinito}
+Un conjunto $A$ es \textbf{Dedekind-infinito} si existe una biyección $f: A \to B$ donde $B \subsetneq A$ (un subconjunto \textbf{propio} de $A$). Equivalentemente, $A$ es Dedekind-infinito si existe una función inyectiva $f: A \to A$ que \textbf{no} es sobreyectiva.
+
+Un conjunto que no es Dedekind-infinito se llama \textbf{Dedekind-finito}.
+\end{definicion}
+
+\begin{observacion}{Origen histórico}{dedekindhistoria}
+Esta definición aparece en el trabajo de Richard Dedekind «Was sind und was sollen die Zahlen?» (1888), donde la usa precisamente para \emph{definir} los conjuntos infinitos de manera intrínseca, sin depender de los naturales \cite{dedekind1888}. La idea es que un conjunto es infinito si y solo si tiene «la misma cantidad» de elementos que alguna parte propia suya; algo imposible en los conjuntos finitos.
+\end{observacion}
+
+\begin{ejemplo}{$\mathbb{N}$ es Dedekind-infinito}{ndedinfinito}
+La función $f: \mathbb{N} \to \mathbb{N}$ dada por $f(n) = n + 1$ es inyectiva (si $n+1 = m+1$ entonces $n = m$) pero no sobreyectiva ($0 \notin \mathrm{Im}(f)$). Su imagen es $\mathbb{N} \setminus \{0\} = \{1, 2, 3, \ldots\} \subsetneq \mathbb{N}$.
+
+Más aún, $f$ establece una biyección entre $\mathbb{N}$ y el subconjunto propio $\{1, 2, 3, \ldots\}$, lo que confirma que $\mathbb{N}$ es Dedekind-infinito. Este fenómeno fue la fuente de la famosa paradoja informal del «Hotel de Hilbert».
+\end{ejemplo}
+
+\begin{ejemplo}{El Hotel de Hilbert (ilustración intuitiva)}{hilbert}
+Imaginemos un hotel con habitaciones numeradas $0, 1, 2, 3, \ldots$ (una por cada natural), todas ocupadas. Si llega un nuevo huésped:
+\begin{itemize}[leftmargin=2em]
+  \item Movemos al huésped de la habitación $n$ a la habitación $n+1$ (para todo $n \in \mathbb{N}$).
+  \item La habitación $0$ queda libre para el nuevo huésped.
+\end{itemize}
+Este «movimiento» corresponde exactamente a la función $f(n) = n+1$: es una biyección de $\mathbb{N}$ en $\mathbb{N} \setminus \{0\}$. Formalmente, reacomodamos el hotel estableciendo la correspondencia
+\[
+  \{0,1,2,3,\ldots\} \;\longleftrightarrow\; \{1,2,3,4,\ldots\},
+\]
+dejando libre la habitación $0$ para el nuevo cliente. Si llegan infinitos nuevos huéspedes (numerados $0, 1, 2, \ldots$), movemos al huésped de la habitación $n$ a la $2n+1$ (impar), dejando todas las pares libres. Esta es la idea detrás de muchas pruebas de numerabilidad.
+\end{ejemplo}
+
+\begin{proposicion}{Conjuntos finitos son Dedekind-finitos}{finDedfinito}
+Todo conjunto finito es Dedekind-finito; es decir, ningún conjunto finito es biyectable con un subconjunto propio suyo.
+\end{proposicion}
+
+\begin{proof}
+Por inducción en $n = |A|$. Si $|A| = 0$, entonces $A = \emptyset$ y no tiene subconjuntos propios. Supongamos el resultado cierto para todos los conjuntos de cardinal menor que $n$, y sea $|A| = n \geq 1$. Supongamos que $f: A \to B$ es una biyección con $B \subsetneq A$. Sea $a_0 \in A \setminus B$. Definimos $A' = A \setminus \{a_0\}$, que tiene $n-1$ elementos. La restricción de $f$ da una inyección de $A$ en $A'$ (pues $B \subseteq A' \cup B \subseteq A$). En particular, $|f(A)| = |A| = n$ pero $f(A) = B \subseteq A' \setminus \{a_0\}$, que tiene a lo sumo $n-1$ elementos. Esto contradice el principio de las casillas. (Una prueba detallada requiere el principio de las casillas, que a su vez se demuestra por inducción.)
+\end{proof}
+
+\begin{proposicion}{Relación entre infinitud e infinitud de Dedekind}{infDed}
+Bajo el Axioma de Elección (AC), las siguientes condiciones sobre un conjunto $A$ son equivalentes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $A$ es infinito (no finito).
+  \item $A$ es Dedekind-infinito.
+  \item Existe una función inyectiva $\mathbb{N} \to A$.
+\end{enumerate}
+Sin el Axioma de Elección, puede existir un conjunto infinito que sea Dedekind-finito. \cite{herrlich2006}
+\end{proposicion}
+
+\begin{proof}[Esquema de la prueba]
+\textbf{(iii) $\Rightarrow$ (ii):} Si $\iota: \mathbb{N} \to A$ es inyectiva, definimos $f: A \to A$ por
+\[
+  f(a) = \begin{cases} \iota(\iota^{-1}(a) + 1) & \text{si } a \in \mathrm{Im}(\iota), \\ a & \text{si } a \notin \mathrm{Im}(\iota). \end{cases}
+\]
+Entonces $f$ es inyectiva y $\iota(0) \notin \mathrm{Im}(f)$, luego $A$ es Dedekind-infinito.
+
+\textbf{(ii) $\Rightarrow$ (iii):} Si $f: A \to A$ es inyectiva y $a_0 \in A \setminus \mathrm{Im}(f)$, definimos $\iota: \mathbb{N} \to A$ por $\iota(0) = a_0$ e $\iota(n+1) = f(\iota(n))$. Por inducción, $\iota$ es inyectiva.
+
+\textbf{(i) $\Rightarrow$ (iii):} Usando AC (de forma controlada), un conjunto infinito $A$ contiene subconjuntos de todo tamaño finito, y se puede construir por inducción una función inyectiva de $\mathbb{N}$ en $A$.
+
+\textbf{(iii) $\Rightarrow$ (i):} Si existiera una biyección $h: [n] \to A$ y una inyección $\iota: \mathbb{N} \to A$, la composición $h^{-1} \circ \iota: \mathbb{N} \to [n]$ sería inyectiva, lo que contradice el principio de las casillas.
+\end{proof}
+
+% ===========================================================
+\section{Equipotencia como relación de equivalencia}
+% ===========================================================
+
+\subsection{Definición y primeras propiedades}
+
+\begin{definicion}{Equipotencia}{equipotencia}
+Dos conjuntos $A$ y $B$ son \textbf{equipotentes} (o tienen el mismo \textbf{cardinal}) si existe una biyección $f: A \to B$. Se escribe $A \sim B$ o $|A| = |B|$.
+\end{definicion}
+
+\begin{teorema}{La equipotencia es una relación de equivalencia}{equivequipot}
+La relación $\sim$ de equipotencia satisface:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Reflexividad:} $A \sim A$ para todo conjunto $A$.
+  \item \textbf{Simetría:} Si $A \sim B$, entonces $B \sim A$.
+  \item \textbf{Transitividad:} Si $A \sim B$ y $B \sim C$, entonces $A \sim C$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{(i)} La identidad $\mathrm{id}_A: A \to A$ es una biyección.
+
+\textbf{(ii)} Si $f: A \to B$ es biyectiva, entonces $f^{-1}: B \to A$ también lo es (Proposición~\ref{prop:propinversa}).
+
+\textbf{(iii)} Si $f: A \to B$ y $g: B \to C$ son biyectivas, entonces $g \circ f: A \to C$ es biyectiva (Proposición~\ref{prop:compoinysupr}).
+\end{proof}
+
+\begin{observacion}{Clases de equivalencia y cardinalidad}{clasecardinal}
+Formalmente, la «clase de equivalencia» de $A$ bajo $\sim$ sería el conjunto $\{B \mid B \sim A\}$. Esto no es un conjunto en ZFC (sería demasiado grande, una clase propia). Por ello, la teoría de cardinales introduce los \textbf{números cardinales} como representantes canónicos: en ZFC, el cardinal de $A$ se define como el ordinal mínimo equipotente a $A$ (ordinal de Hartogs). Para los propósitos de esta clase, trabajaremos con la equipotencia directamente sin necesidad de este refinamiento.
+\end{observacion}
+
+\begin{ejemplo}{Biyecciones entre conjuntos infinitos}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\mathbb{N} \sim \mathbb{Z}$: la función $f: \mathbb{N} \to \mathbb{Z}$ definida por
+  \[
+    f(n) = \begin{cases} n/2 & \text{si } n \text{ es par}, \\ -(n+1)/2 & \text{si } n \text{ es impar}, \end{cases}
+  \]
+  es una biyección. Explícitamente: $f(0) = 0$, $f(1) = -1$, $f(2) = 1$, $f(3) = -2$, $f(4) = 2$, $\ldots$
+
+  \item $\mathbb{N} \sim \mathbb{N} \times \mathbb{N}$: la función de emparejamiento de Cantor $\langle m, n \rangle = \frac{(m+n)(m+n+1)}{2} + m$ es biyectiva. Los primeros valores son:
+  \[
+    \langle 0,0\rangle = 0,\quad \langle 1,0\rangle = 1,\quad \langle 0,1\rangle = 2,\quad \langle 2,0\rangle = 3,\quad \langle 1,1\rangle = 4,\quad \langle 0,2\rangle = 5,\ldots
+  \]
+
+  \item $(0,1) \sim \mathbb{R}$: la función $f: (0,1) \to \mathbb{R}$, $f(x) = \tan\!\bigl(\pi(x - \tfrac{1}{2})\bigr)$, es una biyección.
+
+  \item $[0,1] \sim (0,1)$: puede construirse una biyección aunque los dos intervalos no sean idénticos. Una construcción explícita es:
+  \[
+    f(x) = \begin{cases}
+      1/(n+2) & \text{si } x = 1/n \text{ para algún } n \in \mathbb{N}^+, \\
+      0 & \text{si } x = 0, \\
+      x & \text{en otro caso.}
+    \end{cases}
+  \]
+  Verificar que $f: [0,1] \to (0,1)$ es biyectiva es un buen ejercicio.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Comparación de cardinales: la relación $\leq$}
+
+\begin{definicion}{Comparación de cardinales}{cardleq}
+Se dice que $|A| \leq |B|$ (el cardinal de $A$ es \textbf{menor o igual} que el de $B$) si existe una función inyectiva $f: A \to B$. Se escribe $A \preceq B$.
+
+Se dice que $|A| < |B|$ (el cardinal de $A$ es \textbf{estrictamente menor}) si $A \preceq B$ pero $A \not\sim B$.
+\end{definicion}
+
+\begin{observacion}{Reflexividad y transitividad de $\preceq$}{reflextransprec}
+La relación $\preceq$ es reflexiva (la identidad es inyectiva) y transitiva (la composición de inyecciones es inyectiva). La antisimetría —que $A \preceq B$ y $B \preceq A$ impliquen $A \sim B$— es precisamente el contenido del Teorema de Cantor–Bernstein–Schröder que demostraremos en la siguiente sección.
+\end{observacion}
+
+% ===========================================================
+\section{Teorema de Cantor–Bernstein–Schröder}
+% ===========================================================
+
+\subsection{Enunciado}
+
+\begin{teorema}{Cantor–Bernstein–Schröder}{CBS}
+Sean $A$ y $B$ conjuntos. Si existe una inyección $f: A \to B$ y una inyección $g: B \to A$, entonces existe una biyección $h: A \to B$. En notación de cardinales:
+\[
+  |A| \leq |B| \wedge |B| \leq |A| \;\implies\; |A| = |B|.
+\]
+\end{teorema}
+
+\begin{observacion}{Historia del teorema}{historiaCBS}
+Este resultado fue enunciado por Cantor pero no demostrado satisfactoriamente por él. La primera demostración correcta es debida a Felix Bernstein (1898, en su tesis doctoral) y a Ernst Schröder (1896, aunque con un error subsanado). Existen múltiples demostraciones; presentamos la clásica debida a la idea de los «cadenas de Bernstein» \cite{jech2003, halmos1960, hrbacek1999}.
+\end{observacion}
+
+\subsection{Demostración}
+
+\begin{proof}[Demostración del Teorema~\ref{teo:CBS}]
+Sean $f: A \to B$ y $g: B \to A$ inyecciones. Construiremos una biyección $h: A \to B$.
+
+\medskip
+\textbf{Paso 1: Definición de las cadenas.}
+
+Dado $x \in A \cup B$, definimos la \textbf{cadena} de $x$ como la sucesión (finita o infinita hacia atrás) obtenida aplicando $f^{-1}$ y $g^{-1}$ alternativamente, en tanto sea posible:
+\[
+  \ldots \to g^{-1}(x) \to f^{-1}(g^{-1}(x)) \to \cdots \to x.
+\]
+Más precisamente: si $x \in A$, entonces (si existe) $f(x) \in B$, y (si existe) $g^{-1}(x) \in B$, luego (si existe) $f^{-1}(g^{-1}(x)) \in A$, y así sucesivamente. Cada elemento de $A \cup B$ pertenece a exactamente una cadena.
+
+\medskip
+\textbf{Paso 2: Tipos de cadenas.}
+
+Cada cadena es de uno de tres tipos:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Tipo A:} la cadena es infinita y el «primer» elemento (el de más a la izquierda) pertenece a $A$.
+  \item \textbf{Tipo B:} la cadena es infinita y el primer elemento pertenece a $B$.
+  \item \textbf{Tipo $\infty$:} la cadena es doblemente infinita (sin extremo izquierdo).
+\end{itemize}
+
+\medskip
+\textbf{Paso 3: Definición de $h$.}
+
+Definimos $h: A \to B$ por:
+\[
+  h(x) = \begin{cases}
+    f(x) & \text{si } x \text{ está en una cadena de tipo A o de tipo } \infty, \\
+    g^{-1}(x) & \text{si } x \text{ está en una cadena de tipo B.}
+  \end{cases}
+\]
+
+\medskip
+\textbf{Paso 4: $h$ está bien definida.}
+
+Si $x$ está en una cadena de tipo B, entonces $x \in g(\mathrm{Im}(f)) \subseteq \mathrm{Im}(g)$, y por ello $g^{-1}(x)$ existe. En los otros casos, usamos $f(x)$, que siempre está definido.
+
+\medskip
+\textbf{Paso 5: $h$ es inyectiva.}
+
+Elementos en cadenas distintas tienen imágenes distintas porque $f$ y $g^{-1}$ son inyecciones. Dentro de la misma cadena, distintos elementos de $A$ producen distintas imágenes por la misma razón.
+
+\medskip
+\textbf{Paso 6: $h$ es sobreyectiva.}
+
+Sea $y \in B$. Analizamos el tipo de la cadena de $y$:
+\begin{itemize}[leftmargin=2em]
+  \item Si $y$ está en una cadena de tipo A o $\infty$: en esa cadena, el predecesor inmediato de $y$ (por $f$) pertenece a $A$; llámalo $x = f^{-1}(y)$. Entonces $h(x) = f(x) = y$.
+  \item Si $y$ está en una cadena de tipo B: $g(y) \in A$ está en la misma cadena, y $h(g(y)) = g^{-1}(g(y)) = y$.
+\end{itemize}
+En todo caso, $y$ tiene preimagen bajo $h$.
+\end{proof}
+
+\begin{corolario}{$\preceq$ es antisimétrica}{prec-antisim}
+La relación $\preceq$ (de comparación de cardinales por inyecciones) satisface la antisimetría: $A \preceq B$ y $B \preceq A$ implican $A \sim B$.
+\end{corolario}
+
+\begin{ejemplo}{Aplicación del Teorema CBS}{aplicCBS}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{$[0,1] \sim (0,1)$:} Tenemos la inyección obvia $\iota: (0,1) \hookrightarrow [0,1]$ (inclusión). Para la otra dirección, la función $f: [0,1] \to (0,1)$ definida por $f(x) = \frac{x+1}{3}$ es inyectiva (pues $\frac{x+1}{3} \in (\frac{1}{3}, \frac{2}{3}) \subset (0,1)$). Por CBS, $[0,1] \sim (0,1)$.
+
+  \item \textbf{$\mathbb{N} \sim 2\mathbb{N}$:} Tenemos $\iota: 2\mathbb{N} \hookrightarrow \mathbb{N}$ (inclusión) y $f: \mathbb{N} \to 2\mathbb{N}$, $f(n) = 2n$ (inyectiva). Por CBS, $\mathbb{N} \sim 2\mathbb{N}$ (también demostrable directamente).
+
+  \item \textbf{$\mathcal{P}(\mathbb{N}) \sim \mathbb{R}$:} Se construyen inyecciones en ambas direcciones. Una dirección: la representación binaria de reales en $(0,1)$ da una inyección de $(0,1)$ (salvo un conjunto numerable) en $\{0,1\}^{\mathbb{N}} \sim \mathcal{P}(\mathbb{N})$; la otra: la representación binaria da una inyección de $\mathcal{P}(\mathbb{N})$ en $[0,1]$. Los detalles se completan con CBS.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Variante constructiva: demostración de Knaster-Tarski}
+
+Existe otra elegante demostración del Teorema CBS que utiliza el Teorema del Punto Fijo de Knaster–Tarski:
+
+\begin{proof}[Demostración alternativa (Knaster--Tarski)]
+Sean $f: A \to B$ y $g: B \to A$ inyecciones. Consideremos la función $\Phi: \mathcal{P}(A) \to \mathcal{P}(A)$ definida por
+\[
+  \Phi(X) \;=\; A \setminus g\!\bigl(B \setminus f(X)\bigr).
+\]
+Se verifica que $\Phi$ es \textbf{monótona}: si $X \subseteq X'$, entonces $f(X) \subseteq f(X')$, luego $B \setminus f(X) \supseteq B \setminus f(X')$, luego $g(B \setminus f(X)) \supseteq g(B \setminus f(X'))$, luego $\Phi(X) \subseteq \Phi(X')$.
+
+Por el Teorema del Punto Fijo de Knaster–Tarski (el retículo $\mathcal{P}(A)$ es completo), $\Phi$ tiene un \textbf{punto fijo}: existe $C \subseteq A$ con $\Phi(C) = C$, es decir,
+\[
+  C = A \setminus g\!\bigl(B \setminus f(C)\bigr).
+\]
+Definimos $h: A \to B$ por
+\[
+  h(a) = \begin{cases} f(a) & \text{si } a \in C, \\ g^{-1}(a) & \text{si } a \in A \setminus C. \end{cases}
+\]
+De la ecuación del punto fijo: $A \setminus C = g(B \setminus f(C))$, de modo que $g^{-1}$ está bien definida en $A \setminus C$ con imagen $B \setminus f(C)$. Se comprueba que $h$ es biyectiva: su imagen es $f(C) \cup (B \setminus f(C)) = B$.
+\end{proof}
+
+% ===========================================================
+\section{Conjuntos numerables y no numerables}
+% ===========================================================
+
+\subsection{Conjuntos numerables}
+
+\begin{definicion}{Conjunto numerable}{numerable}
+Un conjunto $A$ es:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Finito} si $A \sim [n]$ para algún $n \in \mathbb{N}$.
+  \item \textbf{Infinito numerable} (o \textbf{contablemente infinito}) si $A \sim \mathbb{N}$.
+  \item \textbf{Numerable} (o \textbf{a lo sumo numerable}) si es finito o infinito numerable, es decir, si $|A| \leq |\mathbb{N}|$.
+  \item \textbf{No numerable} (o \textbf{incontable}) si $|\mathbb{N}| < |A|$, es decir, si $A$ no es numerable.
+\end{itemize}
+\end{definicion}
+
+\begin{observacion}{Terminología alternativa}{terminonumerable}
+En la literatura en inglés: \emph{countably infinite} para $A \sim \mathbb{N}$, \emph{countable} para a lo sumo numerable, \emph{uncountable} para no numerable. En español se usa también «contable» como sinónimo de «numerable». El cardinal de $\mathbb{N}$ se denota $\aleph_0$ (aleph-cero), el primero de los \textbf{números cardinales transfinitos} introducidos por Cantor.
+\end{observacion}
+
+\begin{teorema}{Caracterizaciones de la numerabilidad}{carnum}
+Para un conjunto infinito $A$, las siguientes condiciones son equivalentes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $A \sim \mathbb{N}$.
+  \item Existe una enumeración de $A$: una sucesión $a_0, a_1, a_2, \ldots$ tal que $A = \{a_0, a_1, a_2, \ldots\}$ y todos los $a_i$ son distintos.
+  \item Existe una función sobreyectiva $\mathbb{N} \to A$.
+  \item Existe una función inyectiva $A \to \mathbb{N}$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{(i) $\Leftrightarrow$ (ii):} Una biyección $f: \mathbb{N} \to A$ es exactamente una enumeración $a_n = f(n)$.
+
+\textbf{(i) $\Rightarrow$ (iii):} Toda biyección es sobreyectiva.
+
+\textbf{(iii) $\Rightarrow$ (i):} Sea $s: \mathbb{N} \to A$ sobreyectiva. Definamos $f: A \to \mathbb{N}$ por $f(a) = \min\{n \in \mathbb{N} \mid s(n) = a\}$. Esta $f$ es inyectiva. Como $A$ es infinito, $f(A)$ es un subconjunto infinito de $\mathbb{N}$, y todo subconjunto infinito de $\mathbb{N}$ es equipotente a $\mathbb{N}$ (por la función que enumera sus elementos en orden creciente). Componiendo, $A \sim \mathbb{N}$.
+
+\textbf{(i) $\Rightarrow$ (iv):} Toda biyección $A \to \mathbb{N}$ es inyectiva.
+
+\textbf{(iv) $\Rightarrow$ (i):} Si $\iota: A \hookrightarrow \mathbb{N}$ es inyectiva, entonces $A \sim \iota(A) \subseteq \mathbb{N}$. Como $A$ es infinito y $\iota(A)$ también lo es, $\iota(A)$ es un subconjunto infinito de $\mathbb{N}$, equipotente a $\mathbb{N}$.
+\end{proof}
+
+\begin{proposicion}{Todo subconjunto infinito de $\mathbb{N}$ es numerable}{subinfN}
+Si $S \subseteq \mathbb{N}$ es infinito, entonces $S \sim \mathbb{N}$.
+\end{proposicion}
+
+\begin{proof}
+Definimos $f: \mathbb{N} \to S$ por recursión: $f(0) = \min S$ y $f(n+1) = \min(S \setminus \{f(0), \ldots, f(n)\})$. Como $S$ es infinito, este mínimo siempre existe. La función $f$ es estrictamente creciente (y en particular inyectiva) y su imagen es $S$ (si algún $s \in S$ no estuviera en $\mathrm{Im}(f)$, habría una cantidad infinita de elementos de $S$ menores que $s$, lo que es imposible). Luego $f$ es una biyección de $\mathbb{N}$ en $S$.
+\end{proof}
+
+\begin{teorema}{Numerabilidad de $\mathbb{Z}$, $\mathbb{Q}$ y uniones numerables}{numZQ}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\mathbb{Z}$ es numerable.
+  \item $\mathbb{N} \times \mathbb{N}$ es numerable.
+  \item Si $A$ y $B$ son numerables, $A \cup B$ es numerable.
+  \item Una unión numerable de conjuntos numerables es numerable: si $(A_n)_{n \in \mathbb{N}}$ es una familia de conjuntos numerables, $\bigcup_{n \in \mathbb{N}} A_n$ es numerable.
+  \item $\mathbb{Q}$ es numerable.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{(i)} Ya construimos explícitamente la biyección $f: \mathbb{N} \to \mathbb{Z}$.
+
+\textbf{(ii)} La función de emparejamiento de Cantor $\langle m, n \rangle: \mathbb{N} \times \mathbb{N} \to \mathbb{N}$ es biyectiva. Una segunda prueba es por el argumento de la diagonal: enumeramos $\mathbb{N} \times \mathbb{N}$ recorriendo las diagonales $\{(m,n) \mid m + n = k\}$ para $k = 0, 1, 2, \ldots$:
+\[
+  (0,0),\ (1,0),\ (0,1),\ (2,0),\ (1,1),\ (0,2),\ (3,0),\ \ldots
+\]
+
+\textbf{(iii)} Sean $a_0, a_1, a_2, \ldots$ y $b_0, b_1, b_2, \ldots$ enumeraciones de $A$ y $B$ (sin perder generalidad, suponemos $A \cap B = \emptyset$). Entonces $a_0, b_0, a_1, b_1, a_2, b_2, \ldots$ es una enumeración de $A \cup B$.
+
+\textbf{(iv)} Para cada $n$, sea $a_{n,0}, a_{n,1}, a_{n,2}, \ldots$ una enumeración de $A_n$. Definimos una enumeración de $\bigcup A_n$ recorriendo la tabla $(a_{n,k})_{n,k \in \mathbb{N}}$ en diagonal (método de Cantor): ordenamos los pares $(n,k)$ según $n+k$ y luego por $n$, y enumeramos $a_{n,k}$ en ese orden, omitiendo repeticiones. Por (ii), esto da una enumeración.
+
+\textbf{(v)} Tenemos $\mathbb{Q} = \bigcup_{n \in \mathbb{Z}} \{p/n \mid p \in \mathbb{Z}, \gcd(p,n) = 1\}$ (unión numerable de conjuntos numerables). Por (iv), $\mathbb{Q}$ es numerable.
+
+Una demostración más directa: la función $f: \mathbb{Z} \times \mathbb{N}^+ \to \mathbb{Q}$, $f(p,q) = p/q$, es sobreyectiva. Como $\mathbb{Z} \times \mathbb{N}^+$ es numerable (por (ii) y (i)), $\mathbb{Q}$ lo es.
+\end{proof}
+
+\begin{ejemplo}{El argumento diagonal para $\mathbb{N} \times \mathbb{N}$}{diagonalNN}
+El argumento diagonal de Cantor para $\mathbb{N} \times \mathbb{N}$ puede visualizarse como una tabla infinita:
+\[
+\begin{array}{cccccc}
+(0,0) & (0,1) & (0,2) & (0,3) & (0,4) & \cdots \\
+(1,0) & (1,1) & (1,2) & (1,3) & \cdots  & \\
+(2,0) & (2,1) & (2,2) & \cdots  &  & \\
+(3,0) & (3,1) & \cdots  &  &  & \\
+\vdots &  &  &  &  &
+\end{array}
+\]
+Recorremos las antidiagonales $\{(i,j) \mid i+j = k\}$ para $k = 0, 1, 2, \ldots$, obteniendo la enumeración:
+\[
+(0,0),\ (1,0),\ (0,1),\ (2,0),\ (1,1),\ (0,2),\ (3,0),\ (2,1),\ (1,2),\ (0,3),\ \ldots
+\]
+\end{ejemplo}
+
+\begin{corolario}{El conjunto de polinomios con coeficientes enteros es numerable}{polnum}
+El conjunto $\mathbb{Z}[x]$ de todos los polinomios con coeficientes enteros es numerable.
+\end{corolario}
+
+\begin{proof}
+Para cada $n \in \mathbb{N}$, el conjunto $\mathbb{Z}_n[x]$ de polinomios de grado $\leq n$ está en biyección con $\mathbb{Z}^{n+1}$ (los coeficientes), que es numerable. Entonces $\mathbb{Z}[x] = \bigcup_{n \geq 0} \mathbb{Z}_n[x]$ es unión numerable de conjuntos numerables, luego numerable.
+\end{proof}
+
+\begin{corolario}{Los números algebraicos son numerables}{algnum}
+El conjunto $\mathbb{A}$ de los \textbf{números algebraicos} (raíces de polinomios con coeficientes enteros) es numerable.
+\end{corolario}
+
+\begin{proof}
+Cada polinomio $p \in \mathbb{Z}[x]$ de grado $n$ tiene a lo sumo $n$ raíces complejas. El conjunto total de raíces es $\mathbb{A} = \bigcup_{p \in \mathbb{Z}[x]} \{\text{raíces de } p\}$, unión numerable de conjuntos finitos, luego numerable.
+\end{proof}
+
+\begin{observacion}{Números trascendentes}{trascendentes}
+Como veremos en la siguiente sección, $\mathbb{R}$ es no numerable. Dado que $\mathbb{A}$ es numerable y $\mathbb{A} \subset \mathbb{R}$, el conjunto $\mathbb{R} \setminus \mathbb{A}$ de los \textbf{números trascendentes} (como $\pi$ y $e$) es también no numerable; en particular, no puede ser vacío. Esto es una demostración de existencia puramente conjuntista: los trascendentes existen (y son «la mayoría» de los reales) sin necesidad de exhibir ningún ejemplo concreto.
+\end{observacion}
+
+% ===========================================================
+\section{Conjuntos no numerables: el argumento diagonal de Cantor}
+% ===========================================================
+
+\subsection{La no numerabilidad de $\mathbb{R}$}
+
+El resultado siguiente es uno de los teoremas más famosos de las matemáticas:
+
+\begin{teorema}{No numerabilidad de $\mathbb{R}$}{nonum}
+El conjunto $\mathbb{R}$ de los números reales no es numerable: $|\mathbb{R}| > |\mathbb{N}|$.
+\end{teorema}
+
+\begin{proof}[Demostración (argumento diagonal de Cantor, 1891)]
+Basta demostrar que el intervalo $(0,1)$ no es numerable (pues $(0,1) \sim \mathbb{R}$ por la biyección $x \mapsto \tan(\pi(x - \frac{1}{2}))$, y si $(0,1)$ fuera numerable también lo sería $\mathbb{R}$).
+
+Supongamos, para obtener una contradicción, que $(0,1)$ \textbf{es} numerable. Entonces existe una enumeración $x_0, x_1, x_2, \ldots$ de todos los elementos de $(0,1)$. Escribimos cada $x_i$ en su expansión decimal:
+\[
+  x_i = 0.d_{i,0}\, d_{i,1}\, d_{i,2}\, d_{i,3} \cdots
+\]
+donde $d_{i,k} \in \{0, 1, \ldots, 9\}$ son los dígitos decimales de $x_i$.
+
+Construimos ahora un número $y = 0.e_0\, e_1\, e_2\, e_3\,\cdots \in (0,1)$ definiendo:
+\[
+  e_k = \begin{cases} 5 & \text{si } d_{k,k} \neq 5, \\ 6 & \text{si } d_{k,k} = 5. \end{cases}
+\]
+(O cualquier elección que garantice $e_k \neq d_{k,k}$ y evite los dígitos $0$ y $9$ para esquivar ambigüedades en la representación decimal.)
+
+Afirmamos que $y \in (0,1)$ y que $y \neq x_k$ para todo $k \in \mathbb{N}$. En efecto, $y$ y $x_k$ difieren en el $k$-ésimo dígito decimal (en la posición $k$): $e_k \neq d_{k,k}$. Como los dígitos elegidos están en $\{5, 6\}$, no hay ambigüedad de representación (no se presentan los casos $0.999\ldots = 1.000\ldots$), así que esta diferencia de dígito garantiza $y \neq x_k$.
+
+Pero entonces $y \in (0,1)$ y $y \notin \{x_0, x_1, x_2, \ldots\}$, lo cual contradice que la enumeración sea de todos los elementos de $(0,1)$. Por tanto, $(0,1)$ no es numerable.
+\end{proof}
+
+\begin{ejemplo}{Construcción explícita de la diagonal}{diagexplicita}
+Ilustramos el argumento con una lista hipotética. Supongamos que la enumeración comienza:
+\begin{align*}
+  x_0 &= 0.\mathbf{3}14159265\ldots \\
+  x_1 &= 0.7\mathbf{1}8281828\ldots \\
+  x_2 &= 0.57\mathbf{7}21566\ldots \\
+  x_3 &= 0.141\mathbf{5}9265\ldots \\
+  x_4 &= 0.2718\mathbf{2}8182\ldots \\
+  x_5 &= 0.61803\mathbf{3}9887\ldots \\
+  \vdots
+\end{align*}
+Los dígitos de la diagonal son $d_{0,0} = 3$, $d_{1,1} = 1$, $d_{2,2} = 7$, $d_{3,3} = 5$, $d_{4,4} = 2$, $d_{5,5} = 3$, $\ldots$
+
+Aplicando la regla $e_k = 5$ si $d_{k,k} \neq 5$, $e_k = 6$ si $d_{k,k} = 5$:
+\[
+  y = 0.\underbrace{5}_{e_0}\underbrace{5}_{e_1}\underbrace{5}_{e_2}\underbrace{6}_{e_3}\underbrace{5}_{e_4}\underbrace{5}_{e_5}\cdots = 0.555655\ldots
+\]
+Este número $y$ difiere de $x_k$ en al menos el $k$-ésimo dígito para cada $k$, luego $y \neq x_k$ para todo $k$.
+\end{ejemplo}
+
+\begin{observacion}{Esencia del argumento diagonal}{esenciadiag}
+El argumento diagonal es mucho más general que su aplicación a $\mathbb{R}$: es un método para construir, dada cualquier lista de objetos de un cierto tipo, un objeto del mismo tipo que no aparece en la lista. Sus variantes aparecen en:
+\begin{itemize}[leftmargin=2em]
+  \item El Teorema de Cantor: $|A| < |\mathcal{P}(A)|$ para todo conjunto $A$ (Sección~\ref{sec:cantorpot}).
+  \item La prueba de incompletitud de Gödel.
+  \item La indecidibilidad del problema de la parada (halting problem) de Turing.
+  \item La construcción de números de Liouville (números trascendentes).
+\end{itemize}
+\end{observacion}
+
+\subsection{Distintos infinitos: $\aleph_0$ y $\mathfrak{c}$}
+
+\begin{definicion}{Los cardinales $\aleph_0$ y $\mathfrak{c}$}{alephnota}
+El \textbf{cardinal} $\aleph_0 = |\mathbb{N}|$ es el primer cardinal infinito. El cardinal $\mathfrak{c} = |\mathbb{R}|$ se llama la \textbf{potencia del continuo}. El Teorema~\ref{teo:nonum} establece que $\aleph_0 < \mathfrak{c}$.
+\end{definicion}
+
+\begin{proposicion}{Valor de $\mathfrak{c}$}{valorc}
+$\mathfrak{c} = |\mathbb{R}| = |\mathcal{P}(\mathbb{N})| = |2^{\mathbb{N}}| = 2^{\aleph_0}$, donde $2^{\mathbb{N}}$ denota el conjunto de todas las funciones $\mathbb{N} \to \{0,1\}$.
+\end{proposicion}
+
+\begin{proof}
+Construimos biyecciones $\mathbb{R} \sim \mathcal{P}(\mathbb{N}) \sim \{0,1\}^{\mathbb{N}}$.
+
+\textbf{$\{0,1\}^{\mathbb{N}} \sim \mathcal{P}(\mathbb{N})$:} La biyección es $f \mapsto f^{-1}(\{1\}) = \{n \in \mathbb{N} \mid f(n) = 1\}$, que identifica cada función $\{0,1\}^{\mathbb{N}}$ con su conjunto «soporte».
+
+\textbf{$\mathcal{P}(\mathbb{N}) \preceq [0,1]$:} A cada $S \subseteq \mathbb{N}$ le asociamos el número $\sum_{n \in S} 3^{-(n+1)}$ (expansión en base 3 con dígitos 0 y 1). Esta función es inyectiva (de hecho, su imagen es el conjunto de Cantor ternario).
+
+\textbf{$[0,1] \preceq \mathcal{P}(\mathbb{N})$:} Cada $x \in [0,1]$ tiene una expansión binaria $x = \sum_{n=0}^\infty b_n 2^{-(n+1)}$, $b_n \in \{0,1\}$. La función $x \mapsto \{n \mid b_n = 1\}$ es inyectiva (salvo los números diádicos con dos expansiones, pero se puede elegir siempre la que termina en 0).
+
+Por CBS, $\mathcal{P}(\mathbb{N}) \sim [0,1] \sim \mathbb{R}$.
+\end{proof}
+
+% ===========================================================
+\section{El Teorema de Cantor: estrictamente más grande}\label{sec:cantorpot}
+% ===========================================================
+
+\begin{teorema}{Teorema de Cantor}{cantorpot}
+Para todo conjunto $A$, $|A| < |\mathcal{P}(A)|$. Es decir, el conjunto potencia siempre tiene cardinal estrictamente mayor que el conjunto original.
+\end{teorema}
+
+\begin{proof}
+\textbf{Parte 1: $|A| \leq |\mathcal{P}(A)|$.} La función $a \mapsto \{a\}$ es una inyección de $A$ en $\mathcal{P}(A)$.
+
+\textbf{Parte 2: $|A| \neq |\mathcal{P}(A)|$.} Supongamos que existe una biyección $f: A \to \mathcal{P}(A)$. Definimos el subconjunto \textbf{diagonal}:
+\[
+  D = \{a \in A \mid a \notin f(a)\}.
+\]
+Como $D \subseteq A$, tenemos $D \in \mathcal{P}(A)$. Como $f$ es sobreyectiva, existe $a_0 \in A$ con $f(a_0) = D$. Entonces:
+\begin{itemize}[leftmargin=2em]
+  \item Si $a_0 \in D$, entonces por definición de $D$: $a_0 \notin f(a_0) = D$. Contradicción.
+  \item Si $a_0 \notin D$, entonces $a_0 \notin f(a_0) = D$, luego por la definición de $D$: $a_0 \in D$. Contradicción.
+\end{itemize}
+En cualquier caso se obtiene una contradicción. Por tanto, no puede existir tal biyección.
+\end{proof}
+
+\begin{corolario}{Jerarquía infinita de cardinales}{jerarquiacard}
+Existe una sucesión estrictamente creciente de cardinales infinitos:
+\[
+  \aleph_0 \;=\; |\mathbb{N}| \;<\; |\mathcal{P}(\mathbb{N})| \;<\; |\mathcal{P}(\mathcal{P}(\mathbb{N}))| \;<\; \cdots
+\]
+En particular, no existe un «conjunto de todos los cardinales» ni un «infinito máximo».
+\end{corolario}
+
+\begin{ejemplo}{El teorema de Cantor para conjuntos finitos}{cantorfinito}
+Para $A = \{1, 2, 3\}$, $|A| = 3$ y $|\mathcal{P}(A)| = 2^3 = 8 > 3$. El subconjunto diagonal en la prueba del Teorema~\ref{teo:cantorpot} depende de la función $f$ elegida. Por ejemplo, si $f(1) = \{2, 3\}$, $f(2) = \{1\}$, $f(3) = \{1, 2, 3\}$, entonces:
+\begin{align*}
+  D &= \{a \in A \mid a \notin f(a)\}.
+\end{align*}
+Verificamos cada elemento:
+\begin{itemize}[leftmargin=2em]
+  \item $1 \notin f(1) = \{2,3\}$: \textbf{verdadero}, luego $1 \in D$.
+  \item $2 \notin f(2) = \{1\}$: \textbf{verdadero}, luego $2 \in D$.
+  \item $3 \notin f(3) = \{1,2,3\}$: \textbf{falso} ($3 \in \{1,2,3\}$), luego $3 \notin D$.
+\end{itemize}
+Por tanto $D = \{1, 2\}$. El conjunto $D = \{1, 2\}$ no es ninguno de los valores $f(1), f(2), f(3)$, lo que confirma que $f$ no puede ser sobreyectiva.
+\end{ejemplo}
+
+\begin{observacion}{La Hipótesis del Continuo}{hipotesisCH}
+El Teorema de Cantor establece $\aleph_0 < \mathfrak{c} = 2^{\aleph_0}$. La pregunta natural es: ¿existe algún cardinal $\kappa$ con $\aleph_0 < \kappa < \mathfrak{c}$? La respuesta es que esta pregunta —conocida como la \textbf{Hipótesis del Continuo} (HC): «no existe tal $\kappa$», i.e., $\mathfrak{c} = \aleph_1$— es \textbf{independiente de ZFC}: Gödel demostró en 1940 que HC es consistente con ZFC, y Cohen demostró en 1963 que su negación también lo es \cite{godel1940, cohen1966}. Este es uno de los resultados más profundos de la lógica matemática del siglo XX.
+\end{observacion}
+
+% ===========================================================
+\section{Resumen y panorama}
+% ===========================================================
+
+\begin{importante}
+\textbf{Resumen de los resultados principales de esta clase:}
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item Una función $f: A \to B$ es inyectiva si no colapsa elementos distintos; sobreyectiva si alcanza todo el codominio; biyectiva si es ambas cosas a la vez.
+  \item La equipotencia ($A \sim B$: existe una biyección) es una relación de equivalencia.
+  \item El Teorema de Cantor–Bernstein–Schröder: $|A| \leq |B|$ y $|B| \leq |A|$ implican $|A| = |B|$.
+  \item $\mathbb{Z}$, $\mathbb{Q}$, $\mathbb{Z}[x]$ y $\mathbb{A}$ (los algebraicos) son todos numerables: $|\cdot| = \aleph_0$.
+  \item $\mathbb{R}$ no es numerable (argumento diagonal de Cantor): $|\mathbb{R}| = \mathfrak{c} > \aleph_0$.
+  \item Para todo $A$: $|A| < |\mathcal{P}(A)|$ (Teorema de Cantor), lo que genera una jerarquía infinita de cardinalidades.
+  \item En particular: $\aleph_0 < \mathfrak{c} = 2^{\aleph_0}$.
+\end{enumerate}
+\end{importante}
+
+La teoría de cardinalidades continuará en la Clase~5, donde introduciremos los números cardinales de von Neumann, la aritmética cardinal (suma, producto y potencia de cardinales) y exploraremos las consecuencias del Axioma de Elección sobre la comparabilidad de cardinales.
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\begin{enumerate}[leftmargin=2.5em, label=\textbf{\arabic*.}]
+
+  \item \textbf{(Tipos de funciones.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Para cada una de las siguientes funciones $f: \mathbb{R} \to \mathbb{R}$, determine si es inyectiva, sobreyectiva, biyectiva, o ninguna de las anteriores. Justifique formalmente.
+    \begin{enumerate}[label=(\roman*)]
+      \item $f(x) = x^3$.
+      \item $f(x) = x^2$.
+      \item $f(x) = e^x$.
+      \item $f(x) = \sin(x)$.
+      \item $f(x) = x^3 - x$.
+    \end{enumerate}
+    \item Dé un ejemplo de una función $f: \mathbb{N} \to \mathbb{N}$ que sea sobreyectiva pero no inyectiva. ¿Puede ocurrir lo contrario (inyectiva pero no sobreyectiva)?
+    \item Si $f: A \to B$ es biyectiva, demuestre directamente desde la definición (sin usar la Proposición~\ref{prop:compoinysupr}) que $f^{-1}: B \to A$ es biyectiva.
+  \end{enumerate}
+
+  \item \textbf{(Imágenes directas e inversas.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Sea $f: \mathbb{R} \to \mathbb{R}$, $f(x) = x^2$. Calcule:
+    \begin{itemize}
+      \item $f([-3, 2])$, $f^{-1}([1, 4])$, $f^{-1}(\{-1\})$.
+    \end{itemize}
+    \item Demuestre que para $f: A \to B$ y $S, S' \subseteq A$:
+    \[
+      f(S \cap S') = f(S) \cap f(S') \iff f \text{ es inyectiva}.
+    \]
+    \item Demuestre que $f(f^{-1}(T)) = T$ para todo $T \subseteq B$ si y solo si $f$ es sobreyectiva.
+    \item (Desafío) Encuentre conjuntos $A, B$ y una función $f: A \to B$ tal que $f(A \setminus S) \neq f(A) \setminus f(S)$ para algún $S \subseteq A$.
+  \end{enumerate}
+
+  \item \textbf{(Dedekind-infinitud.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que $\mathbb{Z}$ es Dedekind-infinito exhibiendo explícitamente una biyección entre $\mathbb{Z}$ y un subconjunto propio suyo.
+    \item Demuestre que si $A$ es Dedekind-infinito y $A \subseteq B$, entonces $B$ es Dedekind-infinito.
+    \item Sea $A$ un conjunto y $\iota: \mathbb{N} \to A$ una función inyectiva. Construya explícitamente una función inyectiva $f: A \to A$ que no sea sobreyectiva, demostrando que $A$ es Dedekind-infinito.
+    \item (Investigación) Enuncie y explique por qué la equivalencia «infinito $\Leftrightarrow$ Dedekind-infinito» requiere el Axioma de Elección Numerable (una forma debilitada del Axioma de Elección). Consulte \cite{herrlich2006}.
+  \end{enumerate}
+
+  \item \textbf{(Equipotencia.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre directamente (sin CBS) que $[0,1] \sim [0,2]$ y que $[0,1] \sim [a,b]$ para cualquier $a < b$.
+    \item Demuestre que $(0, +\infty) \sim \mathbb{R}$ construyendo una biyección explícita.
+    \item Demuestre que $\mathbb{N} \sim \mathbb{N} \setminus \{0, 1, 2, \ldots, k\}$ para todo $k \in \mathbb{N}$.
+    \item Sea $A = \{f: \mathbb{N} \to \{0,1,2\} \mid f \text{ es eventualmente } 0\}$ (funciones de $\mathbb{N}$ en $\{0,1,2\}$ que son $0$ salvo finitos valores). Determine si $A \sim \mathbb{N}$, $A \sim \mathbb{R}$, o ninguna de las dos. Justifique.
+    \item Demuestre que $\mathbb{N}^{\mathbb{N}}$ (el conjunto de todas las sucesiones de naturales) cumple $|\mathbb{N}^{\mathbb{N}}| = |\mathbb{R}|$.
+  \end{enumerate}
+
+  \item \textbf{(Teorema de Cantor–Bernstein–Schröder.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Use CBS para demostrar que $[0,1] \sim [0,1)$ sin construir una biyección explícita. (Sugerencia: construya inyecciones en ambas direcciones.)
+    \item Demuestre que el conjunto de los irracionales en $(0,1)$ es equipotente a $\mathbb{R}$.
+    \item Sea $A \subseteq B \subseteq C$ con $A \sim C$. Demuestre que $A \sim B \sim C$. (Este es el «Teorema de Dedekind–Bernstein».)
+    \item (Desafío) Demuestre que si $f: A \to B$ es sobreyectiva, entonces $|B| \leq |A|$. ¿Requiere AC este resultado?
+  \end{enumerate}
+
+  \item \textbf{(Numerabilidad.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que el conjunto de los números racionales en $(0,1)$ es numerable, construyendo explícitamente una enumeración.
+    \item Demuestre que el conjunto de todos los pares $(p, q)$ con $p, q \in \mathbb{Z}$ y $\gcd(p,q) = 1$ es numerable.
+    \item Demuestre que el conjunto de todas las sucesiones finitas de $\{0,1\}$ (cadenas binarias finitas, incluyendo la cadena vacía) es numerable.
+    \item Demuestre que el conjunto de todos los subconjuntos \emph{finitos} de $\mathbb{N}$ es numerable, pero el de todos los subconjuntos de $\mathbb{N}$ no lo es.
+    \item Sea $A = \{r \in \mathbb{R} \mid r \text{ es solución de un polinomio de grado } \leq 5 \text{ con coeficientes en } \mathbb{Z}\}$. Determine si $A$ es numerable.
+  \end{enumerate}
+
+  \item \textbf{(Argumento diagonal.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que el conjunto $\{0,1\}^{\mathbb{N}}$ de todas las sucesiones binarias infinitas no es numerable, usando el argumento diagonal directamente sobre sucesiones (sin hacer referencia a $\mathbb{R}$).
+    \item Deduzca a partir del punto (a) que $(0,1)$ no es numerable, usando la representación binaria de los reales. ¿Qué hay que hacer con los números diádicos?
+    \item (Paradoja de Berry) Considere la siguiente «definición»: «el menor número natural que no puede describirse en menos de veinte palabras en español». ¿Por qué esta definición es paradójica? Relaciones esto con el argumento diagonal.
+    \item (Generalización) Demuestre el siguiente resultado: para cualquier conjunto $A$ y cualquier enumeración $f_0, f_1, f_2, \ldots$ de funciones $f_i: A \to \{0,1\}$, existe una función $g: A \to \{0,1\}$ que no aparece en la lista. ¿Qué condición se necesita sobre $A$?
+  \end{enumerate}
+
+  \item \textbf{(Teorema de Cantor: $|A| < |\mathcal{P}(A)|$.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre el Teorema de Cantor para $A = \mathbb{N}$: construya explícitamente un subconjunto $D \subseteq \mathbb{N}$ que no sea la imagen de ningún elemento bajo una función hipotética $f: \mathbb{N} \to \mathcal{P}(\mathbb{N})$ sobreyectiva.
+    \item Demuestre que no existe ninguna función sobreyectiva de $A$ en $\mathcal{P}(A)$, sin suponer que $f$ sea inyectiva. (El teorema de Cantor solo requiere la ausencia de sobreyección, no la ausencia de inyección.)
+    \item Use el Teorema de Cantor para probar que no existe un «conjunto universal» en ZFC, es decir, no puede existir un conjunto $V$ tal que $A \in V$ para todo conjunto $A$.
+    \item Deduzca que la clase propia $\mathbf{V}$ de todos los conjuntos no puede ser un conjunto.
+  \end{enumerate}
+
+  \item \textbf{(Proyecto: la Hipótesis del Continuo.)}
+  Investigue y redacte un ensayo breve (2--3 páginas) sobre los siguientes puntos:
+  \begin{itemize}[leftmargin=2em]
+    \item Enuncie la Hipótesis del Continuo: $\nexists \kappa$ con $\aleph_0 < \kappa < \mathfrak{c}$, equivalentemente $\mathfrak{c} = \aleph_1$.
+    \item Explique en qué sentido Gödel (1940) demostró que HC es \emph{consistente} con ZFC, usando el constructo de los «conjuntos construibles» $\mathbf{L}$.
+    \item Explique en qué sentido Cohen (1963) demostró que la negación de HC también es consistente con ZFC, usando la técnica del \emph{forcing}.
+    \item ¿Qué significa que HC sea \emph{independiente} de ZFC? ¿Es esto un defecto de ZFC?
+    \item ¿Cuál es el estado actual de la investigación sobre la verdad de HC?
+  \end{itemize}
+  \textbf{Fuentes sugeridas:} \cite{cohen1966, jech2003, kunen2011, kanamori2003}.
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias bibliográficas de esta clase}
+% ===========================================================
+
+Los resultados desarrollados en esta clase se encuentran tratados con rigor y detalle en las siguientes fuentes:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Tratamientos estándar de funciones, equipotencia y cardinales:} \cite{enderton1977} ofrece una presentación muy clara y rigurosa de funciones, equipotencia y los primeros cardinales transfinitos, accesible al nivel de este curso; \cite{halmos1960} es un clásico indispensable; \cite{hrbacek1999} es un texto introductorio completo y recomendado.
+
+  \item \textbf{Teoría de conjuntos avanzada:} \cite{jech2003} es la referencia canónica para todos los aspectos de la teoría de cardinales y ordinales; \cite{kunen2011} es preciso y exhaustivo en los aspectos formales.
+
+  \item \textbf{Teorema de Cantor–Bernstein–Schröder:} El resultado aparece en su forma moderna en \cite{enderton1977} y \cite{jech2003}; la demostración vía el Teorema del Punto Fijo de Knaster–Tarski se puede encontrar en \cite{devlin1993} y en muchos textos de álgebra de retículos.
+
+  \item \textbf{Argumento diagonal y no numerabilidad de $\mathbb{R}$:} El artículo original de Cantor es \cite{cantor1891}; una presentación moderna y accesible se encuentra en \cite{enderton1977} y \cite{sierpinski1958}.
+
+  \item \textbf{Conjuntos Dedekind-infinitos y Axioma de Elección:} \cite{herrlich2006} es una monografía dedicada íntegramente a las consecuencias y patologías del Axioma de Elección; \cite{moore1982} ofrece el contexto histórico.
+
+  \item \textbf{Hipótesis del Continuo:} \cite{cohen1966} es el libro clásico de Cohen donde se presenta el forcing; \cite{godel1940} es el trabajo original de Gödel; \cite{kanamori2003} sitúa estos resultados en el panorama más amplio de los cardinales grandes.
+
+  \item \textbf{Definición de Dedekind de conjunto infinito:} \cite{dedekind1888} es la fuente histórica original donde Dedekind define los conjuntos infinitos mediante la reflexividad.
+\end{itemize}
