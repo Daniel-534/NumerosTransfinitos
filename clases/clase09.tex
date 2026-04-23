@@ -1,0 +1,617 @@
+% ===========================================================
+\chapter{Clase 9: La Hipótesis del Continuo: Enunciado, Historia e Independencia}
+% ===========================================================
+
+El \textbf{problema del continuo} es, sin duda, uno de los más profundos y revolucionarios de toda la historia de las matemáticas. Formulado por Georg Cantor en la década de 1870, pregunta con precisión cuántos puntos hay en la recta real comparado con la menor infinitud incontable. Su respuesta, o más bien la \emph{imposibilidad} de responderla dentro del sistema axiomático estándar, transformó para siempre nuestra comprensión de los fundamentos de las matemáticas.
+
+En esta clase enunciamos con rigor la \textbf{Hipótesis del Continuo} (HC) y su generalización (HCG), narramos el recorrido histórico del problema desde Cantor hasta Paul Cohen, y exponemos los dos grandes resultados del siglo~XX que juntos establecen la \emph{independencia} de HC respecto de los axiomas de Zermelo--Fraenkel con Elección (ZFC):
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+  \item \textbf{Kurt Gödel (1940):} HC es \emph{consistente} con ZFC; es decir, si ZFC no tiene contradicción, tampoco la tiene ZFC $+$ HC. Esto se establece mediante el \textbf{universo constructible} $L$.
+  \item \textbf{Paul Cohen (1963):} $\neg$HC es \emph{consistente} con ZFC; es decir, si ZFC no tiene contradicción, tampoco la tiene ZFC $+$ $\neg$HC. Esto se establece mediante la técnica del \textbf{forcing}.
+\end{enumerate}
+
+Juntos, estos dos resultados prueban que HC es \textbf{independiente} de ZFC: ni se puede demostrar ni se puede refutar dentro de ese sistema. El trabajo de Gödel y Cohen constituye, posiblemente, el logro más celebrado de la lógica matemática del siglo~XX.
+
+La exposición sigue los tratamientos clásicos de \cite{jech2003, kunen2011, cohen1966, godel1940}, con referencias adicionales a \cite{enderton1977, devlin1993, hrbacek1999}.
+
+% ===========================================================
+\section{El problema del continuo: contexto histórico}
+% ===========================================================
+
+\subsection{Cantor y la aritmética de lo infinito}
+
+Para comprender la profundidad de la Hipótesis del Continuo es imprescindible remontarse a los trabajos de Georg Cantor de la década de 1870. Cantor demostró en 1873 que los números reales $\mathbb{R}$ no son enumerables: no existe ninguna función biyectiva de $\mathbb{N}$ en $\mathbb{R}$. Este resultado, publicado en 1874, inauguró la teoría de conjuntos y estableció que existen \emph{distintos tamaños de infinito}.
+
+La prueba diagonal de Cantor (1891) generaliza este resultado: para cualquier conjunto $A$, el conjunto de todas sus partes $\mathcal{P}(A)$ tiene cardinalidad estrictamente mayor que $A$. En símbolos: $|A| < |\mathcal{P}(A)|$, o equivalentemente $\kappa < 2^\kappa$ para todo cardinal $\kappa$.
+
+Aplicado a los números naturales: $|\mathbb{N}| = \aleph_0 < 2^{\aleph_0} = |\mathbb{R}|$. El cardinal del continuo $\mathfrak{c} = 2^{\aleph_0}$ es estrictamente mayor que $\aleph_0$. La pregunta inmediata que formuló Cantor fue:
+
+\begin{important_box}
+¿Existe algún conjunto de números reales cuya cardinalidad sea estrictamente mayor que $\aleph_0$ (la de los naturales) y estrictamente menor que $\mathfrak{c} = 2^{\aleph_0}$ (la de los reales)?
+\end{important_box}
+
+\begin{importante}
+Cantor conjeturó que la respuesta es \textbf{no}: no existe ningún cardinal $\kappa$ con $\aleph_0 < \kappa < 2^{\aleph_0}$. Esta conjetura es la \textbf{Hipótesis del Continuo}.
+\end{importante}
+
+Cantor intentó demostrarlo durante décadas sin éxito. Su fracaso no fue falta de ingenio: el problema resultó ser, en cierto sentido, más difícil que cualquier pregunta matemática ordinaria.
+
+\subsection{El primer problema de Hilbert (1900)}
+
+En el Congreso Internacional de Matemáticos de París de 1900, David Hilbert presentó su célebre lista de 23 problemas para el nuevo siglo. El \textbf{primer problema} de la lista era precisamente la Hipótesis del Continuo. Hilbert creía que toda pregunta matemática bien planteada podía ser resuelta dentro del sistema axiomático de la matemática. La historia demostró que estaba equivocado, al menos en este caso.
+
+\subsection{Los esfuerzos previos a Gödel}
+
+Durante las primeras décadas del siglo~XX, la Hipótesis del Continuo permaneció indemostrable. En 1905, König demostró que $2^{\aleph_0}$ no puede ser $\aleph_\omega$ (un cardinal de cofinalidad numerable), lo cual descartó algunos posibles valores del continuo pero no resolvió el problema. En 1925, Luzin y Sierpi\'nski estudiaron los subconjuntos del plano, los conjuntos proyectivos y la hipótesis de Suslin, todos relacionados con HC.
+
+El panorama cambió radicalmente en 1940 con el trabajo de Gödel.
+
+% ===========================================================
+\section{Enunciado de la Hipótesis del Continuo}
+% ===========================================================
+
+\subsection{Recordatorio: la jerarquía aleph y la potenciación cardinal}
+
+Recordamos las nociones esenciales de las clases anteriores. Los \textbf{números cardinales} se identifican con los ordinales iniciales: el menor ordinal de cada cardinalidad. La jerarquía $\aleph$ está definida por inducción transfinita:
+\[
+  \aleph_0 = \omega, \qquad
+  \aleph_{\alpha+1} = \aleph_\alpha^+, \qquad
+  \aleph_\lambda = \sup_{\beta < \lambda} \aleph_\beta \;\text{ para } \lambda \text{ límite}.
+\]
+
+El \textbf{cardinal del continuo} es $\mathfrak{c} = 2^{\aleph_0} = |\mathbb{R}| = |\mathcal{P}(\mathbb{N})|$. Por el teorema de Cantor, $\mathfrak{c} > \aleph_0$; por lo tanto $\mathfrak{c} \geq \aleph_1$. La Hipótesis del Continuo afirma que esta desigualdad es en realidad una igualdad.
+
+\begin{definicion}{Hipótesis del Continuo (HC)}{hc}
+La \textbf{Hipótesis del Continuo} es el enunciado:
+\[
+  \mathrm{HC} \;:\; 2^{\aleph_0} = \aleph_1.
+\]
+Equivalentemente, no existe ningún cardinal $\kappa$ tal que $\aleph_0 < \kappa < 2^{\aleph_0}$; es decir, no existe ningún conjunto $A \subseteq \mathbb{R}$ tal que $\aleph_0 < |A| < |\mathbb{R}|$.
+\end{definicion}
+
+\begin{observacion}{Formulaciones equivalentes de HC}{hcequiv}
+Las siguientes afirmaciones son equivalentes a HC:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $|\mathbb{R}| = \aleph_1$.
+  \item Todo subconjunto infinito de $\mathbb{R}$ es equipotente con $\mathbb{N}$ o con $\mathbb{R}$.
+  \item $|\mathcal{P}(\mathbb{N})| = \aleph_1$.
+  \item Todo subconjunto de la recta real que no sea numerable tiene la cardinalidad de la recta real.
+  \item $|\{0,1\}^{\mathbb{N}}| = \aleph_1$ (el espacio de Cantor tiene cardinalidad $\aleph_1$).
+\end{enumerate}
+\end{observacion}
+
+\begin{ejemplo}{Cardinalidades relevantes para HC}{}
+Para poner HC en contexto, listamos algunas cardinalidades conocidas:
+\begin{itemize}[leftmargin=2em]
+  \item $|\mathbb{N}| = \aleph_0$: los naturales son el prototipo de conjunto infinito numerable.
+  \item $|\mathbb{Z}| = \aleph_0$, $|\mathbb{Q}| = \aleph_0$: los enteros y los racionales son numerables.
+  \item $|\mathbb{R}| = |\mathbb{C}| = |(0,1)| = |[0,1]^2| = 2^{\aleph_0}$: los reales, los complejos, cualquier intervalo abierto, el cuadrado unitario, todos tienen cardinalidad $\mathfrak{c}$.
+  \item $|\mathcal{P}(\mathbb{R})| = 2^{\mathfrak{c}} = 2^{2^{\aleph_0}}$: las partes de $\mathbb{R}$ tienen cardinalidad estrictamente mayor que $\mathfrak{c}$.
+\end{itemize}
+HC afirma que en la secuencia $\aleph_0 < \aleph_1 < \aleph_2 < \cdots$, el primer eslabón por encima de $\aleph_0$ es exactamente $\mathfrak{c} = 2^{\aleph_0}$.
+\end{ejemplo}
+
+\subsection{La Hipótesis Generalizada del Continuo}
+
+La Hipótesis Generalizada del Continuo extiende HC a todos los cardinales infinitos.
+
+\begin{definicion}{Hipótesis Generalizada del Continuo (HCG)}{hcg}
+La \textbf{Hipótesis Generalizada del Continuo} es el enunciado:
+\[
+  \mathrm{HCG} \;:\; \forall \alpha \;(\, 2^{\aleph_\alpha} = \aleph_{\alpha+1} \,).
+\]
+Es decir, para cada número ordinal $\alpha$, el cardinal $2^{\aleph_\alpha}$ es el inmediato sucesor de $\aleph_\alpha$ en la jerarquía aleph.
+\end{definicion}
+
+\begin{observacion}{HC como caso particular de HCG}{hchcg}
+HC es el caso $\alpha = 0$ de HCG:
+\[
+  2^{\aleph_0} = \aleph_1.
+\]
+Los siguientes casos de HCG son:
+\[
+  2^{\aleph_1} = \aleph_2, \qquad 2^{\aleph_2} = \aleph_3, \qquad 2^{\aleph_\omega} = \aleph_{\omega+1}, \quad \ldots
+\]
+Cada uno de ellos afirma que la potenciación $2^{\aleph_\alpha}$ no produce un ``salto'' mayor de lo esperado: siempre da el primer cardinal disponible encima de $\aleph_\alpha$.
+\end{observacion}
+
+\begin{teorema}{HCG implica HC}{hcghc}
+Si vale HCG, entonces vale HC.
+\end{teorema}
+
+\begin{proof}
+Tomar $\alpha = 0$ en la definición de HCG da directamente $2^{\aleph_0} = \aleph_1$, que es HC.
+\end{proof}
+
+\begin{ejemplo}{Consecuencias de HCG: aritmética cardinal simplificada}{}
+Bajo HCG, la potenciación cardinal queda completamente determinada para cardinales alephs. Calculamos algunos valores:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $2^{\aleph_0} = \aleph_1$ (caso $\alpha = 0$).
+  \item $\aleph_1^{\aleph_0}$: como $\aleph_1^{\aleph_0} = (2^{\aleph_0})^{\aleph_0} = 2^{\aleph_0 \cdot \aleph_0} = 2^{\aleph_0} = \aleph_1$ (usando HC y que $\aleph_0 \cdot \aleph_0 = \aleph_0$).
+  \item $2^{\aleph_1} = \aleph_2$ (caso $\alpha = 1$ de HCG).
+  \item $\aleph_2^{\aleph_1} = (2^{\aleph_1})^{\aleph_1} = 2^{\aleph_1 \cdot \aleph_1} = 2^{\aleph_1} = \aleph_2$ (bajo HCG).
+  \item En general, bajo HCG: $\aleph_\beta^{\aleph_\alpha} = \aleph_{\beta+1}$ siempre que $\aleph_\alpha \geq \mathrm{cf}(\aleph_\beta)$ y $\beta \geq \alpha$.
+\end{enumerate}
+Así, HCG no solo determina la función $\alpha \mapsto 2^{\aleph_\alpha}$, sino que simplifica toda la aritmética de potencias de alephs.
+\end{ejemplo}
+
+\begin{ejemplo}{Lo que ZFC sí puede demostrar sobre $2^{\aleph_0}$}{}
+Sin asumir HC, ZFC solo puede establecer restricciones parciales sobre $\mathfrak{c} = 2^{\aleph_0}$:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\mathfrak{c} \geq \aleph_1$ (por el teorema de Cantor).
+  \item $\mathrm{cf}(\mathfrak{c}) > \aleph_0$, es decir, $\mathfrak{c}$ no puede tener cofinalidad numerable (corolario del teorema de König). En particular, $\mathfrak{c} \neq \aleph_\omega, \aleph_{\omega^2}, \aleph_{\omega^\omega}, \ldots$
+  \item $\mathfrak{c}$ puede ser $\aleph_1, \aleph_2, \aleph_3, \aleph_{\omega_1}, \aleph_{\omega_1 + 1}, \ldots$ --- cualquier cardinal de cofinalidad no numerable y $\geq \aleph_1$ es posible, en el sentido de que hay modelos de ZFC donde $\mathfrak{c}$ toma ese valor.
+\end{enumerate}
+En particular, los valores $\mathfrak{c} = \aleph_1$ (HC), $\mathfrak{c} = \aleph_2$, $\mathfrak{c} = \aleph_{17}$, o $\mathfrak{c} = \aleph_{\omega_1}$ son todos consistentes con ZFC.
+\end{ejemplo}
+
+% ===========================================================
+\section{El universo constructible de Gödel y la consistencia de HC}
+% ===========================================================
+
+\subsection{Motivación: la estrategia de Gödel}
+
+La idea de Gödel para demostrar la consistencia de HC con ZFC fue construir un \emph{modelo} de ZFC dentro del cual HC también fuera verdadera. Si pudiera exhibirse tal modelo, quedaría demostrado que ZFC $+$ HC no puede ser contradictorio (pues ese modelo sería un testigo de la coherencia del sistema extendido).
+
+La construcción que Gödel ideó —el \textbf{universo constructible} $L$— es un subcollection del universo $V$ de todos los conjuntos, construido de manera análoga a la jerarquía acumulativa $V_\alpha$, pero en cada etapa solo admitiendo los subconjuntos que son ``definibles'' mediante fórmulas del lenguaje de la teoría de conjuntos con parámetros de etapas anteriores.
+
+\subsection{Preliminares: la jerarquía acumulativa}
+
+Recordamos que el universo de todos los conjuntos $V$ está estratificado en la \textbf{jerarquía acumulativa de von Neumann}:
+\[
+  V_0 = \emptyset, \qquad
+  V_{\alpha+1} = \mathcal{P}(V_\alpha), \qquad
+  V_\lambda = \bigcup_{\beta < \lambda} V_\beta \;\text{ (para } \lambda \text{ límite)}.
+\]
+Todo conjunto pertenece a algún $V_\alpha$. El \textbf{rango} de un conjunto $x$ es el menor $\alpha$ tal que $x \in V_{\alpha+1}$.
+
+\subsection{Definibilidad y la operación \texorpdfstring{$\mathrm{Def}$}{Def}}
+
+La idea central de la construcción de $L$ es reemplazar la operación ``tomar todas las partes'' ($\mathcal{P}$) por una operación más restrictiva que solo produce las partes \emph{definibles}.
+
+\begin{definicion}{Subconjuntos definibles sobre un conjunto}{definibles}
+Sea $M$ un conjunto. Un subconjunto $A \subseteq M$ es \textbf{definible sobre $M$} (con parámetros en $M$) si existe una fórmula $\varphi(x, y_1, \ldots, y_n)$ del lenguaje $\{\in\}$ y parámetros $p_1, \ldots, p_n \in M$ tales que
+\[
+  A = \{x \in M : (M, \in) \models \varphi(x, p_1, \ldots, p_n)\}.
+\]
+El conjunto de todos los subconjuntos definibles sobre $M$ se denota
+\[
+  \mathrm{Def}(M) = \bigl\{\, \{x \in M : (M,\in) \models \varphi(x, p_1, \ldots, p_n)\} \;\bigm|\; \varphi \text{ fórmula},\; p_i \in M \,\bigr\}.
+\]
+\end{definicion}
+
+\begin{observacion}{$\mathrm{Def}(M)$ versus $\mathcal{P}(M)$}{defvspow}
+Siempre $\mathrm{Def}(M) \subseteq \mathcal{P}(M)$, pero la inclusión puede ser estricta. $\mathcal{P}(M)$ contiene \emph{todos} los subconjuntos de $M$, incluyendo los que no son describibles por ninguna fórmula. $\mathrm{Def}(M)$ solo retiene los que pueden ser ``caracterizados'' con una fórmula y parámetros de $M$.
+
+Como $M$ es un conjunto, hay a lo sumo $|M| + \aleph_0$ fórmulas con parámetros en $M$ (puesto que las fórmulas forman un conjunto numerable y los parámetros son elementos de $M$); luego $|\mathrm{Def}(M)| \leq \max(|M|, \aleph_0)$. En cambio, $|\mathcal{P}(M)| = 2^{|M|}$, que puede ser mucho mayor.
+\end{observacion}
+
+\subsection{La jerarquía constructible y el universo \texorpdfstring{$L$}{L}}
+
+\begin{definicion}{El universo constructible $L$ de Gödel}{universoL}
+La \textbf{jerarquía constructible} se define por inducción transfinita en los ordinales:
+\[
+  L_0 = \emptyset, \qquad
+  L_{\alpha+1} = \mathrm{Def}(L_\alpha), \qquad
+  L_\lambda = \bigcup_{\beta < \lambda} L_\beta \;\text{ (para } \lambda \text{ límite)}.
+\]
+El \textbf{universo constructible} de Gödel es
+\[
+  L = \bigcup_{\alpha \in \mathrm{Ord}} L_\alpha.
+\]
+Un conjunto $x$ se dice \textbf{constructible} si $x \in L$. El \textbf{axioma de constructibilidad} es el enunciado $V = L$: ``todo conjunto es constructible''.
+\end{definicion}
+
+\begin{ejemplo}{Primeros niveles de la jerarquía $L$}{}
+Calculamos los primeros niveles de $L$:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $L_0 = \emptyset$.
+  \item $L_1 = \mathrm{Def}(L_0) = \mathrm{Def}(\emptyset)$. Los únicos subconjuntos definibles de $\emptyset$ son los definibles en la estructura $(\emptyset, \in)$, que es solo $\emptyset$ mismo. Así $L_1 = \{\emptyset\}$.
+  \item $L_2 = \mathrm{Def}(L_1) = \mathrm{Def}(\{\emptyset\})$. Los subconjuntos definibles de $\{\emptyset\}$ son: $\emptyset$ (definido por la fórmula falsa) y $\{\emptyset\}$ (definido por $x = \emptyset$). Luego $L_2 = \{\emptyset, \{\emptyset\}\}$.
+  \item $L_3 = \mathrm{Def}(L_2)$. Los subconjuntos definibles de $L_2 = \{\emptyset, \{\emptyset\}\}$ incluyen todos los subconjuntos de $L_2$ que pueden ser definidos, que en este caso son todos: $\emptyset, \{\emptyset\}, \{\{\emptyset\}\}, \{\emptyset, \{\emptyset\}\}$. Luego $L_3 = \mathcal{P}(L_2)$ y $|L_3| = 4$.
+  \item Para $n < \omega$, $L_n$ es un conjunto finito y $L_n \subseteq V_n$.
+  \item $L_\omega = \bigcup_{n < \omega} L_n$ coincide con $V_\omega$, el conjunto de todos los conjuntos hereditariamente finitos (todos los conjuntos finitos cuyo cierre transitivo es también finito).
+\end{enumerate}
+\end{ejemplo}
+
+\begin{ejemplo}{Comparación entre $L_{\omega+1}$ y $V_{\omega+1}$}{}
+Este ejemplo ilustra la diferencia crucial entre $L$ y $V$:
+\begin{itemize}[leftmargin=2em]
+  \item $V_{\omega+1} = \mathcal{P}(V_\omega) = \mathcal{P}(\omega)$ (identificando los hereditariamente finitos con $V_\omega$). Como $|\omega| = \aleph_0$, se tiene $|V_{\omega+1}| = 2^{\aleph_0} = \mathfrak{c}$. En $V_{\omega+1}$ están \emph{todos} los subconjuntos de $\omega$, incluyendo los no definibles.
+  \item $L_{\omega+1} = \mathrm{Def}(L_\omega) = \mathrm{Def}(\omega)$. Solo contiene los subconjuntos de $\omega$ definibles con parámetros en $\omega$. Como $\omega$ es numerable y hay $\aleph_0$ fórmulas, $|L_{\omega+1}| = \aleph_0$.
+\end{itemize}
+Así, $L_{\omega+1}$ es \emph{numerable}, mientras que $V_{\omega+1}$ tiene cardinalidad $2^{\aleph_0}$. Dentro de $L$, el conjunto de todos los subconjuntos de $\omega$ es $L_{\omega+1} \cap \mathcal{P}(\omega)$, que es numerable bajo la perspectiva del universo $V$ pero que, dentro de $L$, ``se comporta como si tuviera cardinalidad $\aleph_1$''. Este fenómeno es el núcleo técnico de por qué HC vale en $L$.
+\end{ejemplo}
+
+\subsection{Propiedades fundamentales de \texorpdfstring{$L$}{L}}
+
+\begin{teorema}{Propiedades básicas de $L$}{propsL}
+La jerarquía constructible satisface:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{Transitividad:} Para todo ordinal $\alpha$, $L_\alpha$ es un conjunto transitivo y $L_\alpha \subseteq L_{\alpha+1} \subseteq L$.
+  \item \textbf{Ordinales en $L$:} Todo ordinal es constructible: $\mathrm{Ord} \subseteq L$.
+  \item \textbf{Absolutez de $L$:} La definición de ``$x \in L_\alpha$'' es absoluta entre modelos transitivos de ZF que contienen a $\alpha$. En particular, si $M$ es un modelo transitivo de ZF, entonces $(L)^M = L^M$ (el $L$ calculado dentro de $M$ es el mismo que el ``$L$ real'').
+  \item \textbf{Cardinalidades en $L$:} Para todo ordinal infinito $\alpha$, $|L_\alpha| = |\alpha|$.
+  \item \textbf{$L$ satisface ZFC:} $(L, \in)$ es un modelo de todos los axiomas de ZFC.
+  \item \textbf{$L$ satisface $V = L$:} Dentro de $L$, todo conjunto es constructible.
+\end{enumerate}
+\end{teorema}
+
+El resultado (d) es clave para la consistencia de HC. Lo enunciamos más precisamente:
+
+\begin{proposicion}{Cardinalidad de los niveles de $L$}{cardL}
+Para todo cardinal infinito $\kappa$, $|L_\kappa| = \kappa$. En particular:
+\[
+  |L_{\omega}| = \aleph_0, \qquad |L_{\omega_1}| = \aleph_1, \qquad |L_{\omega_2}| = \aleph_2, \qquad \ldots
+\]
+\end{proposicion}
+
+\begin{proof}
+Por inducción en $\kappa$. Para $\kappa = \omega$: $L_\omega = V_\omega$ es numerable. Para el paso sucesor: si $|L_\kappa| = \kappa$, entonces $|L_{\kappa+1}| = |\mathrm{Def}(L_\kappa)| \leq |\kappa|^{<\omega} \cdot \aleph_0 = \kappa$ (hay $\kappa$ muchas fórmulas con parámetros en $L_\kappa$ y $\kappa$ muchos parámetros). Por otro lado $L_\kappa \subseteq L_{\kappa+1}$, luego $|L_{\kappa+1}| = \kappa$. Para el caso límite: $|L_\lambda| = |\bigcup_{\alpha < \lambda} L_\alpha| \leq \sum_{\alpha < \lambda} |\alpha| = \lambda$.
+\end{proof}
+
+\subsection{El teorema de condensación de Gödel}
+
+El resultado técnico central de la teoría del universo constructible es el \textbf{Lema de Condensación}, que es la herramienta clave para demostrar que HC vale en $L$.
+
+\begin{teorema}{Lema de Condensación de Gödel}{condensacion}
+Sea $X \prec L_\alpha$ una subestructura elemental de $(L_\alpha, \in)$ para algún ordinal límite $\alpha$. Entonces el colapsamiento de Mostowski de $X$ (la única estructura transitiva isomorfa a $X$) es un $L_\beta$ para algún $\beta \leq \alpha$. En particular, $X \cong (L_\beta, \in)$ para algún ordinal $\beta \leq \alpha$.
+\end{teorema}
+
+\begin{observacion}{Por qué el Lema de Condensación implica HC en $L$}{condensacionHC}
+El Lema de Condensación puede usarse para controlar el tamaño de $L_{\omega_1}$ dentro de $L$. Aquí presentamos la idea intuitiva:
+
+Todo subconjunto $A$ de $\omega$ que está en $L$ aparece en $L_\alpha$ para algún ordinal contable $\alpha < \omega_1$ (por un argumento de Löwenheim--Skolem: tomamos la clausura de Skolem de $\{A, \omega\}$ en $L_{\omega_1}$, que es numerable; por el Lema de Condensación, esta clausura es isomorfa a algún $L_\beta$ con $\beta < \omega_1$; entonces $A \in L_\beta \subseteq L_{\omega_1}$, pero en realidad $\beta < \omega_1$).
+
+Por lo tanto, cada subconjunto de $\omega$ en $L$ aparece en el nivel $L_\beta$ para algún $\beta < \omega_1$. Como hay $\aleph_1$ muchos ordinales contables y $|L_\beta| = |\beta| \leq \aleph_0$ para cada $\beta < \omega_1$, hay a lo sumo $\aleph_1 \cdot \aleph_0 = \aleph_1$ subconjuntos de $\omega$ en $L$. Pero hay al menos $\aleph_1$ (pues los conjuntos $\{0\}, \{1\}, \{2\}, \ldots$ son numerables y distintos, y $\omega$ mismo es constructible, y $\aleph_1 = \omega_1$ muchos ordinales constructibles son subconjuntos de $\omega$ via la numeración). En conclusión, $L \models |\mathcal{P}(\omega)| = \aleph_1$, que es precisamente HC.
+\end{observacion}
+
+\subsection{El teorema principal: consistencia de HC con ZFC}
+
+\begin{teorema}{Gödel, 1940: Consistencia de HC}{godelHC}
+Si ZFC es consistente, entonces ZFC $+$ HC es consistente. Más precisamente:
+\[
+  \mathrm{Con}(\mathrm{ZFC}) \;\Rightarrow\; \mathrm{Con}(\mathrm{ZFC} + \mathrm{HC}).
+\]
+En particular, HC no puede ser \emph{refutada} en ZFC (si ZFC es consistente).
+
+El mismo resultado vale para HCG: si ZFC es consistente, entonces ZFC $+$ HCG es consistente.
+\end{teorema}
+
+\begin{proof}[Esquema de la demostración]
+El argumento es el siguiente. Dentro de ZFC, se construye la clase $L$ y se verifica que:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $(L, \in)$ satisface todos los axiomas de ZFC. Esto requiere verificar cada axioma de ZFC: extensionalidad, fundación, esquema de separación, potencia, unión, infinito, esquema de reemplazo y elección. La verificación es técnica pero completa. El axioma de elección vale en $L$ porque $L$ tiene un buen orden definible (el orden lexicográfico en las fórmulas y los parámetros).
+  \item $(L, \in)$ satisface $V = L$ (axioma de constructibilidad).
+  \item A partir de $V = L$, se deduce HC dentro de $L$ usando el Lema de Condensación como se bosquejó arriba.
+\end{enumerate}
+Por lo tanto, $L$ es un modelo de ZFC $+$ HC. Si ZFC fuera inconsistente, no podría existir ningún modelo de ZFC (por el teorema de completitud de Gödel), contradiciendo nuestra hipótesis. Luego ZFC $+$ HC es consistente.
+\end{proof}
+
+\begin{corolario}{HC no es refutable en ZFC}{hcnorefutable}
+No existe ninguna demostración en ZFC de $\neg\mathrm{HC}$ (a menos que ZFC sea inconsistente). Formalmente: ZFC $\not\vdash \neg\mathrm{HC}$.
+\end{corolario}
+
+% ===========================================================
+\section{El forcing de Cohen y la consistencia de \texorpdfstring{$\neg$HC}{negHC}}
+% ===========================================================
+
+\subsection{El problema que quedaba abierto}
+
+El resultado de Gödel de 1940 demostró que HC no puede ser refutada en ZFC. Pero quedaba abierta la pregunta opuesta: ¿puede HC ser \emph{demostrada} en ZFC? ¿O es posible construir un modelo de ZFC donde $\neg$HC sea verdadera?
+
+Esta pregunta permaneció abierta durante 23 años. En 1963, Paul Cohen inventó una técnica completamente nueva —el \textbf{forcing}— y la usó para construir un modelo de ZFC donde $2^{\aleph_0} = \aleph_2$, demostrando que $\neg$HC es consistente con ZFC.
+
+\subsection{La idea intuitiva del forcing}
+
+El forcing es una técnica para \emph{extender} modelos de ZFC. Comenzamos con un modelo $M$ de ZFC (llamado el \textbf{modelo base} o \textbf{modelo del suelo}, \emph{ground model} en inglés) y construimos un modelo más grande $M[G]$ (el \textbf{modelo genérico}) añadiendo un nuevo conjunto $G$ que no estaba en $M$ pero que satisface ciertas propiedades compatibles con ZFC.
+
+La analogía más conocida es la de \textbf{adjuntar una raíz}: en álgebra, podemos extender $\mathbb{Q}$ a $\mathbb{Q}(\sqrt{2})$ adjuntando un nuevo elemento $\sqrt{2}$ que satisface $x^2 = 2$. De manera análoga, en forcing se adjunta al modelo base un nuevo conjunto $G$ (llamado el \textbf{genérico} o \textbf{filtro genérico}) que satisface ciertas propiedades controladas.
+
+El mecanismo técnico del forcing involucra los siguientes ingredientes:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{(\arabic*)}]
+  \item \textbf{Una noción de forcing $\mathbb{P} = (P, \leq)$:} Un orden parcial en el modelo base $M$. Los elementos de $P$ se llaman \textbf{condiciones}. La relación $p \leq q$ se lee ``$p$ es más fuerte que $q$'' o ``$p$ extiende a $q$'': una condición más fuerte impone más restricciones al nuevo conjunto que se está añadiendo.
+
+  \item \textbf{Filtros genéricos $G$:} Un subconjunto $G \subseteq P$ es un \textbf{filtro} si (i) es hacia arriba cerrado, (ii) es dirigido hacia abajo (cualesquiera $p, q \in G$ tienen una extensión común $r \in G$ con $r \leq p, q$). $G$ se llama \textbf{$M$-genérico} si intersecta a cada \textbf{conjunto denso} $D \subseteq P$ que pertenece a $M$ (un conjunto $D$ es denso si cada $p \in P$ tiene una extensión $q \leq p$ con $q \in D$). En general, si $M$ es numerable, los filtros $M$-genéricos existen (por el teorema de Rasiowa--Sikorski).
+
+  \item \textbf{El modelo genérico $M[G]$:} La extensión mínima de $M$ que contiene a $G$ y satisface ZFC. Todo elemento de $M[G]$ se puede ``nombrar'' desde $M$ usando los llamados \textbf{nombres de forcing} (o \emph{$\mathbb{P}$-nombres}), que son objetos en $M$.
+
+  \item \textbf{La relación de forcing $\Vdash$:} La relación $p \Vdash \varphi$ se lee ``la condición $p$ \emph{fuerza} el enunciado $\varphi$''. Esta relación es definible en $M$ y permite controlar qué enunciados son verdaderos en $M[G]$: $M[G] \models \varphi$ si y solo si existe $p \in G$ tal que $p \Vdash \varphi$.
+\end{enumerate}
+
+\begin{importante}
+La magia del forcing consiste en que, a pesar de que $G$ no pertenece al modelo base $M$, la relación de forcing $\Vdash$ es \emph{definible en $M$}. Esto permite que los matemáticos que trabajan \emph{dentro de $M$} puedan razonar sobre propiedades del modelo extendido $M[G]$ \emph{antes} de construirlo.
+\end{importante}
+
+\subsection{La noción de forcing de Cohen para refutar HC}
+
+Cohen diseñó una noción de forcing específica para producir ``muchos'' subconjuntos nuevos de $\omega$ en el modelo extendido, forzando así que $2^{\aleph_0}$ sea grande.
+
+\begin{definicion}{Forcing de Cohen para $2^{\aleph_0} = \aleph_2$}{forcingCohen}
+Sea $M$ un modelo numerable y transitivo de ZFC (con $M \models \mathrm{HC}$, aunque esto no es necesario). El \textbf{forcing de Cohen} para añadir $\aleph_2^M$ muchos subconjuntos reales usa la noción de forcing:
+\[
+  \mathbb{P} = \mathrm{Fn}(\omega_2^M \times \omega,\, 2) = \bigl\{\, p : s \to \{0,1\} \;\bigm|\; s \subseteq \omega_2^M \times \omega,\; |s| < \omega \,\bigr\},
+\]
+es decir, $P$ consiste en \textbf{funciones parciales finitas} de $\omega_2^M \times \omega$ en $\{0,1\}$, ordenadas por la extensión como función:
+\[
+  p \leq q \;\iff\; p \supseteq q \;\text{ (como funciones)}.
+\]
+(La condición más fuerte es la que tiene más información, es decir, el dominio más grande.)
+\end{definicion}
+
+\begin{observacion}{Intuición de las condiciones de Cohen}{intuicionCohen}
+Cada condición $p \in \mathbb{P}$ puede verse como \emph{información parcial} sobre $\aleph_2$ muchos subconjuntos de $\omega$. Para cada índice $\xi < \omega_2^M$, la condición $p$ especifica, para ciertos $n \in \omega$, si $n$ pertenece o no al $\xi$-ésimo subconjunto real que se está añadiendo.
+
+Cuando se forma el genérico $G = \bigcup \{p : p \in G_{\text{filtro}}\}$, se obtiene una función total $G : \omega_2^M \times \omega \to \{0,1\}$, que codifica $\aleph_2^M$ funciones $G_\xi : \omega \to \{0,1\}$ (es decir, $\aleph_2^M$ subconjuntos de $\omega$).
+\end{observacion}
+
+\subsection{Propiedades del forcing de Cohen}
+
+Los dos hechos clave que Cohen necesitó verificar son:
+
+\begin{teorema}{ZFC en el modelo genérico}{zcfgenerico}
+El modelo genérico $M[G]$ satisface todos los axiomas de ZFC.
+\end{teorema}
+
+La demostración requiere verificar cada axioma. El más delicado es el \textbf{axioma de potencia}: en $M[G]$ el conjunto $\mathcal{P}(\omega)^{M[G]}$ debe ser un conjunto. Esto se sigue del hecho de que cada subconjunto de $\omega$ en $M[G]$ tiene un nombre en $M$, y los nombres forman un conjunto en $M$.
+
+\begin{teorema}{Preservación de cardinales: la antichain condition}{cardpreserv}
+Si $\mathbb{P} = \mathrm{Fn}(\omega_2 \times \omega, 2)$, entonces $\mathbb{P}$ satisface la \textbf{condición de cadena numerable} (c.c.n.): toda familia de condiciones mutuamente incompatibles es numerable. Formalmente: si $A \subseteq P$ es tal que $p \not\leq q$ y $q \not\leq p$ (son incompatibles) para cualesquiera $p \neq q$ en $A$, entonces $|A| \leq \aleph_0$.
+
+Como consecuencia, si $\kappa$ es un cardinal en $M$, entonces $\kappa$ sigue siendo un cardinal en $M[G]$. En particular, $\aleph_1^M = \aleph_1^{M[G]}$ y $\aleph_2^M = \aleph_2^{M[G]}$.
+\end{teorema}
+
+\begin{proof}[Idea de la demostración de la c.c.n.]
+Dos condiciones $p, q \in \mathrm{Fn}(\omega_2 \times \omega, 2)$ son compatibles si y solo si su unión $p \cup q$ es función (es decir, no difieren en ningún par $(\xi, n)$ que esté en el dominio de ambas). Ahora, cada $p$ tiene dominio finito $\mathrm{dom}(p) \subseteq \omega_2 \times \omega$. Para una familia antichain (mutuamente incompatible), cada dos condiciones deben ``contradecirse'' en al menos un punto. Un argumento de deltas-sistemas (\emph{delta-system lemma}) muestra que no puede haber $\aleph_1$ muchas condiciones mutuamente incompatibles.
+\end{proof}
+
+\begin{teorema}{Cohen, 1963: Consistencia de $\neg$HC}{cohenNHC}
+Si ZFC es consistente, entonces ZFC $+$ $\neg$HC es consistente. Más precisamente:
+\[
+  \mathrm{Con}(\mathrm{ZFC}) \;\Rightarrow\; \mathrm{Con}(\mathrm{ZFC} + 2^{\aleph_0} = \aleph_2).
+\]
+En el modelo genérico $M[G]$ construido con el forcing de Cohen $\mathrm{Fn}(\omega_2 \times \omega, 2)$:
+\[
+  M[G] \models 2^{\aleph_0} = \aleph_2^M = \aleph_2^{M[G]}.
+\]
+Por tanto $M[G] \models \neg\mathrm{HC}$, y en consecuencia HC no puede ser demostrada en ZFC.
+\end{teorema}
+
+\begin{proof}[Esquema de la demostración]
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{$M[G]$ satisface ZFC:} ya mencionado.
+  \item \textbf{Los cardinales se preservan:} por la c.c.n. del forcing, $\aleph_1^{M[G]} = \aleph_1^M$ y $\aleph_2^{M[G]} = \aleph_2^M$.
+  \item \textbf{$M[G]$ tiene $\aleph_2^M$ subconjuntos de $\omega$:} el genérico $G$ codifica, para cada $\xi < \omega_2^M$, la función característica del subconjunto $G_\xi = \{n \in \omega : G(\xi, n) = 1\}$. Estos $\omega_2^M$ subconjuntos son todos distintos (por la genericidad de $G$, cualquier par de índices distintos ``diverge'' en algún natural).
+  \item \textbf{No hay más subconjuntos de $\omega$ en $M[G]$:} cada subconjunto de $\omega$ en $M[G]$ es ``nombrado'' por algún $\mathbb{P}$-nombre en $M$. La cardinalidad del conjunto de nombres en $M$ es $\aleph_2^M$ (pues cada nombre es una función de $\omega_2^M \times \omega$ a un conjunto en $M$, y hay $\aleph_2^M$ muchos tales), de modo que $|\mathcal{P}(\omega)^{M[G]}| = \aleph_2^{M[G]}$.
+  \item \textbf{Conclusión:} $M[G] \models 2^{\aleph_0} = \aleph_2$, luego $M[G] \models \neg\mathrm{HC}$.
+\end{enumerate}
+\end{proof}
+
+\subsection{El forcing puede producir cualquier valor de \texorpdfstring{$2^{\aleph_0}$}{el continuo} (con restricciones)}
+
+El resultado de Cohen no se limita a $2^{\aleph_0} = \aleph_2$. Usando $\mathrm{Fn}(\omega_\alpha \times \omega, 2)$ con distintos valores de $\alpha$, se puede forzar $2^{\aleph_0} = \aleph_\alpha$ para cualquier cardinal $\aleph_\alpha$ con $\mathrm{cf}(\aleph_\alpha) > \aleph_0$.
+
+\begin{teorema}{Easton, 1970: Arbitrariedad de la potenciación cardinal}{eastonforcing}
+Bajo los axiomas de ZFC, la función $\alpha \mapsto 2^{\aleph_\alpha}$ puede tomar casi cualquier valor: para cualquier función $F : \mathrm{Card} \to \mathrm{Card}$ definida en los cardinales infinitos regulares tal que
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\alpha < \beta \Rightarrow F(\alpha) \leq F(\beta)$ (monotonicidad),
+  \item $\mathrm{cf}(F(\alpha)) > \alpha$ para todo cardinal regular $\alpha$ (restricción de König),
+\end{enumerate}
+existe un modelo de ZFC donde $2^{\aleph_\alpha} = F(\aleph_\alpha)$ para todos los cardinales regulares $\aleph_\alpha$.
+\end{teorema}
+
+\begin{observacion}{Lo que Easton no cubre}{eastonnocovers}
+El teorema de Easton controla la potenciación en cardinales \emph{regulares}, pero el comportamiento de $2^\kappa$ para cardinales singulares $\kappa$ no está completamente determinado. Saharon Shelah desarrolló la \textbf{aritmética cardinal pcf} (``possible cofinalities'') para entender mejor las restricciones en el caso singular. Esto pertenece a la investigación avanzada del siglo~XX y XXI en teoría de conjuntos.
+\end{observacion}
+
+% ===========================================================
+\section{Independencia de HC respecto de ZFC}
+% ===========================================================
+
+\subsection{El teorema de independencia}
+
+Los dos resultados de Gödel y Cohen juntos establecen la independencia completa de HC:
+
+\begin{teorema}{Independencia de HC respecto de ZFC}{independenciaHC}
+La Hipótesis del Continuo es \textbf{independiente} de ZFC:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item ZFC $\not\vdash$ HC \quad (HC no es demostrable en ZFC).
+  \item ZFC $\not\vdash$ $\neg$HC \quad ($\neg$HC no es demostrable en ZFC).
+\end{enumerate}
+Equivalentemente: si ZFC es consistente, entonces ZFC $+$ HC y ZFC $+$ $\neg$HC son ambos consistentes.
+\end{teorema}
+
+\begin{proof}
+(i) sigue del teorema de Cohen (si ZFC $\vdash$ HC, entonces ZFC $+$ $\neg$HC sería inconsistente, contradiciendo la consistencia de ZFC $+$ $\neg$HC que Cohen demostró). (ii) sigue del teorema de Gödel (análogamente).
+\end{proof}
+
+\begin{observacion}{¿Qué significa la independencia?}{significaindependencia}
+La independencia de HC respecto de ZFC tiene las siguientes consecuencias filosóficas y matemáticas:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{ZFC no determina $\mathfrak{c}$:} Los axiomas estándar de la teoría de conjuntos son insuficientes para decidir cuántos puntos tiene la recta real. Hay modelos de ZFC donde $\mathfrak{c} = \aleph_1$, modelos donde $\mathfrak{c} = \aleph_2$, modelos donde $\mathfrak{c} = \aleph_{\omega_1}$, etc.
+  \item \textbf{No es un defecto de ZFC:} La independencia no significa que la pregunta no tenga sentido o que ZFC sea ``incompleto en un sentido patológico''. Por los teoremas de incompletitud de Gödel, cualquier sistema axiomático suficientemente expresivo tendrá enunciados independientes.
+  \item \textbf{¿Hay axiomas adicionales naturales?} Algunos matemáticos han propuesto enriquecer ZFC con axiomas adicionales (axiomas de grandes cardinales, el axioma $\mathbf{MM}$ de Martin's Maximum, el axioma $\mathbf{PFA}$ de la propiedad de Proper Forcing Axiom) que sí determinan el valor de $\mathfrak{c}$. Varios de estos axiomas implican $\mathfrak{c} = \aleph_2$.
+  \item \textbf{El punto de vista pluralista:} Algunos filósofos de la matemática (como Joel Hamkins) defienden un enfoque ``pluralista'' o ``multiverso'': no hay \emph{un} universo matemático, sino muchos, y la pregunta ``¿cuánto vale $\mathfrak{c}$?'' es tan sensata como la pregunta ``¿vale el quinto postulado?'' en geometría.
+\end{enumerate}
+\end{observacion}
+
+\subsection{Independencia de HCG}
+
+\begin{corolario}{Independencia de HCG}{independenciaHCG}
+La Hipótesis Generalizada del Continuo es también independiente de ZFC: si ZFC es consistente, entonces ZFC $+$ HCG y ZFC $+$ $\neg$HCG son ambos consistentes.
+\end{corolario}
+
+\begin{proof}
+La consistencia de ZFC $+$ HCG sigue del hecho de que $L \models \mathrm{HCG}$ (el universo constructible satisface HCG; la demostración generaliza el argumento del Lema de Condensación a todos los cardinales). La consistencia de ZFC $+$ $\neg$HCG sigue del forcing de Cohen (pues en $M[G]$ vale $2^{\aleph_0} = \aleph_2 \neq \aleph_1$, luego $\neg$HCG).
+\end{proof}
+
+% ===========================================================
+\section{El legado histórico y matemático}
+% ===========================================================
+
+\subsection{La medalla Fields de Paul Cohen}
+
+Paul Cohen recibió la Medalla Fields en 1966 por la invención del forcing y la prueba de la independencia de HC. Su trabajo se considera uno de los más originales y profundos de las matemáticas del siglo~XX: no solo resolvió el primer problema de Hilbert, sino que creó una herramienta (el forcing) que transformó toda la teoría de conjuntos.
+
+\subsection{La proliferación del forcing}
+
+Desde 1963, el forcing ha sido usado para demostrar la independencia de decenas (o cientos) de problemas matemáticos respecto de ZFC:
+\begin{itemize}[leftmargin=2em]
+  \item La \textbf{hipótesis de Suslin}: ¿toda recta lineal completa sin elementos máximo ni mínimo, separable y tal que toda familia de intervalos disjuntos es numerable, es isomorfa a $\mathbb{R}$? Independiente de ZFC.
+  \item El \textbf{problema de Whitehead}: ¿todo grupo abeliano $G$ con $\mathrm{Ext}^1(G, \mathbb{Z}) = 0$ es libre? Independiente de ZFC (resultado de Shelah, 1974).
+  \item El \textbf{axioma de Martin} ($\mathrm{MA}$): consistente con ZFC $+$ $\neg$HC. Implica muchos resultados de combinatoria infinita.
+\end{itemize}
+
+\subsection{¿Puede HC resolverse con nuevos axiomas?}
+
+Esta es una de las grandes preguntas de la lógica matemática contemporánea. Algunos avances recientes son:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Woodin y el programa $\Omega$:} Hugh Woodin ha desarrollado, desde la década de 1990, un programa para encontrar el ``valor correcto'' de $\mathfrak{c}$. Su programa sugiere que $\mathfrak{c} = \aleph_2$ es el valor más natural consistente con las consecuencias de los grandes cardinales.
+  \item \textbf{Axiomas de forcing como PFA y MM:} El \emph{Proper Forcing Axiom} (PFA) y el \emph{Martin's Maximum} (MM) implican $\mathfrak{c} = \aleph_2$. Estos axiomas son consistentes con ZFC (relativa a grandes cardinales) y tienen muchas consecuencias matemáticas atractivas.
+  \item \textbf{El programa de los grandes cardinales:} Los axiomas de grandes cardinales (measurable, supercompact, huge, etc.) no determinan por sí solos el valor de $\mathfrak{c}$, pero sí imponen restricciones indirectas a través de los resultados de absolutez.
+\end{itemize}
+
+% ===========================================================
+\section{Esquema comparativo: $V$, $L$ y los modelos de forcing}
+% ===========================================================
+
+Para ayudar a la comprensión global, presentamos un esquema de los distintos ``universos'' de conjuntos relevantes para la independencia de HC:
+
+\begin{ejemplo}{Tres universos, tres valores de $\mathfrak{c}$}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{El universo constructible $L$:} $L \models \mathrm{ZFC} + V = L + \mathrm{HCG}$. En $L$, $2^{\aleph_0} = \aleph_1$, $2^{\aleph_1} = \aleph_2$, etc. Todo es ``lo más pequeño posible''. Los subconjuntos de $\omega$ son exactamente los constructibles: hay $\aleph_1$ de ellos.
+  \item \textbf{El modelo de Cohen $M[G]$ con $\mathrm{Fn}(\omega_2 \times \omega, 2)$:} $M[G] \models \mathrm{ZFC} + 2^{\aleph_0} = \aleph_2$. El continuo da un salto de tamaño $\aleph_2$: hay $\aleph_2$ subconjuntos de $\omega$. Los cardinales $\aleph_1$ y $\aleph_2$ son los mismos que en $M$.
+  \item \textbf{Un modelo con $\mathfrak{c}$ grande:} Usando $\mathrm{Fn}(\omega_{\omega_1} \times \omega, 2)$ se puede forzar $2^{\aleph_0} = \aleph_{\omega_1}$. Aquí el continuo es un cardinal de cofinalidad $\omega_1 > \omega$, lo cual es consistente con el teorema de König ($\mathrm{cf}(\aleph_{\omega_1}) = \omega_1 > \omega$).
+\end{enumerate}
+\end{ejemplo}
+
+% ===========================================================
+\section{Resumen de los resultados principales}
+% ===========================================================
+
+Recapitulamos los resultados principales de esta clase en un cuadro de referencia:
+
+\begin{importante}
+\textbf{Resumen: la independencia de HC}
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{HC}: $2^{\aleph_0} = \aleph_1$. \quad \textbf{HCG}: $\forall \alpha\; (2^{\aleph_\alpha} = \aleph_{\alpha+1})$.
+  \item \textbf{Gödel, 1940:} El universo constructible $L$ satisface ZFC $+$ HCG. Luego ZFC $\not\vdash \neg$HC.
+  \item \textbf{Cohen, 1963:} Mediante forcing, existe un modelo de ZFC donde $2^{\aleph_0} = \aleph_2$. Luego ZFC $\not\vdash$ HC.
+  \item \textbf{Conclusión:} HC es \emph{independiente} de ZFC.
+  \item \textbf{Easton, 1970:} La función $\kappa \mapsto 2^\kappa$ en cardinales regulares puede ser cualquier función monótona con $\mathrm{cf}(2^\kappa) > \kappa$.
+  \item \textbf{König (restricción):} $\mathrm{cf}(2^{\aleph_0}) > \aleph_0$, es decir $2^{\aleph_0} \neq \aleph_\omega$, $\aleph_{\omega^2}$, etc.
+\end{itemize}
+\end{importante}
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+\subsection*{Problemas de comprensión y cálculo}
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{P\arabic*.}]
+
+  \item \textbf{(Formulaciones equivalentes de HC.)} Demuestre que las siguientes afirmaciones son equivalentes en ZFC:
+  \begin{enumerate}[label=(\alph*)]
+    \item $2^{\aleph_0} = \aleph_1$.
+    \item Cada subconjunto infinito de $\mathbb{R}$ es numerable o tiene la cardinalidad de $\mathbb{R}$.
+    \item $|\mathcal{P}(\mathbb{N})| = \aleph_1$.
+    \item Todo conjunto $A$ con $\aleph_0 \leq |A| \leq 2^{\aleph_0}$ satisface $|A| = \aleph_0$ o $|A| = 2^{\aleph_0}$.
+  \end{enumerate}
+
+  \item \textbf{(Consecuencias de HCG.)} Asumiendo HCG, calcule los siguientes cardinales:
+  \begin{enumerate}[label=(\alph*)]
+    \item $2^{\aleph_3}$.
+    \item $\aleph_2^{\aleph_1}$.
+    \item $\aleph_\omega^{\aleph_0}$.
+    \item $\aleph_{\omega+1}^{\aleph_\omega}$.
+  \end{enumerate}
+  \textit{(Sugerencia: use la ley de absorción $\kappa^\lambda = 2^\kappa$ cuando $\lambda < \kappa$ y $\mathrm{cf}(\kappa) > \lambda$, combinada con HCG.)}
+
+  \item \textbf{(Restricciones sobre $\mathfrak{c}$ en ZFC.)} Demuestre en ZFC (sin asumir HC) que:
+  \begin{enumerate}[label=(\alph*)]
+    \item $\mathfrak{c} \geq \aleph_1$.
+    \item $\mathrm{cf}(\mathfrak{c}) > \aleph_0$.
+    \item $\mathfrak{c}$ no puede ser $\aleph_\omega$.
+    \item $\mathfrak{c}$ no puede ser $\aleph_{\omega_1}$ si $\mathrm{cf}(\aleph_{\omega_1}) = \omega_1 > \omega$ (¿es esto una restricción real?).
+  \end{enumerate}
+
+  \item \textbf{(La jerarquía $L$ en los primeros niveles.)} Describa explícitamente los conjuntos que pertenecen a $L_4$ pero no a $L_3$. ¿Cuántos elementos tiene $L_4$? ¿Qué elementos de $V_4$ \emph{no} pertenecen a $L_4$? (Compare $|L_4|$ con $|V_4|$.)
+
+  \item \textbf{(Cardinalidad de $L_\alpha$ para ordinales límite.)} Demuestre que para todo cardinal infinito regular $\kappa$, se tiene $|L_\kappa| = \kappa$. \textit{(Sugerencia: use inducción transfinita y el hecho de que $|\mathrm{Def}(M)| \leq \max(|M|, \aleph_0)$ para conjuntos infinitos $M$.)}
+
+  \item \textbf{(Subconjuntos no constructibles.)} Dado que $|L_{\omega+1}| = \aleph_0$ mientras que $|\mathcal{P}(\omega)| = 2^{\aleph_0}$:
+  \begin{enumerate}[label=(\alph*)]
+    \item Argumente que en ZFC $+$ $\neg$HC (con $\mathfrak{c} = \aleph_2$, por ejemplo), la mayoría de los subconjuntos de $\omega$ no son constructibles.
+    \item ¿Es posible, sin asumir HC, que \emph{todos} los subconjuntos de $\omega$ sean constructibles? ¿Qué axioma afirmaría eso?
+    \item Bajo $V = L$, ¿cuántos subconjuntos de $\omega$ existen? Justifique su respuesta.
+  \end{enumerate}
+
+  \item \textbf{(Forcing elemental.)} Considere la noción de forcing $\mathbb{P} = \mathrm{Fn}(\omega, 2)$, es decir, las funciones parciales finitas de $\omega$ en $\{0,1\}$, con $p \leq q$ si $p \supseteq q$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Describa qué tipo de objeto ``añade'' un filtro genérico $G$ sobre $\mathbb{P}$: ¿qué es $f_G = \bigcup G$?
+    \item Muestre que $\mathrm{Fn}(\omega, 2)$ satisface la c.c.n.\ (condición de cadena numerable).
+    \item Explique por qué este forcing añade exactamente \emph{un} subconjunto nuevo de $\omega$, y no cambia los cardinales.
+    \item ¿Por qué este forcing, a diferencia del forcing de Cohen con $\mathrm{Fn}(\omega_2 \times \omega, 2)$, no puede refutar HC?
+  \end{enumerate}
+
+  \item \textbf{(El teorema de König y $\mathfrak{c}$.)} El teorema de König establece que $\mathrm{cf}(2^{\aleph_0}) > \aleph_0$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Use el teorema de König para demostrar que $2^{\aleph_0} \neq \aleph_\omega$.
+    \item Demuestre que $2^{\aleph_0} \neq \aleph_{\omega \cdot 2}$.
+    \item En general, $2^{\aleph_0}$ no puede ser ningún cardinal de cofinalidad $\omega$. Liste cinco cardinales que por este motivo no pueden ser el valor de $\mathfrak{c}$.
+    \item ¿Puede ser $\mathfrak{c} = \aleph_{\omega_1}$? Justifique su respuesta.
+  \end{enumerate}
+
+  \item \textbf{(Independencia y lógica.)} Explique, en sus propias palabras, la diferencia entre los siguientes conceptos:
+  \begin{enumerate}[label=(\alph*)]
+    \item ``HC es verdadera'' vs. ``HC es demostrable en ZFC''.
+    \item ``HC es independiente de ZFC'' vs. ``HC no tiene valor de verdad''.
+    \item ``ZFC es consistente'' vs. ``ZFC es completo''.
+  \end{enumerate}
+  Conecte su explicación con los teoremas de incompletitud de Gödel (clase~1).
+
+  \item \textbf{(HCG y la aritmética cardinal completa.)} Suponiendo HCG, demuestre que para todo ordinal $\alpha$ y todo cardinal $\lambda < \aleph_\alpha$:
+  \[
+    \aleph_\alpha^\lambda = \aleph_\alpha.
+  \]
+  \textit{(Sugerencia: use que $\aleph_\alpha^\lambda \leq \aleph_\alpha^{|\alpha|} = (2^{\aleph_{|\alpha|}})^{|\alpha|} = 2^{\aleph_{|\alpha|} \cdot |\alpha|} = 2^{\aleph_{|\alpha|}}$ y aplique HCG.)}
+
+\end{enumerate}
+
+\subsection*{Problemas de profundización}
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{P\arabic*$'$.}]
+
+  \item \textbf{(El lema de $\Delta$-sistemas.)} Un \textbf{sistema $\Delta$} (o \textbf{girasol}) es una familia $\{A_i : i \in I\}$ de conjuntos finitos tal que $A_i \cap A_j = r$ para todo $i \neq j$ (el ``núcleo'' $r$ es el mismo para todos los pares). Enuncie y demuestre el \textbf{lema del sistema $\Delta$}: toda familia no numerable de conjuntos finitos contiene una subfamilia no numerable que forma un sistema $\Delta$. Use este lema para demostrar la c.c.n.\ del forcing de Cohen $\mathrm{Fn}(\kappa \times \omega, 2)$ para cualquier cardinal $\kappa$.
+
+  \item \textbf{(El axioma de Martin.)} El axioma de Martin ($\mathrm{MA}$) afirma que para todo orden parcial $\mathbb{P}$ con la c.c.n.\ y toda familia $\{D_i : i < \kappa\}$ de conjuntos densos en $\mathbb{P}$ con $\kappa < \mathfrak{c}$, existe un filtro $G$ que intersecta a todos los $D_i$. Investigue:
+  \begin{enumerate}[label=(\alph*)]
+    \item $\mathrm{MA}$ es consistente con ZFC $+$ $\neg$HC (de hecho, $\mathrm{MA}$ implica $\mathrm{cf}(\mathfrak{c}) > \aleph_0$ pero no determina el valor de $\mathfrak{c}$).
+    \item $\mathrm{MA} + \neg\mathrm{HC}$ implica que toda unión de $\aleph_1$ muchos conjuntos de medida de Lebesgue cero tiene medida cero.
+    \item ¿$\mathrm{MA}$ implica o es implicado por HC?
+  \end{enumerate}
+
+  \item \textbf{(El programa de Woodin.)} Investigar el enunciado: ``el axioma $(\ast)$ de Woodin implica que el valor de $2^{\aleph_0}$ es $\aleph_2$''. Relacione este resultado con el programa de grandes cardinales. ¿Cuáles son los grandes cardinales más usados en la investigación de HC?
+
+  \item \textbf{(Independencia de la hipótesis de Suslin.)} La hipótesis de Suslin ($\mathrm{HS}$) afirma: toda recta lineal completa, sin extremos, separable (en sentido de Suslin: toda familia de intervalos disjuntos abiertos es numerable) es isomorfa a $\mathbb{R}$. Investigue: (a) ¿$\mathrm{HS}$ implica HC? (b) ¿HC implica $\mathrm{HS}$? (c) ¿$\mathrm{HS}$ es independiente de ZFC?
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias de la Clase 9}
+% ===========================================================
+
+Los resultados de esta clase provienen de las siguientes fuentes fundamentales:
+
+\begin{itemize}[leftmargin=2em]
+  \item El resultado de Gödel sobre la consistencia de HC con ZFC fue publicado en \cite{godel1940}. Una presentación moderna detallada se encuentra en \cite{jech2003} (capítulos~13 y 14) y en \cite{kunen2011} (capítulo~VI).
+  \item El forcing de Cohen fue publicado en \cite{cohen1963a, cohen1963b} y desarrollado en el libro \cite{cohen1966}. Una presentación moderna accesible está en \cite{kunen2011} (capítulo~VII) y en \cite{jech2003} (capítulo~14).
+  \item El teorema de Easton sobre la independencia de la función $\kappa \mapsto 2^\kappa$ en cardinales regulares se encuentra en \cite{easton1970}.
+  \item Exposiciones introductorias del forcing se encuentran en \cite{devlin1993} y en \cite{hrbacek1999}. Una introducción muy accesible en español es \cite{cori2001}.
+  \item Para el programa de grandes cardinales y las perspectivas actuales sobre HC, ver \cite{kanamori2003} y \cite{woodin2001}.
+\end{itemize}
