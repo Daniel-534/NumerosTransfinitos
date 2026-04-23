@@ -40,7 +40,7 @@ Sean $\kappa$ y $\lambda$ cardinales. El \textbf{producto cardinal} $\kappa \cdo
 La suma ordinal $\omega + \omega$ y la suma cardinal $\aleph_0 + \aleph_0$ son objetos distintos. Como ordinal, $\omega + \omega \neq \omega$; como cardinal, $\aleph_0 + \aleph_0 = \aleph_0$. La razón es que la suma ordinal recuerda el \emph{orden} de la concatenación, mientras que la suma cardinal solo mide la \emph{cardinalidad} de la unión disjunta: ambas copias de $\mathbb{N}$ pueden entrelazarse en una sola copia de $\mathbb{N}$.
 \end{observacion}
 
-\subsection{La ley de absorción: todo colapsа al máximo}
+\subsection{La ley de absorción: todo colapsa al máximo}
 
 El resultado central de la aritmética cardinal para cardinales infinitos es que ni la suma ni el producto producen cardinales nuevos: siempre se obtiene el máximo de los dos operandos.
 
@@ -227,7 +227,7 @@ Calculamos $\aleph_0^\lambda$ para varios valores de $\lambda$.
 \textbf{(b) $\aleph_0^{\aleph_0} = 2^{\aleph_0}$.} Probamos las dos desigualdades.
 \begin{itemize}[leftmargin=2em]
   \item $2^{\aleph_0} \leq \aleph_0^{\aleph_0}$: la inyección ${}^\omega 2 \hookrightarrow {}^\omega \omega$ es la inclusión (toda función $\omega \to \{0,1\}$ es también función $\omega \to \omega$).
-  \item $\aleph_0^{\aleph_0} \leq 2^{\aleph_0}$: cada función $f \colon \omega \to \omega$ puede codificarse mediante una función $\omega \to \{0,1\}$ (por ejemplo, codificando $f(n) \in \omega$ en binario, o usando la biyección $\omega \times \omega \leftrightarrow \omega$ para construir $F \colon \omega \to 2$). Formalmente, $|\omega^\omega| = |({}^\omega\omega)| \leq |{}^\omega 2^\omega| = |({}^\omega\omega)| \leq 2^{\aleph_0 \cdot \aleph_0} = 2^{\aleph_0}$.
+  \item $\aleph_0^{\aleph_0} \leq 2^{\aleph_0}$: cada función $f \colon \omega \to \omega$ puede codificarse biyectivamente mediante la biyección $p \colon \omega \times \omega \to \omega$ de Cantor. Concretamente, codificamos $f$ como la función característica de su gráfica: definimos $\hat{f} \colon \omega \to \{0,1\}$ no directamente, sino que usamos la biyección $q \colon \omega \to \omega \times \omega$ (inversa de $p$) para construir una función $F \colon \omega \to 2$ por $F(p(n,m)) = 1 \iff m = f(n)$. La asignación $f \mapsto F$ es inyectiva, luego $|{}^\omega\omega| \leq |{}^\omega 2| = 2^{\aleph_0}$.
 \end{itemize}
 Por el Teorema de Cantor-Schröder-Bernstein, $\aleph_0^{\aleph_0} = 2^{\aleph_0}$.
 
@@ -291,17 +291,11 @@ Necesitamos demostrar dos cosas:
   \item Ninguna función $f \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ puede ser sobreyectiva.
 \end{enumerate}
 
-\textbf{Parte 1 (inyección).} Para cada $i \in I$ fijamos una inyección $\phi_i \colon \kappa_i \hookrightarrow \lambda_i$ (que existe porque $\kappa_i < \lambda_i$ implica $\kappa_i \leq \lambda_i$, es decir, hay una inyección de $\kappa_i$ en $\lambda_i$). Fijamos además un elemento distinguido $d_i \in \lambda_i$ para cada $i$. Definimos $\Phi \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ por:
+\textbf{Parte 1 (inyección).} Para cada $i \in I$ fijamos una inyección $\phi_i \colon \kappa_i \hookrightarrow \lambda_i$ (existe porque $\kappa_i < \lambda_i$). Definimos $\Phi \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ por:
 \[
-  \Phi(\alpha, j)(i) = \begin{cases} \phi_j(\alpha) & \text{si } i = j, \\ d_i & \text{si } i \neq j. \end{cases}
+  \Phi(\alpha, j)(i) = \begin{cases} \phi_j(\alpha) & \text{si } i = j, \\ 0_i & \text{si } i \neq j, \end{cases}
 \]
-Si $\Phi(\alpha, j) = \Phi(\beta, k)$, evaluando en $i = j$ obtenemos $\phi_j(\alpha) = \Phi(\alpha, j)(j) = \Phi(\beta, k)(j)$. Si $j \neq k$, entonces $\Phi(\beta, k)(j) = d_j$, por lo que $\phi_j(\alpha) = d_j$. Y evaluando en $i = k$, si $j \neq k$ se tendría $\phi_k(\beta) = \Phi(\beta,k)(k) = \Phi(\alpha,j)(k) = d_k$. Esto puede ajustarse para que ambas condiciones sean incompatibles si $j \neq k$ (eligiendo $d_j \notin \mathrm{Im}(\phi_j)$ cuando $\kappa_j < \lambda_j$ lo permite). Una construcción ligeramente diferente que garantiza la inyectividad usa una codificación del índice $j$ en la función, como por ejemplo:
-\[
-  \Phi'(\alpha, j)(i) = \begin{cases} \phi_j(\alpha) & \text{si } i = j, \\ 0_i & \text{si } i \neq j, \end{cases}
-\]
-donde $0_i$ es el elemento mínimo de $\lambda_i$ (como ordinal). Entonces $\Phi'(\alpha, j) = \Phi'(\beta, k)$ implica: evaluando en $j$ si $j \neq k$, $\phi_j(\alpha) = 0_j$ y evaluando en $k$, $\phi_k(\beta) = 0_k$; pero evaluando en $j$ del lado de $(\beta, k)$ obtenemos $0_j$ si $j \neq k$. La inyectividad se verifica con más detalle en \cite{jech2003}; la idea clave es que el «índice» $j$ queda registrado en el soporte de $\Phi'$.
-
-Para un argumento limpio: fijamos para cada $j$ una función $e_j \colon \kappa_j \to \prod_{i} \lambda_i$ definida por $e_j(\alpha)(i) = \phi_j(\alpha)$ si $i = j$ y $e_j(\alpha)(i) = 0_i$ si $i \neq j$. Las imágenes de funciones distintas $e_j$ tienen «soporte» diferente (coordenada $j$ no nula), y dentro de la imagen de $e_j$ la inyectividad se hereda de $\phi_j$. Por tanto la función que manda $(\alpha, j) \mapsto e_j(\alpha)$ es inyectiva.
+donde $0_i = \min \lambda_i$ (el ordinal mínimo de $\lambda_i$, que existe por ser $\lambda_i > 0$). Verificamos la inyectividad: suponga $\Phi(\alpha, j) = \Phi(\beta, k)$. Evaluando en $i = j$: $\Phi(\alpha,j)(j) = \phi_j(\alpha)$ y $\Phi(\beta,k)(j) = \phi_k(\beta)$ si $k = j$, o $\Phi(\beta,k)(j) = 0_j$ si $k \neq j$. Evaluando en $i = k$: $\Phi(\alpha,j)(k) = 0_k$ si $j \neq k$, y $\Phi(\beta,k)(k) = \phi_k(\beta)$. Si $j \neq k$, de la igualdad en la coordenada $k$ se deduce $0_k = \phi_k(\beta)$; en particular $\phi_k(\beta) = 0_k$. Pero de la igualdad en la coordenada $j$ se deduce $\phi_j(\alpha) = 0_j$. Ahora: para cada $i \neq j$, $\Phi(\alpha,j)(i) = 0_i$, y para cada $i \neq k$, $\Phi(\beta,k)(i) = 0_i$; en la coordenada $j$ (con $j \neq k$), $\Phi(\beta,k)(j) = 0_j$, mientras que $\Phi(\alpha,j)(j) = \phi_j(\alpha) = 0_j$. La única posibilidad de conflicto surge si $0_j \in \mathrm{Im}(\phi_j)$ para algún $j$. Para evitarlo, sin pérdida de generalidad podemos tomar $0_i = \min(\lambda_i \setminus \mathrm{Im}(\phi_i))$ en lugar de $\min \lambda_i$ (este mínimo existe pues $|\mathrm{Im}(\phi_i)| \leq \kappa_i < \lambda_i$). Con esta elección, $\phi_j(\alpha) \neq 0_j$ para todo $\alpha \in \kappa_j$, luego de $\Phi(\alpha,j)(j) = \Phi(\beta,k)(j) = 0_j$ se concluye $j \neq k$ es imposible. Por tanto $j = k$, y entonces $\phi_j(\alpha) = \phi_j(\beta)$ (de la igualdad en la coordenada $j$), lo que implica $\alpha = \beta$ por ser $\phi_j$ inyectiva.
 
 \textbf{Parte 2 (no sobreyección).} Sea $f \colon \bigsqcup_{i \in I} \kappa_i \to \prod_{i \in I} \lambda_i$ una función cualquiera. Debemos exhibir un elemento de $\prod_{i \in I} \lambda_i$ no en la imagen de $f$.
 
