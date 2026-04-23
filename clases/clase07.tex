@@ -1,0 +1,553 @@
+% ===========================================================
+\chapter{Clase 7: Números Cardinales Transfinitos — Alephs y Teorema de Cantor}
+% ===========================================================
+
+Los \textbf{números cardinales} dan respuesta formal a la pregunta más antigua de la aritmética infinita: ¿cuándo dos conjuntos tienen el mismo «tamaño»? Georg Cantor respondió en los años 1870–1890 con la noción de equipotencia y con la radical observación de que no todos los conjuntos infinitos son equipotentes. Las clases 4 y 5 sentaron las bases: equipotencia, la desigualdad de Cantor-Schröder-Bernstein y los ordinales de von Neumann. En esta clase se corona ese programa con tres logros fundamentales:
+
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{Cardinales como ordinales iniciales}: se define formalmente el cardinal de un conjunto —dentro de ZFC con el Axioma de Elección— como el menor ordinal equipotente a él, y se estudia la estructura de la clase de cardinales.
+  \item \textbf{La jerarquía aleph}: se construye la sucesión transfinita $\aleph_0, \aleph_1, \aleph_2, \ldots, \aleph_\omega, \ldots$ de cardinales infinitos y se prueba que cada cardinal infinito es un $\aleph$.
+  \item \textbf{El Teorema de Cantor y los beth numbers}: se demuestra que para todo conjunto $A$ se cumple $|A| < |\mathcal{P}(A)|$, se introduce la jerarquía $\beth_0, \beth_1, \beth_2, \ldots$ y se contrasta con la jerarquía aleph, anticipando la Hipótesis del Continuo.
+\end{enumerate}
+
+Al final se hace una primera presentación de los \textbf{cardinales inaccesibles}, que escapan a la jerarquía construida por las operaciones cardinales ordinarias y constituyen el punto de entrada a la teoría de grandes cardinales \cite{kanamori2003, jech2003}.
+
+La exposición sigue los textos clásicos \cite{jech2003, kunen2011, enderton1977, hrbacek1999, levy1979, sierpinski1958}, con énfasis en la motivación intuitiva y en los detalles formales de cada demostración.
+
+% ===========================================================
+\section{Cardinales como ordinales iniciales}
+% ===========================================================
+
+\subsection{Motivación: el problema del representante canónico}
+
+La Clase~4 introdujo la \emph{equipotencia}: dos conjuntos $A$ y $B$ son equipotentes, escrito $A \sim B$, si existe una biyección $f \colon A \to B$. La equipotencia es una relación de equivalencia sobre la clase universal; las clases de equivalencia son las «cardinalidades». Sin embargo, las clases de equivalencia no son conjuntos en ZFC (la clase de todos los conjuntos con dos elementos, por ejemplo, no es un conjunto). Para trabajar con cardinales como objetos matemáticos ordinarios, necesitamos elegir un representante canónico en cada clase.
+
+\begin{itemize}[leftmargin=2em]
+  \item Para los conjuntos \emph{finitos} la solución es natural: el representante de la clase de un conjunto con $n$ elementos es el número natural $n = \{0,1,\ldots,n-1\}$.
+  \item Para los conjuntos \emph{infinitos} la solución requiere el Axioma de Elección: el representante de la clase de $A$ es el \emph{menor ordinal} equipotente a $A$.
+\end{itemize}
+
+\subsection{Ordinales iniciales}
+
+\begin{definicion}{Ordinal inicial}{ordinalinicial}
+Un ordinal $\kappa$ se denomina \textbf{ordinal inicial} (o \textbf{cardinal de von Neumann}) si no es equipotente a ningún ordinal $\alpha < \kappa$:
+\[
+  \forall \alpha < \kappa \;:\; \alpha \not\sim \kappa.
+\]
+Equivalentemente, $\kappa$ es un ordinal inicial si $|\kappa| \neq |\alpha|$ para todo $\alpha < \kappa$.
+\end{definicion}
+
+\begin{observacion}{Todo natural es un ordinal inicial}{natinicial}
+Los ordinales finitos $0, 1, 2, 3, \ldots$ son todos ordinales iniciales: el ordinal $n$ tiene exactamente $n$ elementos, y ningún ordinal menor que $n$ tiene $n$ elementos.
+\end{observacion}
+
+\begin{definicion}{Número cardinal (en ZFC)}{numcardinalzfc}
+Dado un conjunto $A$, su \textbf{número cardinal} $|A|$ (también denotado $\mathrm{card}(A)$) es el único ordinal inicial equipotente a $A$. Formalmente, asumiendo el Axioma de Elección:
+\[
+  |A| := \min\bigl\{\alpha \in \mathbf{ON} \mid \alpha \sim A\bigr\}.
+\]
+Este mínimo existe porque, por el Teorema del Bien-Orden (equivalente al AC), todo conjunto puede ser bien ordenado y, en consecuencia, es equipotente a algún ordinal.
+\end{definicion}
+
+\begin{observacion}{Sin el Axioma de Elección}{sinchoice}
+Sin el Axioma de Elección no todo conjunto puede ser bien ordenado, y la definición anterior deja de funcionar. Existen formulaciones alternativas de cardinal (por ejemplo, usando rangos de Scott), pero pierden muchas propiedades agradables. En estas notas siempre trabajamos en ZFC.
+\end{observacion}
+
+\begin{ejemplo}{Los primeros cardinales}{primcardinals}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $|\emptyset| = 0$, $|\{a\}| = 1$, $|\{a,b\}| = 2$ para $a \neq b$.
+  \item $|\mathbb{N}| = \omega$. En efecto, $\mathbb{N} \sim \omega$ (la función identidad es una biyección), y ningún ordinal finito $n$ es equipotente a $\omega$ (pues $\omega$ es infinito). Por tanto $\omega$ es el cardinal de $\mathbb{N}$.
+  \item $|\mathbb{Z}| = \omega$. La función $n \mapsto \begin{cases} 2n & n \geq 0 \\ -2n-1 & n < 0 \end{cases}$ es una biyección $\mathbb{Z} \to \mathbb{N}$.
+  \item $|\mathbb{Q}| = \omega$. El argumento diagonal de Cantor muestra que $\mathbb{Q}$ es numerable.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{proposicion}{Propiedades básicas de cardinales}{propcardbasicas}
+Sean $A$, $B$ conjuntos. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $|A| = |B|$ si y solo si $A \sim B$.
+  \item $|A| \leq |B|$ (definido como: existe una inyección $A \hookrightarrow B$) si y solo si $|A| \leq_{\mathrm{ON}} |B|$ (orden usual de ordinales).
+  \item $|A| < |B|$ si y solo si $|A| \leq |B|$ y $|A| \neq |B|$.
+  \item Si $A \subseteq B$, entonces $|A| \leq |B|$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{proof}
+(i) Si $|A| = |B|$, ambos son el mismo ordinal inicial $\kappa$; las biyecciones $A \to \kappa$ y $B \to \kappa$ componen para dar $A \sim B$. Recíprocamente, si $A \sim B$, el menor ordinal equipotente a $A$ también lo es a $B$, de modo que $|A| = |B|$. (ii)--(iv) son consecuencias directas de la definición y del teorema de Cantor-Schröder-Bernstein \cite{enderton1977}.
+\end{proof}
+
+\subsection{La clase de los cardinales infinitos}
+
+\begin{definicion}{Cardinal infinito}{cardinfinito}
+Un cardinal $\kappa$ es \textbf{infinito} si $\omega \leq \kappa$, es decir, si contiene a $\omega$ como subconjunto (o equivalentemente, si $\kappa$ no es un natural).
+\end{definicion}
+
+\begin{teorema}{Caracterización de los cardinales infinitos}{carinfinito}
+Un ordinal $\kappa$ es un cardinal infinito si y solo si $\kappa$ es un ordinal inicial y $\kappa \geq \omega$.
+\end{teorema}
+
+\begin{proof}
+Por definición, $\kappa$ es cardinal infinito si y solo si es un ordinal inicial mayor o igual que $\omega$. Los ordinales iniciales finitos son exactamente $0, 1, 2, \ldots$; el primer ordinal inicial infinito es $\omega$.
+\end{proof}
+
+% ===========================================================
+\section{La sucesión de Alephs}
+% ===========================================================
+
+\subsection{Construcción de la jerarquía aleph}
+
+La teoría ordinal permite construir, por recursión transfinita, la sucesión de todos los cardinales infinitos. Esta sucesión se indexa por los ordinales y produce los llamados \textbf{números aleph} (en referencia a la primera letra del alfabeto hebreo, $\aleph$).
+
+\begin{definicion}{Números aleph}{numsaleph}
+La función $\alpha \mapsto \aleph_\alpha$ se define por recursión transfinita en $\alpha$:
+\begin{align*}
+  \aleph_0 &:= \omega, \\
+  \aleph_{\alpha+1} &:= \omega_{\alpha+1} := \text{el menor cardinal mayor que } \aleph_\alpha, \\
+  \aleph_\lambda &:= \sup_{\alpha < \lambda} \aleph_\alpha \quad \text{para } \lambda \text{ un ordinal límite.}
+\end{align*}
+Cada $\aleph_\alpha$ es también denotado $\omega_\alpha$ cuando se enfatiza su naturaleza ordinal.
+\end{definicion}
+
+\begin{observacion}{Existencia del sucesor cardinal}{existsucc}
+El «menor cardinal mayor que $\kappa$» existe siempre. En efecto, por el Teorema del Bien-Orden, $\mathcal{P}(\kappa)$ puede ser bien ordenado, luego es equipotente a algún ordinal $\lambda > \kappa$. El conjunto de ordinales iniciales estrictamente mayores que $\kappa$ es no vacío, y su mínimo es el \emph{sucesor cardinal} de $\kappa$, denotado $\kappa^+$.
+\end{observacion}
+
+\begin{definicion}{Cardinal sucesor y cardinal límite}{cardsuclim}
+Sea $\kappa$ un cardinal infinito.
+\begin{itemize}[leftmargin=2em]
+  \item El \textbf{sucesor cardinal} de $\kappa$, denotado $\kappa^+$, es el menor cardinal estrictamente mayor que $\kappa$.
+  \item Un cardinal infinito $\lambda$ es un \textbf{cardinal límite} si no es el sucesor cardinal de ningún cardinal, es decir, si para todo cardinal $\kappa < \lambda$ se tiene $\kappa^+ < \lambda$.
+\end{itemize}
+\end{definicion}
+
+\begin{ejemplo}{Los primeros alephs}{primerosaleph}
+Calculamos explícitamente los primeros valores:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\aleph_0 = \omega$. Es el cardinal de $\mathbb{N}$, $\mathbb{Z}$, $\mathbb{Q}$, y de cualquier conjunto numerable infinito.
+  \item $\aleph_1 = \omega_1$. Es el primer cardinal no numerable. Por definición, $\aleph_1 = (\aleph_0)^+$ es el menor ordinal inicial no numerable. Contiene a todos los ordinales numerables.
+  \item $\aleph_2 = \omega_2 = (\aleph_1)^+$. El segundo cardinal no numerable.
+  \item $\aleph_n$ para cada $n \in \mathbb{N}$: el $n$-ésimo cardinal no numerable (el $(n-1)$-ésimo sucesor de $\aleph_0$).
+  \item $\aleph_\omega = \sup_{n < \omega} \aleph_n$. Es el primer cardinal límite no numerable, igual al supremo de $\aleph_0, \aleph_1, \aleph_2, \ldots$
+  \item $\aleph_{\omega+1} = (\aleph_\omega)^+$.
+  \item $\aleph_{\omega \cdot 2}, \aleph_{\omega^2}, \aleph_{\omega^\omega}, \aleph_{\varepsilon_0}, \ldots$ continúan la jerarquía.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{Todo cardinal infinito es un aleph}
+
+El siguiente teorema, clave para la teoría cardinal, afirma que los $\aleph_\alpha$ agotan \emph{todos} los cardinales infinitos.
+
+\begin{teorema}{Los alephs son todos los cardinales infinitos}{alephtodos}
+Para todo cardinal infinito $\kappa$ existe un único ordinal $\alpha$ tal que $\kappa = \aleph_\alpha$.
+\end{teorema}
+
+\begin{proof}
+Sea $\kappa$ un cardinal infinito. Definimos $\alpha$ como el tipo de orden del conjunto bien ordenado
+\[
+  S := \{\lambda \in \mathbf{Card} \mid \lambda \text{ es un cardinal infinito y } \lambda < \kappa\},
+\]
+donde el orden es el usual de los ordinales. $S$ es un conjunto (no una clase propia) porque es un subconjunto de $\kappa$.
+
+Afirmamos que $\alpha$ es el ordinal inicial del tipo de orden de $S$, y que la función $\beta \mapsto \aleph_\beta$ es un isomorfismo de orden de $\alpha$ en $S \cup \{\kappa\}$. Esto se verifica por inducción transfinita en $\alpha$: el primer cardinal infinito mayor que todos los elementos de $S$ de índice $< \beta$ debe ser $\aleph_\beta$ por la definición recursiva. Por tanto $\kappa = \aleph_\alpha$ \cite{jech2003, kunen2011}.
+\end{proof}
+
+\begin{corolario}{Unicidad del índice aleph}{unicidadaleph}
+La función $\alpha \mapsto \aleph_\alpha$ es una biyección estrictamente creciente entre la clase de todos los ordinales $\mathbf{ON}$ y la clase de todos los cardinales infinitos.
+\end{corolario}
+
+\subsection{Aritmética cardinal: sumas y productos}
+
+\begin{proposicion}{Suma y producto de cardinales infinitos}{aritcardinfmain}
+Sea $\kappa$ un cardinal infinito y $\lambda$ un cardinal con $1 \leq \lambda \leq \kappa$. Entonces:
+\[
+  \kappa + \lambda = \kappa \cdot \lambda = \kappa.
+\]
+En particular, $\kappa + \kappa = \kappa$ y $\kappa \cdot \kappa = \kappa$.
+\end{proposicion}
+
+\begin{proof}
+Probamos $\kappa \cdot \kappa = \kappa$ por inducción transfinita en $\kappa$. Esto es el Teorema de Hessenberg; su prueba utiliza que $\kappa \times \kappa$ puede ser bien ordenado con el orden lexicográfico por pares, y que este bien-orden tiene tipo ordinal $\kappa$ \cite{jech2003, enderton1977}. La igualdad $\kappa + \kappa = \kappa$ se sigue de $\kappa \cdot \kappa = \kappa$.
+\end{proof}
+
+\begin{ejemplo}{Cardinalidades conocidas}{cardejemplos}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $|\mathbb{N} \times \mathbb{N}| = \aleph_0 \cdot \aleph_0 = \aleph_0$.
+  \item $\bigcup_{n \in \mathbb{N}} \mathbb{N}^n$ (unión de todos los $n$-uplos de naturales) tiene cardinal $\aleph_0$.
+  \item $|\mathbb{R}|$ no es $\aleph_0$ (por el argumento diagonal de Cantor) pero ¿cuál $\aleph$ es? La Hipótesis del Continuo (HC) afirma que $|\mathbb{R}| = \aleph_1$; la negación de HC es consistente con ZFC \cite{cohen1966, godel1940}.
+\end{enumerate}
+\end{ejemplo}
+
+% ===========================================================
+\section{El Teorema de Cantor}
+% ===========================================================
+
+\subsection{Enunciado y primer comentario}
+
+El \textbf{Teorema de Cantor} —publicado en 1891 \cite{cantor1891}— es uno de los resultados más elegantes y fértiles de la matemática. Afirma que el conjunto de partes de cualquier conjunto es estrictamente más grande que el conjunto original; en particular, no existe un conjunto «más grande que todos» ni hay un cardinal máximo.
+
+\begin{teorema}{Teorema de Cantor}{teocantor}
+Para todo conjunto $A$:
+\[
+  |A| < |\mathcal{P}(A)|.
+\]
+Más precisamente: existe una inyección $A \hookrightarrow \mathcal{P}(A)$ pero no existe ninguna sobreyección $A \twoheadrightarrow \mathcal{P}(A)$.
+\end{teorema}
+
+\begin{proof}
+\textbf{Paso 1: $|A| \leq |\mathcal{P}(A)|$.} La función $a \mapsto \{a\}$ es una inyección $A \hookrightarrow \mathcal{P}(A)$.
+
+\textbf{Paso 2: $|\mathcal{P}(A)| \not\leq |A|$}, es decir, no existe ninguna sobreyección $f \colon A \twoheadrightarrow \mathcal{P}(A)$.
+
+Sea $f \colon A \to \mathcal{P}(A)$ una función cualquiera. Definimos:
+\[
+  D := \bigl\{a \in A \mid a \notin f(a)\bigr\}.
+\]
+Claramente $D \subseteq A$, luego $D \in \mathcal{P}(A)$. Afirmamos que $D \notin \mathrm{Im}(f)$.
+
+Supongamos por reducción al absurdo que $D = f(d)$ para algún $d \in A$. Entonces:
+\[
+  d \in D \iff d \notin f(d) \iff d \notin D.
+\]
+Contradicción. Por tanto $D \notin \mathrm{Im}(f)$, y $f$ no es sobreyectiva. Como $f$ fue arbitraria, ninguna función $A \to \mathcal{P}(A)$ es sobreyectiva.
+
+Combinando los dos pasos: $|A| \leq |\mathcal{P}(A)|$ y $|A| \neq |\mathcal{P}(A)|$, luego $|A| < |\mathcal{P}(A)|$.
+\end{proof}
+
+\begin{observacion}{La diagonal de Cantor}{diagcantor}
+El conjunto $D = \{a \in A \mid a \notin f(a)\}$ es la famosa \emph{diagonal de Cantor}. Esta construcción —una función que deliberadamente «evade» a $f$— es el arquetipo del argumento diagonal, que reaparece en el Teorema de la Incompletitud de Gödel, en el Problema de la Parada de Turing, en la insolubilidad del problema de la correspondencia de Post, y en muchos resultados de límite en lógica y computación \cite{enderton2001, mendelson2015}.
+\end{observacion}
+
+\begin{corolario}{No hay conjunto de todos los cardinales}{noconjcard}
+No existe ningún conjunto que contenga a todos los cardinales. En particular, la clase $\mathbf{Card}$ de todos los cardinales es una clase propia.
+\end{corolario}
+
+\begin{proof}
+Supongamos que existiera un conjunto $X$ que contiene a todos los cardinales. Sea $\kappa = |\bigcup X|$. Entonces $\kappa$ es un cardinal, luego $\kappa \in X \subseteq \bigcup X$. Pero entonces $\kappa \leq |\bigcup X| = \kappa$, y en particular $\kappa \in \bigcup X$ implica que hay un $A \in X$ con $\kappa \in A$. Por el Teorema de Cantor $|\mathcal{P}(\bigcup X)| > \kappa$, y $\mathcal{P}(\bigcup X)$ es equipotente a algún cardinal $\mu > \kappa$ que debería estar en $X$, pero $\mu > |\bigcup X|$, contradicción.
+
+Una forma más directa: si $C$ fuera el conjunto de todos los cardinales, $\bigcup C$ sería un conjunto, y $|\mathcal{P}(\bigcup C)|$ sería un cardinal mayor que todo cardinal en $C$, contradicción \cite{jech2003}.
+\end{proof}
+
+\begin{corolario}{Sucesor de todo cardinal}{succexiste}
+Para todo cardinal $\kappa$ existe un cardinal estrictamente mayor: su sucesor cardinal $\kappa^+$. En particular, la jerarquía de cardinales no tiene cima.
+\end{corolario}
+
+\begin{proof}
+Por el Teorema de Cantor, $|\mathcal{P}(\kappa)| > \kappa$. El menor ordinal inicial mayor que $\kappa$ es $\kappa^+$, y satisface $\kappa < \kappa^+ \leq |\mathcal{P}(\kappa)|$.
+\end{proof}
+
+\subsection{El Teorema de Cantor para conjuntos concretos}
+
+\begin{ejemplo}{Cantor aplicado a $\mathbb{N}$}{cantorN}
+El conjunto $\mathcal{P}(\mathbb{N})$ no es numerable. Concretamente, toda función $f \colon \mathbb{N} \to \mathcal{P}(\mathbb{N})$ omite el conjunto
+\[
+  D = \{n \in \mathbb{N} \mid n \notin f(n)\}.
+\]
+
+Visualicemos $f$ como una tabla de 0s y 1s, donde la fila $n$ indica qué naturales pertenecen a $f(n)$:
+
+\medskip
+\begin{center}
+\begin{tabular}{c|ccccccc}
+ & 0 & 1 & 2 & 3 & 4 & 5 & $\cdots$ \\
+\hline
+$f(0)$ & \textbf{1} & 0 & 1 & 0 & 1 & 0 & $\cdots$ \\
+$f(1)$ & 0 & \textbf{0} & 0 & 1 & 1 & 0 & $\cdots$ \\
+$f(2)$ & 1 & 1 & \textbf{1} & 0 & 0 & 1 & $\cdots$ \\
+$f(3)$ & 0 & 0 & 0 & \textbf{1} & 0 & 0 & $\cdots$ \\
+$f(4)$ & 1 & 1 & 1 & 1 & \textbf{0} & 1 & $\cdots$ \\
+\vdots & & & & & & & $\ddots$
+\end{tabular}
+\end{center}
+\medskip
+
+La diagonal marcada en negrita es $1, 0, 1, 1, 0, \ldots$ El conjunto $D$ invierte cada bit de la diagonal: $D$ contiene $1$ (porque $f(1)$ no lo contiene), $D$ no contiene $0$ (porque $f(0)$ sí lo contiene), etc. Así $D \neq f(n)$ para todo $n$.
+\end{ejemplo}
+
+\begin{ejemplo}{Cantor aplicado a $\mathbb{R}$}{cantorR}
+De manera similar, $|\mathbb{R}| = |\mathcal{P}(\mathbb{N})|$ (se prueba construyendo biyecciones explícitas vía expansiones binarias). Por tanto $|\mathbb{R}| > \aleph_0$. Los reales no son numerables, como demostró Cantor en 1874 \cite{cantor1883} mediante el argumento de los intervalos encajados, y reiteró en 1891 \cite{cantor1891} con el argumento diagonal.
+\end{ejemplo}
+
+\subsection{Aritmética de la exponenciación cardinal}
+
+\begin{definicion}{Exponenciación cardinal}{expcard}
+Para cardinales $\kappa$ y $\lambda$, la \textbf{potencia cardinal} $\kappa^\lambda$ se define como el cardinal del conjunto de todas las funciones de $\lambda$ en $\kappa$:
+\[
+  \kappa^\lambda := |\kappa^\lambda| = \bigl|\{f \mid f \colon \lambda \to \kappa\}\bigr|.
+\]
+\end{definicion}
+
+\begin{observacion}{Relación con el conjunto de partes}{expcardpow}
+En particular, $2^\kappa = |\mathcal{P}(\kappa)|$, pues cada subconjunto de $\kappa$ se identifica con su función característica $\kappa \to 2 = \{0,1\}$. Por tanto el Teorema de Cantor afirma:
+\[
+  \kappa < 2^\kappa \quad \text{para todo cardinal } \kappa.
+\]
+\end{observacion}
+
+\begin{proposicion}{Propiedades de la exponenciación cardinal}{propexpcard}
+Para cardinales $\kappa, \lambda, \mu$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa^{\lambda + \mu} = \kappa^\lambda \cdot \kappa^\mu$.
+  \item $(\kappa^\lambda)^\mu = \kappa^{\lambda \cdot \mu}$.
+  \item $(\kappa \cdot \lambda)^\mu = \kappa^\mu \cdot \lambda^\mu$.
+  \item Si $\kappa \leq \lambda$, entonces $\kappa^\mu \leq \lambda^\mu$.
+  \item $2^{\aleph_0} \geq \aleph_1$ (por el Teorema de Cantor).
+\end{enumerate}
+\end{proposicion}
+
+% ===========================================================
+\section{Beth Numbers}
+% ===========================================================
+
+\subsection{Definición y primeros valores}
+
+Los \textbf{beth numbers} (del hebreo $\beth$, la segunda letra del alfabeto) forman una jerarquía de cardinales que crece «maximalmente» mediante potencias de 2, partiendo de $\aleph_0$.
+
+\begin{definicion}{Beth numbers}{bethnumbers}
+La función $\alpha \mapsto \beth_\alpha$ se define por recursión transfinita:
+\begin{align*}
+  \beth_0 &:= \aleph_0 = \omega, \\
+  \beth_{\alpha+1} &:= 2^{\beth_\alpha}, \\
+  \beth_\lambda &:= \sup_{\alpha < \lambda} \beth_\alpha \quad \text{para } \lambda \text{ límite.}
+\end{align*}
+\end{definicion}
+
+\begin{ejemplo}{Los primeros beth numbers}{primerosbeths}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\beth_0 = \aleph_0$: el cardinal de los naturales.
+  \item $\beth_1 = 2^{\aleph_0}$: el cardinal del continuo, $|\mathbb{R}| = |\mathcal{P}(\mathbb{N})|$.
+  \item $\beth_2 = 2^{\beth_1} = 2^{2^{\aleph_0}}$: el cardinal de $\mathcal{P}(\mathbb{R})$, también igual al cardinal del conjunto de todas las funciones $\mathbb{R} \to \mathbb{R}$.
+  \item $\beth_3 = 2^{\beth_2}$: el cardinal de $\mathcal{P}(\mathcal{P}(\mathbb{R}))$.
+  \item $\beth_\omega = \sup_{n < \omega} \beth_n$: el primer beth límite.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{observacion}{La jerarquía beth es estrictamente creciente}{bethcrece}
+Por el Teorema de Cantor, $\beth_\alpha < 2^{\beth_\alpha} = \beth_{\alpha+1}$ para todo $\alpha$, de modo que la sucesión $(\beth_\alpha)_{\alpha \in \mathbf{ON}}$ es estrictamente creciente.
+\end{observacion}
+
+\subsection{La jerarquía de von Neumann y los beth numbers}
+
+La jerarquía de conjuntos $V_\alpha$ (jerarquía von Neumann) está directamente relacionada con los beth numbers:
+
+\begin{proposicion}{Cardinal de $V_\alpha$}{cardvonneumann}
+Para ordinales $\alpha$ finitos:
+\begin{align*}
+  |V_0| &= 0, \\
+  |V_{n+1}| &= 2^{|V_n|}, \\
+  |V_\omega| &= \aleph_0.
+\end{align*}
+Para ordinales transfinitos: $|V_{\omega + \alpha}| = \beth_\alpha$. En particular, $|V_{\omega+1}| = \beth_1$, $|V_{\omega+2}| = \beth_2$, etc.
+\end{proposicion}
+
+\subsection{Comparación entre alephs y beths}
+
+La relación entre las dos jerarquías es el corazón de la teoría cardinal moderna:
+
+\begin{importante}
+Por el Teorema de Cantor, $\beth_\alpha \geq \aleph_\alpha$ para todo $\alpha$. La igualdad $\beth_\alpha = \aleph_\alpha$ para todos los $\alpha$ es la \textbf{Hipótesis Generalizada del Continuo} (GCH). La igualdad $\beth_1 = \aleph_1$ es la \textbf{Hipótesis del Continuo} (CH) de Cantor.
+\end{importante}
+
+\begin{ejemplo}{Desigualdades entre alephs y beths}{alephbeth}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Siempre: $\aleph_0 = \beth_0$.
+  \item Siempre: $\aleph_1 \leq \beth_1 = 2^{\aleph_0}$.
+  \item \textit{Si CH}: $\aleph_1 = \beth_1 = 2^{\aleph_0}$.
+  \item \textit{Si $\neg$CH}: $\aleph_1 < \beth_1 = 2^{\aleph_0}$; de hecho, $2^{\aleph_0}$ puede ser cualquier $\aleph_\alpha$ con $\alpha$ cofinal regular con $\omega$ (Teorema de Easton \cite{jech2003}).
+  \item Siempre: $\aleph_\omega \leq \beth_\omega$ y $\beth_\omega$ es un cardinal límite.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{teorema}{König}{teokoning}
+Para todo cardinal infinito $\kappa$: $\mathrm{cf}(2^\kappa) > \kappa$, donde $\mathrm{cf}$ denota la cofinalidad. En particular, $\mathrm{cf}(2^{\aleph_0}) > \aleph_0$, es decir, $2^{\aleph_0} \neq \aleph_\omega$.
+\end{teorema}
+
+\begin{observacion}{Consecuencia inmediata}{koningcons}
+El Teorema de König impone restricciones a los posibles valores de $2^{\aleph_0}$. Por ejemplo, $2^{\aleph_0} \neq \aleph_\omega$ (ya que $\mathrm{cf}(\aleph_\omega) = \omega$), ni puede ser $\aleph_{\omega_1}$ (ya que $\mathrm{cf}(\aleph_{\omega_1}) = \omega_1 \leq \aleph_0^+$); pero podría ser $\aleph_1, \aleph_2, \aleph_{\omega+1}$, etc.
+\end{observacion}
+
+% ===========================================================
+\section{Cardinales Inaccesibles: una primera noción}
+% ===========================================================
+
+\subsection{Motivación}
+
+La jerarquía aleph nos da todos los cardinales infinitos; la aritmética cardinal (suma, producto, potencia) genera nuevos cardinales a partir de los dados. Sin embargo, hay una pregunta natural: ¿existe algún cardinal que sea «tan grande» que no pueda alcanzarse desde abajo mediante ninguna de estas operaciones?
+
+\begin{definicion}{Cardinal débilmente inaccesible}{carddebilinaccesible}
+Un cardinal $\kappa > \aleph_0$ es \textbf{débilmente inaccesible} si:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa$ es un cardinal límite: no es sucesor de ningún cardinal.
+  \item $\kappa$ tiene cofinalidad regular: $\mathrm{cf}(\kappa) = \kappa$ (es decir, ninguna sucesión de longitud $< \kappa$ cofinal en $\kappa$ existe).
+\end{enumerate}
+\end{definicion}
+
+\begin{definicion}{Cardinal fuertemente inaccesible}{cardfuerteinaccesible}
+Un cardinal $\kappa > \aleph_0$ es \textbf{fuertemente inaccesible} si:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa$ es débilmente inaccesible.
+  \item Para todo cardinal $\lambda < \kappa$: $2^\lambda < \kappa$.
+\end{enumerate}
+Bajo GCH, las nociones débil y fuerte coinciden.
+\end{definicion}
+
+\begin{observacion}{¿Por qué «inaccesible»?}{inaccmotiv}
+$\kappa$ es fuertemente inaccesible porque es imposible «alcanzarlo» desde abajo:
+\begin{itemize}[leftmargin=2em]
+  \item No puede alcanzarse por suma/producto de $< \kappa$ cardinales menores (por regularidad).
+  \item No puede alcanzarse por potenciación $2^\lambda$ con $\lambda < \kappa$.
+  \item No es el sucesor de ningún cardinal menor.
+\end{itemize}
+Los cardinales inaccesibles son los «universos» de la teoría de conjuntos: si $\kappa$ es fuertemente inaccesible, entonces $V_\kappa$ es un modelo de ZFC \cite{kunen2011, kanamori2003}.
+\end{observacion}
+
+\begin{observacion}{Independencia de ZFC}{indepzfc}
+La existencia de cardinales inaccesibles no puede probarse desde ZFC (si ZFC es consistente): tal existencia es independiente de los axiomas de Zermelo-Fraenkel. Es una hipótesis de \emph{gran cardinal} que, junto con muchas otras hipótesis progresivamente más fuertes (cardinales de Mahlo, cardinales medibles, cardinales supercompactos, etc.), forma la escala jerárquica de la \emph{teoría de grandes cardinales} \cite{kanamori2003}.
+\end{observacion}
+
+\begin{ejemplo}{Los alephs no son inaccesibles (en general)}{alephnosinac}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\aleph_1 = \aleph_0^+$ es un cardinal sucesor, luego no es límite: no es débilmente inaccesible.
+  \item $\aleph_\omega$ es un cardinal límite, pero $\mathrm{cf}(\aleph_\omega) = \omega < \aleph_\omega$: no es regular, luego no es débilmente inaccesible.
+  \item $\aleph_{\omega_1}$ es un cardinal límite con $\mathrm{cf}(\aleph_{\omega_1}) = \omega_1$: es débilmente inaccesible (bajo ciertos supuestos). Si además $2^\lambda < \aleph_{\omega_1}$ para todo $\lambda < \aleph_{\omega_1}$, es fuertemente inaccesible.
+  \item Si $\kappa$ es fuertemente inaccesible, entonces $\kappa = \aleph_\kappa = \beth_\kappa$; es un punto fijo de ambas jerarquías.
+\end{enumerate}
+\end{ejemplo}
+
+% ===========================================================
+\section{La Hipótesis del Continuo: anticipación}
+% ===========================================================
+
+\subsection{Formulación de la HC y de la HGC}
+
+\begin{importante}
+\textbf{Hipótesis del Continuo (HC):} $2^{\aleph_0} = \aleph_1$, es decir, $\beth_1 = \aleph_1$.\\[0.3em]
+\textbf{Hipótesis Generalizada del Continuo (HGC):} Para todo ordinal $\alpha$, $2^{\aleph_\alpha} = \aleph_{\alpha+1}$, es decir, $\beth_\alpha = \aleph_\alpha$ para todo $\alpha$.
+\end{importante}
+
+\begin{observacion}{Equivalencias de la HC}{hcequiv}
+Las siguientes afirmaciones son equivalentes bajo ZFC:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $2^{\aleph_0} = \aleph_1$ (formulación de Cantor).
+  \item No existe ningún cardinal $\kappa$ con $\aleph_0 < \kappa < 2^{\aleph_0}$ (no hay cardinalidades «intermedias» entre $\mathbb{N}$ y $\mathbb{R}$).
+  \item $|\mathbb{R}| = \aleph_1$.
+\end{enumerate}
+\end{observacion}
+
+\begin{observacion}{Estado metamatemático de la HC}{hcmeta}
+La HC fue formulada por Cantor en 1878 y colocada por Hilbert como primer problema de su famosa lista de 1900.
+\begin{itemize}[leftmargin=2em]
+  \item En 1938, Gödel demostró que HC es \emph{consistente} con ZFC: no puede refutarse desde los axiomas de ZFC \cite{godel1940}.
+  \item En 1963, Cohen demostró que $\neg$HC también es consistente con ZFC: no puede probarse desde los axiomas de ZFC \cite{cohen1966}.
+\end{itemize}
+Por tanto, la HC es \textbf{independiente} de ZFC: ninguna de las dos respuestas (HC o $\neg$HC) puede deducirse de ZFC. Este resultado fue calificado por muchos matemáticos como uno de los más profundos del siglo XX.
+\end{observacion}
+
+% ===========================================================
+\section{Síntesis: diagrama de la jerarquía cardinal}
+% ===========================================================
+
+La siguiente tabla resume las relaciones entre los distintos niveles de la jerarquía cardinal, comparando alephs, beths y sus significados conjuntistas:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{c|c|l}
+$\aleph_\alpha$ & $\beth_\alpha$ & Significado \\ \hline
+$\aleph_0$ & $\beth_0 = \aleph_0$ & $|\mathbb{N}|$, cardinal de los conjuntos numerables \\
+$\aleph_1$ & $\beth_1 = 2^{\aleph_0}$ & Primer cardinal no numerable; $|\mathbb{R}|$ bajo CH \\
+$\aleph_2$ & $\beth_2 = 2^{2^{\aleph_0}}$ & $|\mathcal{P}(\mathbb{R})|$ bajo CH \\
+$\vdots$ & $\vdots$ & $\vdots$ \\
+$\aleph_\omega$ & $\beth_\omega = \sup_n \beth_n$ & Primer cardinal límite no numerable \\
+$\vdots$ & $\vdots$ & $\vdots$ \\
+$\kappa$ inaccesible & $\kappa = \beth_\kappa = \aleph_\kappa$ & Punto fijo de ambas jerarquías; $V_\kappa \models \mathrm{ZFC}$
+\end{tabular}
+\end{center}
+
+\begin{importante}
+La relación $\aleph_\alpha \leq \beth_\alpha$ vale siempre. La igualdad para todo $\alpha$ es la HGC. La Teoría de Forcing (Cohen, 1963) muestra que los valores de $2^{\aleph_\alpha}$ pueden ser casi cualquier función no decreciente con cofinalidad regular, sujeta al Teorema de König.
+\end{importante}
+
+% ===========================================================
+\section{Problemas y tareas}
+% ===========================================================
+
+Los siguientes ejercicios están diseñados para afianzar los conceptos de la clase. Se presentan en orden creciente de dificultad.
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+
+\item \textbf{(Cardinales como ordinales iniciales.)}
+Demuestre directamente, sin usar el Teorema del Bien-Orden, que $\omega$ es un ordinal inicial. \emph{Sugerencia}: muestre que ningún ordinal $n < \omega$ es equipotente a $\omega$.
+
+\item \textbf{(Equipotencias básicas.)}
+Pruebe que los siguientes conjuntos son todos de cardinal $\aleph_0$:
+\begin{enumerate}[label=(\alph*)]
+  \item El conjunto de los enteros $\mathbb{Z}$.
+  \item El conjunto de los racionales $\mathbb{Q}$.
+  \item El conjunto de polinomios con coeficientes enteros $\mathbb{Z}[x]$.
+  \item La unión $\bigcup_{n \in \mathbb{N}} \mathbb{N}^n$ de todos los $n$-uplos de naturales.
+\end{enumerate}
+
+\item \textbf{(Conjuntos de cardinal $\beth_1$.)}
+Construya biyecciones explícitas (o demuestre la equipotencia usando el Teorema de Cantor-Schröder-Bernstein) entre los siguientes conjuntos:
+\begin{enumerate}[label=(\alph*)]
+  \item $\mathcal{P}(\mathbb{N})$ y $[0,1]$.
+  \item $\mathbb{R}$ y $\mathbb{R}^2$.
+  \item El conjunto de sucesiones de naturales $\mathbb{N}^{\mathbb{N}}$ y $\mathbb{R}$.
+  \item El conjunto de funciones continuas $f \colon \mathbb{R} \to \mathbb{R}$ y $\mathbb{R}$.
+\end{enumerate}
+
+\item \textbf{(Teorema de Cantor: variaciones.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Pruebe que para cualquier función $f \colon \mathbb{N} \to \{0,1\}^{\mathbb{N}}$ (funciones de $\mathbb{N}$ a las sucesiones binarias), existe una sucesión binaria no en la imagen de $f$. Exhiba explícitamente esa sucesión en función de $f$.
+  \item Demuestre que no existe ninguna función sobreyectiva $f \colon A \to 2^A$ para ningún conjunto $A$, donde $2^A$ denota el conjunto de todas las funciones $A \to \{0,1\}$.
+  \item Pruebe que $|\mathbb{R}^{\mathbb{R}}| = 2^{\beth_1}$.
+\end{enumerate}
+
+\item \textbf{(Aritmética cardinal.)}
+Calcule (justificando) los siguientes cardinales:
+\begin{enumerate}[label=(\alph*)]
+  \item $\aleph_0 + \aleph_1$.
+  \item $\aleph_1 \cdot \aleph_2$.
+  \item $\aleph_0^{\aleph_0}$.
+  \item $\aleph_1^{\aleph_0}$.
+  \item $2^{\aleph_1}$ (¿puede determinarse sin hipótesis adicionales?).
+\end{enumerate}
+
+\item \textbf{(Jerarquía aleph.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Demuestre que $\aleph_\omega$ es un cardinal límite.
+  \item Demuestre que $\mathrm{cf}(\aleph_\omega) = \aleph_0$ (es decir, $\aleph_\omega$ es un cardinal singular).
+  \item Concluya que $\aleph_\omega$ no es débilmente inaccesible.
+\end{enumerate}
+
+\item \textbf{(Beth numbers.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Demuestre que $\beth_\omega$ es un cardinal límite.
+  \item Pruebe que $\aleph_\omega \leq \beth_\omega$. ¿Es siempre $\aleph_\omega = \beth_\omega$?
+  \item Demuestre que si existe un cardinal fuertemente inaccesible $\kappa$, entonces $\kappa = \beth_\kappa$.
+\end{enumerate}
+
+\item \textbf{(Independencia de la HC: ideas intuitivas.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Enuncia la Hipótesis del Continuo y explica en tus propias palabras qué significaría que fuera verdadera o falsa.
+  \item Describe brevemente (sin entrar en detalles técnicos) la idea de Gödel para probar que CH no puede refutarse en ZFC \cite{godel1940}.
+  \item Describe brevemente la idea de Cohen (forcing) para probar que CH no puede probarse en ZFC \cite{cohen1966}.
+\end{enumerate}
+
+\item \textbf{(Cardinales inaccesibles y ZFC.)}
+\begin{enumerate}[label=(\alph*)]
+  \item Sea $\kappa$ un cardinal fuertemente inaccesible. Demuestre que $V_\kappa$ satisface todos los axiomas de ZFC. (\emph{Sugerencia}: verifique axioma por axioma; use que $\kappa$ es regular y que $2^\lambda < \kappa$ para $\lambda < \kappa$.)
+  \item Explique por qué la existencia de $\kappa$ no puede demostrarse en ZFC (asumiendo que ZFC es consistente).
+\end{enumerate}
+
+\item \textbf{(Problema de investigación.)}
+La \emph{Hipótesis del Continuo en singular} es la afirmación $2^{\aleph_\omega} = \aleph_{\omega+1}$. ¿Es esta afirmación demostrable, refutable, o independiente de ZFC? Investiga el \emph{Teorema de Shelah} sobre la aritmética cardinal singular y explica qué restricciones impone al valor de $2^{\aleph_\omega}$.
+
+\end{enumerate}
+
+% ===========================================================
+\section{Referencias de la Clase}
+% ===========================================================
+
+Los resultados de esta clase se encuentran desarrollados con todo detalle en las siguientes obras. Para una presentación axiomática completa de la teoría cardinal y la jerarquía aleph, los textos fundamentales son \cite{jech2003} y \cite{kunen2011}. Una introducción accesible y rigurosa está en \cite{enderton1977} y \cite{hrbacek1999}. Para la teoría de grandes cardinales y los cardinales inaccesibles, la referencia estándar es \cite{kanamori2003}. El artículo original de Cantor sobre el argumento diagonal es \cite{cantor1891}. Para la independencia de la HC, véanse el trabajo fundacional de Gödel \cite{godel1940} y el de Cohen \cite{cohen1966}. Para una exposición histórica de la teoría cardinal, \cite{sierpinski1958} y \cite{halmos1960} son lecturas muy recomendadas.
+
+\nocite{cantor1897, vonneumann1923, levy1979, devlin1993, suppes1972}
