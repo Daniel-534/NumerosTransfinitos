@@ -1,0 +1,753 @@
+% ===========================================================
+\chapter{Clase 10: Horizontes --- Cardinales Grandes, Determinismo y Límites de ZFC}
+% ===========================================================
+
+Esta sesión de cierre sitúa los números transfinitos en el panorama más amplio de la investigación matemática contemporánea. Las clases anteriores construyeron el edificio axiomático de ZFC, desarrollaron la aritmética ordinal y cardinal, y culminaron en la independencia de la Hipótesis del Continuo. Ahora ascendemos hasta los horizontes actuales de la teoría de conjuntos.
+
+Tres grandes arcos temáticos estructuran esta clase. En primer lugar, los \textbf{cardinales grandes}: extensiones axiomáticas de ZFC que postulan la existencia de cardinales de una grandeza tan extrema que su mera existencia es indemostrable dentro del sistema base. En segundo lugar, la \textbf{jerarquía de consistencia}: una escala lineal que ordena las extensiones de ZFC según su fuerza deductiva. En tercer lugar, el \textbf{Axioma de Determinismo} ($\mathrm{AD}$) y su radical incompatibilidad con el Axioma de Elección, junto con las consecuencias sorprendentes que $\mathrm{AD}$ tiene sobre los subconjuntos de la recta real. Concluimos con una reflexión sobre los límites epistemológicos del formalismo conjuntista y con un panorama de las líneas de investigación abiertas.
+
+La exposición sigue los tratamientos canónicos de \cite{kanamori2003, jech2003, kunen2011}, y para los aspectos relativos al determinismo, \cite{moschovakis2009, woodin2010det}.
+
+% ===========================================================
+\section{Cardinales inaccesibles}
+% ===========================================================
+
+\subsection{Motivación: ¿puede ZFC hablar de sus propios modelos?}
+
+La jerarquía de von Neumann $V = \bigcup_{\alpha \in \mathrm{Ord}} V_\alpha$ constituye el universo estándar de la teoría de conjuntos. En la Clase 5 vimos que $V_\omega \models \mathrm{ZFC} \setminus \{\mathrm{Inf}\}$: el estrato finito satisface todos los axiomas de ZFC salvo el de Infinitud. Es natural preguntarse: ¿existe algún estrato $V_\kappa$ que satisfaga \emph{todos} los axiomas de ZFC, incluidos los esquemas de separación y reemplazamiento?
+
+La respuesta conduce a la noción de cardinal inaccesible.
+
+\subsection{Cardinales límite regulares y la función beth}
+
+\begin{definicion}{Cardinal regular}{regular}
+Un cardinal infinito $\kappa$ es \textbf{regular} si $\mathrm{cf}(\kappa) = \kappa$; es decir, si $\kappa$ no puede escribirse como unión de menos de $\kappa$ conjuntos de cardinalidad menor que $\kappa$. En caso contrario, $\kappa$ es \textbf{singular}.
+\end{definicion}
+
+\begin{ejemplo}{Cardinales regulares y singulares}{}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Todo sucesor cardinal $\aleph_{\alpha+1}$ es regular: si $\aleph_{\alpha+1} = \bigcup_{i < \lambda} A_i$ con $\lambda < \aleph_{\alpha+1}$ y $|A_i| < \aleph_{\alpha+1}$, entonces $\lambda \leq \aleph_\alpha$ y $|A_i| \leq \aleph_\alpha$, así que $|\bigcup A_i| \leq \aleph_\alpha \cdot \aleph_\alpha = \aleph_\alpha < \aleph_{\alpha+1}$, contradicción.
+  \item $\aleph_0 = \omega$ es regular: ningún conjunto finito de conjuntos finitos cubre a $\omega$.
+  \item $\aleph_\omega = \sup_{n < \omega} \aleph_n$ es singular de cofinalidad $\omega$: es la reunión de los $\aleph_n$ con $n \in \omega$.
+  \item En general, $\aleph_\lambda$ para $\lambda$ límite de cofinalidad numerable es singular.
+\end{enumerate}
+\end{ejemplo}
+
+\begin{definicion}{Función beth}{beth}
+La \textbf{función beth} $\beth$ se define por inducción transfinita:
+\[
+  \beth_0 = \aleph_0, \qquad \beth_{\alpha+1} = 2^{\beth_\alpha}, \qquad \beth_\lambda = \sup_{\beta < \lambda} \beth_\beta \;\text{ para } \lambda \text{ límite.}
+\]
+Un cardinal $\kappa$ es \textbf{fuerte límite} si $2^\lambda < \kappa$ para todo $\lambda < \kappa$, es decir, si $\kappa = \beth_\kappa$ (punto fijo de la función beth).
+\end{definicion}
+
+\begin{observacion}{Diferencia entre límite y fuerte límite}{lim_slim}
+Un cardinal $\kappa$ es \textbf{límite} si $\kappa = \sup_{\lambda < \kappa} \lambda$, es decir, no es sucesor. Ser límite es más débil que ser fuerte límite: $\aleph_\omega$ es límite pero no fuerte límite, pues si la HCG falla puede ocurrir $2^{\aleph_0} \geq \aleph_\omega$.
+\end{observacion}
+
+\subsection{Cardinales débilmente y fuertemente inaccesibles}
+
+\begin{definicion}{Cardinales inaccesibles}{inacc}
+Sea $\kappa$ un cardinal no numerable.
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $\kappa$ es \textbf{débilmente inaccesible} si es regular y límite (es decir, $\kappa = \aleph_\kappa$).
+  \item $\kappa$ es \textbf{fuertemente inaccesible} (o simplemente \textbf{inaccesible}) si es regular y fuerte límite; equivalentemente, si $\kappa$ es regular y $2^\lambda < \kappa$ para todo $\lambda < \kappa$.
+\end{enumerate}
+\end{definicion}
+
+\begin{importante}
+Bajo la Hipótesis Generalizada del Continuo (HCG), débilmente inaccesible equivale a fuertemente inaccesible, pues HCG implica $\beth_\alpha = \aleph_\alpha$ para todo $\alpha$. Sin HCG, las dos nociones pueden diferir.
+\end{importante}
+
+\begin{teorema}{$V_\kappa$ modela ZFC}{vkappa_zfc}
+Si $\kappa$ es un cardinal fuertemente inaccesible, entonces $V_\kappa \models \mathrm{ZFC}$.
+\end{teorema}
+
+\begin{proof}
+Verificamos cada axioma de ZFC en $V_\kappa$:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Extensionalidad, Fundación, Par, Unión, Partes, Infinitud:} Se verifican directamente en cualquier $V_\alpha$ con $\alpha > \omega$.
+  \item \textbf{Separación:} Si $a \in V_\kappa$ y $\varphi$ es una fórmula, entonces $\{x \in a : V_\kappa \models \varphi(x)\} \subseteq a \in V_\kappa$, así que pertenece a $V_\kappa$ (pues $V_\kappa$ es transitivo).
+  \item \textbf{Reemplazamiento:} Supongamos que $F: a \to V_\kappa$ es una función definible en $V_\kappa$ con $a \in V_\kappa$. Sea $\alpha = \mathrm{rango}(a)$, de modo que $a \subseteq V_\alpha$ con $|\alpha| < \kappa$. Cada $F(x)$ pertenece a algún $V_{\beta_x}$ con $\beta_x < \kappa$. La colección de los $\beta_x$ es un conjunto de cardinalidad $|a| \leq |V_\alpha| < \kappa$. Como $\kappa$ es regular, $\beta = \sup_{x \in a} \beta_x < \kappa$, y por tanto $F[a] \subseteq V_\beta \in V_\kappa$.
+  \item \textbf{Elección:} Se hereda porque $V_\kappa \subseteq V$ y en $V$ existe un buen orden del universo.
+\end{itemize}
+\end{proof}
+
+\begin{corolario}{Inaccesibles y consistencia de ZFC}{inacc_cons}
+Si existe un cardinal fuertemente inaccesible $\kappa$, entonces $\mathrm{Con}(\mathrm{ZFC})$. En particular, la existencia de un cardinal inaccesible no es demostrable en ZFC (asumiendo que ZFC es consistente), pues por el segundo teorema de incompletitud de Gödel, ZFC no puede demostrar $\mathrm{Con}(\mathrm{ZFC})$.
+\end{corolario}
+
+\begin{ejemplo}{Puntos fijos y la jerarquía de inaccesibles}{}
+Sea $I$ la clase de todos los cardinales fuertemente inaccesibles. Si $\kappa$ es inaccesible, entonces $\kappa = \aleph_\kappa = \beth_\kappa$: es un punto fijo de la función aleph \emph{y} de la función beth simultáneamente. 
+
+Ilustración con los primeros puntos fijos de la función aleph: los cardinales de la forma $\aleph_\kappa = \kappa$ son exactamente los cardinales límite regulares. La primera solución de $\aleph_\kappa = \kappa$ se denota $\aleph_{\aleph_{\aleph_{\cdots}}}$ (límite de la torre $\aleph_0, \aleph_{\aleph_0}, \aleph_{\aleph_{\aleph_0}}, \ldots$), que es de cofinalidad $\omega$, luego \emph{singular}. El primer cardinal débilmente inaccesible, si existe, requiere un ``salto'' que ZFC no puede garantizar.
+\end{ejemplo}
+
+% ===========================================================
+\section{Cardinales de Mahlo}
+% ===========================================================
+
+Los cardinales de Mahlo son, por así decir, inaccesibles de segundo orden: no solo son ellos mismos inaccesibles, sino que poseen una abundancia ``densa'' de cardinales inaccesibles por debajo de ellos.
+
+\subsection{Conjuntos estacionarios y clubs}
+
+Para definir los cardinales de Mahlo necesitamos el concepto de conjunto estacionario en un cardinal regular.
+
+\begin{definicion}{Club y conjunto estacionario}{club_stat}
+Sea $\kappa$ un cardinal regular no numerable.
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Un conjunto $C \subseteq \kappa$ es \textbf{cerrado sin límite} (\textbf{club}) si:
+    \begin{itemize}
+      \item Es \emph{no acotado}: $\sup(C) = \kappa$.
+      \item Es \emph{cerrado}: para toda sucesión creciente $(\alpha_i)_{i < \lambda}$ de elementos de $C$ con $\lambda < \kappa$ límite, $\sup_i \alpha_i \in C$.
+    \end{itemize}
+  \item Un conjunto $S \subseteq \kappa$ es \textbf{estacionario} en $\kappa$ si $S \cap C \neq \emptyset$ para todo club $C \subseteq \kappa$.
+\end{enumerate}
+\end{definicion}
+
+\begin{ejemplo}{Clubs y estacionarios en $\omega_1$}{}
+En $\kappa = \omega_1$:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $C = \{\alpha < \omega_1 : \alpha \text{ es un ordinal límite}\}$ es un club en $\omega_1$: es cerrado (el supremo de ordinales límite es límite) y no acotado.
+  \item $S = \{\alpha < \omega_1 : \mathrm{cf}(\alpha) = \omega\}$ (ordinales de cofinalidad numerable por debajo de $\omega_1$) es estacionario: cualquier club en $\omega_1$ contiene puntos de cofinalidad $\omega$.
+  \item El conjunto de ordinales sucesores $\{\alpha + 1 : \alpha < \omega_1\}$ es estacionario pero no es club (no es cerrado: el supremo de una sucesión de sucesores puede ser un límite).
+\end{enumerate}
+\end{ejemplo}
+
+\begin{definicion}{Cardinal de Mahlo}{mahlo}
+Un cardinal fuertemente inaccesible $\kappa$ es un \textbf{cardinal de Mahlo} si el conjunto
+\[
+  I_\kappa = \{\lambda < \kappa : \lambda \text{ es fuertemente inaccesible}\}
+\]
+es \textbf{estacionario} en $\kappa$.
+\end{definicion}
+
+\begin{observacion}{Interpretación intuitiva}{mahlo_intuit}
+Decir que $I_\kappa$ es estacionario significa que los cardinales inaccesibles debajo de $\kappa$ son tan abundantes que no pueden ser evitados por ningún club: están ``diseminados densamente'' en $\kappa$ en el sentido del filtro de clubs. En particular, $\kappa$ no es solo inaccesible: por debajo de $\kappa$ hay una clase propia de cardinales inaccesibles (vistos desde dentro de $V_\kappa$).
+\end{observacion}
+
+\begin{teorema}{Fuerza de consistencia de Mahlo}{mahlo_cons}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Si $\kappa$ es de Mahlo, entonces $V_\kappa \models \text{``existen clase propias de cardinales inaccesibles''}$.
+  \item $\mathrm{Con}(\mathrm{ZFC} + \text{``existe un cardinal de Mahlo''}) \Rightarrow \mathrm{Con}(\mathrm{ZFC} + \text{``existen infinitos cardinales inaccesibles''})$.
+  \item La recíproca falla: la existencia de infinitos cardinales inaccesibles es consistente con la no existencia de ningún cardinal de Mahlo.
+\end{enumerate}
+\end{teorema}
+
+\begin{ejemplo}{La jerarquía de cardinales de Mahlo}{}
+Se puede iterar la noción de Mahlo:
+\begin{itemize}[leftmargin=2em]
+  \item $\kappa$ es \textbf{Mahlo de orden 1} (o simplemente Mahlo) si $I_\kappa$ es estacionario en $\kappa$.
+  \item $\kappa$ es \textbf{Mahlo de orden 2} si el conjunto de cardinales Mahlo de orden 1 por debajo de $\kappa$ es estacionario en $\kappa$.
+  \item $\kappa$ es \textbf{Mahlo de orden $\alpha$} por inducción sobre $\alpha$.
+  \item $\kappa$ es \textbf{fuertemente Mahlo} si es Mahlo de orden $\alpha$ para todo $\alpha < \kappa$.
+\end{itemize}
+Cada nivel de esta jerarquía es estrictamente más fuerte en consistencia que el anterior.
+\end{ejemplo}
+
+% ===========================================================
+\section{Cardinales medibles}
+% ===========================================================
+
+Los cardinales medibles, introducidos por Stanisław Ulam en 1930 y estudiados a fondo por Scott, Dana y Solovay en las décadas de 1960, representan un salto radical en la jerarquía de cardinales grandes.
+
+\subsection{Ultrafiltros y medidas}
+
+\begin{definicion}{Ultrafiltro $\kappa$-completo}{uf_kappa}
+Sea $\kappa$ un cardinal no numerable. Una familia $\mathcal{U} \subseteq \mathcal{P}(\kappa)$ es un \textbf{ultrafiltro $\kappa$-completo no principal} sobre $\kappa$ si:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\emptyset \notin \mathcal{U}$ y $\kappa \in \mathcal{U}$ (no trivial, contiene el total).
+  \item $A \in \mathcal{U}$ y $A \subseteq B \subseteq \kappa$ implica $B \in \mathcal{U}$ (upward closed).
+  \item $A, B \in \mathcal{U}$ implica $A \cap B \in \mathcal{U}$ (cerrado bajo intersecciones finitas).
+  \item Para todo $A \subseteq \kappa$: $A \in \mathcal{U}$ o $\kappa \setminus A \in \mathcal{U}$, pero no ambos (ultrapropiedad).
+  \item $\{x\} \notin \mathcal{U}$ para todo $x \in \kappa$ (\textbf{no principal}).
+  \item Si $\lambda < \kappa$ y $\{A_i : i < \lambda\} \subseteq \mathcal{U}$, entonces $\bigcap_{i < \lambda} A_i \in \mathcal{U}$ (\textbf{$\kappa$-completitud}).
+\end{enumerate}
+\end{definicion}
+
+\begin{definicion}{Cardinal medible}{medible}
+Un cardinal no numerable $\kappa$ es \textbf{medible} si existe un ultrafiltro $\kappa$-completo no principal sobre $\kappa$.
+\end{definicion}
+
+\begin{observacion}{Origen del nombre}{nombre_med}
+La terminología proviene de la \emph{teoría de la medida}: un cardinal $\kappa$ es medible si y solo si existe una medida $\mu: \mathcal{P}(\kappa) \to \{0,1\}$ (con valores en $\{0,1\}$, es decir, una medida de dos valores) que es $\kappa$-aditiva, no es idénticamente $0$, y da medida $0$ a todos los singletons. El ultrafiltro correspondiente es $\mathcal{U} = \{A \subseteq \kappa : \mu(A) = 1\}$. Ulam preguntó en 1930 si tal medida podía existir para $\kappa = \omega_1$; la respuesta (que no puede, en ZFC) llevó al estudio de los cardinales medibles.
+\end{observacion}
+
+\subsection{Cardinales medibles y ultrapotencias}
+
+La herramienta principal para estudiar cardinales medibles es la construcción de \textbf{ultrapotencias} del universo.
+
+\begin{definicion}{Ultrapotencia de $V$}{ultrapower}
+Sea $\kappa$ un cardinal medible con ultrafiltro $\kappa$-completo no principal $\mathcal{U}$ sobre $\kappa$. La \textbf{ultrapotencia} $\mathrm{Ult}(V, \mathcal{U})$ es la estructura definida por:
+\begin{itemize}[leftmargin=2em]
+  \item El universo es el conjunto de clases de equivalencia de funciones $f: \kappa \to V$ bajo la relación: $f \sim g \iff \{\alpha < \kappa : f(\alpha) = g(\alpha)\} \in \mathcal{U}$.
+  \item La relación de pertenencia está dada por: $[f] \in_{\mathcal{U}} [g] \iff \{\alpha < \kappa : f(\alpha) \in g(\alpha)\} \in \mathcal{U}$.
+\end{itemize}
+El \textbf{\textit{Teorema de Łoś}} garantiza que $\mathrm{Ult}(V, \mathcal{U}) \equiv V$ (son elementalmente equivalentes), y la función $j: V \to \mathrm{Ult}(V, \mathcal{U})$ dada por $j(x) = [c_x]$ (donde $c_x$ es la función constante con valor $x$) es una \textbf{inmersión elemental} no trivial.
+\end{definicion}
+
+\begin{teorema}{Cardinales medibles e inmersiones elementales}{med_embed}
+Un cardinal $\kappa$ es medible si y solo si existe una inmersión elemental no trivial $j: V \to M$ para algún modelo transitivo $M$ de ZFC tal que $\kappa = \mathrm{crit}(j)$ (el \textbf{punto crítico} de $j$, el menor ordinal movido por $j$: $j(\kappa) > \kappa$ y $j(\alpha) = \alpha$ para todo $\alpha < \kappa$).
+\end{teorema}
+
+\begin{ejemplo}{Propiedades del punto crítico}{}
+Sea $j: V \to M$ una inmersión elemental con punto crítico $\kappa$. Entonces:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item $j(\kappa) > \kappa$: el punto crítico se ``mueve hacia arriba''.
+  \item $\kappa < j(\kappa) < j(j(\kappa)) < \cdots$: podemos iterar la inmersión para obtener una cadena creciente de cardinales $\kappa_0 = \kappa < \kappa_1 = j(\kappa) < \kappa_2 = j(\kappa_1) < \cdots$
+  \item La secuencia $\langle \kappa_n \rangle_{n < \omega}$ es una sucesión de cardinales medibles en $M$.
+  \item Toda esta estructura es ``interna'' a $j$ e invisible desde $V$: no contradice la existencia de un único cardinal medible en $V$.
+\end{enumerate}
+\end{ejemplo}
+
+\subsection{El teorema de Scott: $V \neq L$ si hay un cardinal medible}
+
+El resultado más célebre relacionado con los cardinales medibles es el teorema de Scott de 1961, que establece que los cardinales medibles son incompatibles con el axioma $V = L$ (el universo constructible de Gödel).
+
+\begin{teorema}{Teorema de Scott (1961)}{scott_thm}
+Si existe un cardinal medible, entonces $V \neq L$.
+\end{teorema}
+
+\begin{proof}[Esquema de la demostración]
+Sea $\kappa$ un cardinal medible con inmersión elemental $j: V \to M$. En $L$, todo conjunto es constructible. Si $V = L$, entonces $M = L$ también (pues $M$ es transitivo y contiene todos los conjuntos constructibles). Pero entonces $j: L \to L$ es una inmersión elemental no trivial de $L$ en sí mismo con punto crítico $\kappa$.
+
+Ahora bien, en $L$ el orden $<_L$ (el buen-orden canónico del universo constructible) satisface $j(<_L) = <_L$ (porque $j$ es elemental). Pero $j(\kappa) > \kappa$ y el $\kappa$-ésimo elemento de $L$ en el orden $<_L$ es $\kappa$ mismo, por lo que $j$ desplaza $\kappa$ a $j(\kappa)$: el $j(\kappa)$-ésimo elemento de $j(L) = L$ es $j(\kappa)$. Esta contradicción con la rigidez de $L$ (no existe ninguna inmersión elemental de $L$ en sí mismo con punto crítico por debajo del primer cardinal medible de $L$) muestra que $V \neq L$. La demostración completa usa el hecho de que $L$ admite un parámetro de Skolem definible, y que cualquier inmersión elemental de $L$ en sí mismo debe ser la identidad.
+\end{proof}
+
+\begin{corolario}{Implicaciones de la medibilidad}{med_impl}
+Si $\kappa$ es un cardinal medible, entonces:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa$ es fuertemente inaccesible.
+  \item $\kappa$ es de Mahlo.
+  \item $\kappa$ es Mahlo de todo orden $\alpha < \kappa$.
+  \item Por debajo de $\kappa$ existen $\kappa$ muchos cardinales de Mahlo.
+  \item $V \neq L$.
+\end{enumerate}
+En particular, $\mathrm{Con}(\mathrm{ZFC} + \text{``existe un cardinal medible''}) \Rightarrow \mathrm{Con}(\mathrm{ZFC} + \text{``existen infinitos cardinales de Mahlo''})$.
+\end{corolario}
+
+% ===========================================================
+\section{La jerarquía de cardinales grandes}
+% ===========================================================
+
+Los cardinales grandes forman una cadena (lineal, en lo que concierne a la jerarquía de consistencia) de hipótesis cada vez más fuertes que extienden ZFC. Presentamos aquí una selección de los más importantes, en orden creciente de fuerza.
+
+\subsection{Cardinales débilmente compactos}
+
+\begin{definicion}{Cardinal débilmente compacto}{weakly_compact}
+Un cardinal inaccesible $\kappa$ es \textbf{débilmente compacto} si satisface la \textbf{propiedad del árbol}: todo árbol de altura $\kappa$ en el que cada nivel tiene menos de $\kappa$ nodos tiene una rama de longitud $\kappa$.
+\end{definicion}
+
+\begin{observacion}{Equivalencias de débilmente compacto}{wc_equiv}
+Las siguientes afirmaciones son equivalentes para un cardinal inaccesible $\kappa$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item $\kappa$ es débilmente compacto.
+  \item $\kappa \to (\kappa)^2_2$ (propiedad de Ramsey para pares con 2 colores).
+  \item $\kappa$ es $\Pi^1_1$-indescriptible: para toda fórmula $\Pi^1_1$ $\varphi$ y todo $R \subseteq V_\kappa$ con $\langle V_\kappa, \in, R \rangle \models \varphi$, existe $\alpha < \kappa$ con $\langle V_\alpha, \in, R \cap V_\alpha \rangle \models \varphi$.
+  \item Existe un ultrafiltro $M$-completo no principal sobre $\kappa$ para algún modelo transitivo $M$ con $M^\kappa \subseteq M$.
+\end{enumerate}
+\end{observacion}
+
+\subsection{Cardinales de Ramsey}
+
+\begin{definicion}{Cardinal de Ramsey}{ramsey}
+Un cardinal $\kappa$ es de \textbf{Ramsey} si para toda función de coloración $f: [\kappa]^{<\omega} \to 2$ (es decir, para todo subconjunto finito de $\kappa$ le asignamos uno de dos colores), existe un conjunto homogéneo $H \subseteq \kappa$ con $|H| = \kappa$: $f$ es constante sobre $[H]^n$ para todo $n < \omega$.
+
+Formalmente: $\kappa \to (\kappa)^{<\omega}_2$.
+\end{definicion}
+
+\subsection{Cardinales supercompactos}
+
+Los cardinales supercompactos, introducidos por Reinhardt y estudiados a fondo por Solovay y Magidor, son los más utilizados en las aplicaciones modernas de la teoría de conjuntos.
+
+\begin{definicion}{Cardinal supercompacto}{supercompact}
+Un cardinal $\kappa$ es \textbf{$\lambda$-supercompacto} (para $\lambda \geq \kappa$) si existe una inmersión elemental $j: V \to M$ con punto crítico $\kappa$, $j(\kappa) > \lambda$, y $M^\lambda \subseteq M$ (el modelo $M$ es cerrado bajo secuencias de longitud $\lambda$).
+
+$\kappa$ es \textbf{supercompacto} si es $\lambda$-supercompacto para todo $\lambda \geq \kappa$.
+\end{definicion}
+
+\begin{importante}
+La condición $M^\lambda \subseteq M$ es crucial: garantiza que el modelo $M$ ``ve'' todas las sucesiones de longitud $\lambda$ de sus propios elementos. Esto hace que los cardinales supercompactos sean mucho más fuertes que los cardinales medibles (donde solo se requiere $M^\omega \subseteq M$, es decir, que $M$ sea cerrado bajo sucesiones numerables).
+\end{importante}
+
+\subsection{Cardinales de Woodin}
+
+Los cardinales de Woodin, descubiertos en la década de 1980, ocupan un lugar especial: son el umbral en el que la teoría de los conjuntos proyectivos (subconjuntos de $\mathbb{R}$ definibles) pasa a ser completamente determinada.
+
+\begin{definicion}{Cardinal de Woodin}{woodin_card}
+Un cardinal $\delta$ es un \textbf{cardinal de Woodin} si para toda función $f: \delta \to \delta$ existe un cardinal $\kappa < \delta$ tal que $\kappa$ es ``$f$-fuerte'': para todo $\lambda$ con $f``\kappa \subseteq \lambda$ existe una inmersión elemental $j: V \to M$ con $\mathrm{crit}(j) = \kappa$, $j(\kappa) \geq \lambda$, y $V_{j(f)(\kappa)} \subseteq M$.
+\end{definicion}
+
+\begin{teorema}{Woodin y determinismo proyectivo}{woodin_pd}
+Si existen $n$ cardinales de Woodin con un cardinal medible por encima de todos ellos, entonces todos los enunciados $\Sigma^1_{n+1}$ sobre los reales son determinados (\textit{véase la sección sobre el Axioma de Determinismo}).
+\end{teorema}
+
+\subsection{La cadena de la jerarquía}
+
+En la Tabla siguiente se resume la jerarquía de cardinales grandes, ordenados de menor a mayor fuerza de consistencia:
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+\textbf{Cardinal grande} & \textbf{Implicación} \\
+\hline
+Fuertemente inaccesible & $\Rightarrow$ $V_\kappa \models \mathrm{ZFC}$ \\
+Mahlo & $\Rightarrow$ inaccesible \\
+Débilmente compacto & $\Rightarrow$ Mahlo \\
+Ramsey & $\Rightarrow$ débilmente compacto \\
+Medible & $\Rightarrow$ Ramsey, $V \neq L$ \\
+Fuerte & $\Rightarrow$ medible \\
+Woodin & $\Rightarrow$ muchos Mahlo por debajo \\
+Supercompacto & $\Rightarrow$ Woodin \\
+Extendible & $\Rightarrow$ supercompacto \\
+Casi enorme & $\Rightarrow$ extendible \\
+Enorme & $\Rightarrow$ casi enorme \\
+$n$-enorme & jerarquía de enormes \\
+\hline
+\end{tabular}
+\end{center}
+
+Cada flecha $\Rightarrow$ indica una implicación de consistencia estricta, no reversible.
+
+% ===========================================================
+\section{Jerarquía de consistencia entre extensiones de ZFC}
+% ===========================================================
+
+\subsection{El concepto de fuerza de consistencia}
+
+\begin{definicion}{Fuerza de consistencia}{cons_strength}
+Dado un sistema axiomático $T$ (que extiende ZFC), la \textbf{fuerza de consistencia} de $T$ es la ``posición'' de $T$ en la jerarquía de consistencia:
+\[
+  T_1 \leq_{\mathrm{Con}} T_2 \iff \mathrm{Con}(T_2) \Rightarrow \mathrm{Con}(T_1).
+\]
+Decimos que $T_1$ y $T_2$ tienen la \textbf{misma fuerza de consistencia} si $T_1 \equiv_{\mathrm{Con}} T_2$, es decir, $\mathrm{Con}(T_1) \iff \mathrm{Con}(T_2)$.
+\end{definicion}
+
+\begin{importante}
+Uno de los resultados más notables de la teoría de conjuntos contemporánea es que prácticamente todos los enunciados independientes estudiados se pueden ubicar en esta jerarquía de consistencia. En particular, la jerarquía parece ser \textbf{lineal} (aunque esto no está demostrado en general): dados dos sistemas $T_1$ y $T_2$ razonables, casi siempre ocurre que $T_1 \leq_{\mathrm{Con}} T_2$ o $T_2 \leq_{\mathrm{Con}} T_1$.
+\end{importante}
+
+\subsection{La escala de consistencia}
+
+Presentamos la jerarquía principal, de menor a mayor fuerza:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{N\arabic*.}]
+  \item \textbf{ZFC}: El sistema base. $\mathrm{Con}(\mathrm{ZFC})$ no puede ser demostrado en ZFC (Gödel, 1931).
+
+  \item \textbf{ZFC + $\exists\kappa$ inaccesible}: Implica $\mathrm{Con}(\mathrm{ZFC})$. Equivalente a $\mathrm{ZFC}_2$ (ZFC de segundo orden, según un resultado de Zermelo).
+
+  \item \textbf{ZFC + $\exists\kappa$ de Mahlo}: Estrictamente más fuerte que el anterior.
+
+  \item \textbf{ZFC + $\exists\kappa$ débilmente compacto}: Implica la consistencia de ``infinitos Mahlo''.
+
+  \item \textbf{ZFC + $\exists\kappa$ medible}: Un salto notable; implica $V \neq L$ y la consistencia de todos los anteriores.
+
+  \item \textbf{ZFC + $\exists\kappa$ de Woodin}: Implica el determinismo de todos los conjuntos proyectivos.
+
+  \item \textbf{ZFC + AD$^{L(\mathbb{R})}$}: Equivalente en consistencia a infinitos cardinales de Woodin.
+
+  \item \textbf{ZFC + $\exists\kappa$ supercompacto}: Los cardinales supercompactos implican la consistencia de los cardinales de Woodin y mucho más.
+
+  \item \textbf{ZFC + $\exists\kappa$ enorme}: Una de las hipótesis más fuertes conocidas que son ``seguras'' (aún no refutadas).
+
+  \item \textbf{ZFC + $I_0$}: El cardinalidad $I_0$ (hay un $j: L(V_{\lambda+1}) \to L(V_{\lambda+1})$ elemental con punto crítico por debajo de $\lambda$) está cerca del límite de lo que la teoría de conjuntos puede estudiar sin caer en contradicción con AC.
+\end{enumerate}
+
+\subsection{Inconsistencia: el límite superior}
+
+\begin{teorema}{Teorema de Kunen (1971)}{kunen_incons}
+No existe ninguna inmersión elemental no trivial $j: V \to V$.
+\end{teorema}
+
+\begin{proof}[Esquema de la demostración]
+Supongamos que $j: V \to V$ es elemental no trivial con punto crítico $\kappa$. Definimos la \emph{secuencia de Kunen}: $\kappa_0 = \kappa$, $\kappa_{n+1} = j(\kappa_n)$, y $\lambda = \sup_n \kappa_n$. Entonces $j(\lambda) = \lambda$ (porque $j$ envía $\kappa_n$ a $\kappa_{n+1}$ y el supremo se preserva).
+
+Consideremos ahora el conjunto $A = \{\kappa_n : n < \omega\}$. La función $f: \lambda \to V$ definida por $f(\alpha) = j\restriction V_\alpha$ es un elemento de $V_{\lambda+2}$. Pero $j(f)(\lambda) = j \circ f \circ j^{-1}(\lambda) = j \circ f(\lambda)$... La derivación formal conduce a que el conjunto $\{A \subseteq \lambda : \kappa_0 \in j(A)\}$ es un ultrafiltro normal sobre $\lambda$ que es $\lambda^+$-completo, lo cual (junto con el teorema de Erdős-Hajnal) produce una contradicción con el Axioma de Elección.
+\end{proof}
+
+\begin{observacion}{Cardinales Reinhardt}{reinhardt}
+Un \textbf{cardinal Reinhardt} sería el punto crítico de una inmersión elemental $j: V \to V$. El teorema de Kunen muestra que, bajo ZFC, no existen cardinales Reinhardt. Sin embargo, si se abandona el Axioma de Elección, Woodin ha propuesto la hipótesis de que cardinales Reinhardt son consistentes con ZF (sin AC). Este es un área de investigación activa.
+\end{observacion}
+
+% ===========================================================
+\section{El Axioma de Determinismo}
+% ===========================================================
+
+\subsection{Juegos de longitud $\omega$ y estrategias}
+
+El Axioma de Determinismo formaliza la intuición de que en cualquier juego de información perfecta de longitud infinita, uno de los dos jugadores debe tener una estrategia ganadora. Su incompatibilidad con el Axioma de Elección es uno de los resultados más sorprendentes de la teoría de conjuntos.
+
+\begin{definicion}{Juego $G(A)$}{juego}
+Sea $A \subseteq \omega^\omega$ (un subconjunto del espacio de Baire). El \textbf{juego de Gale--Stewart} $G(A)$ se desarrolla como sigue:
+\begin{itemize}[leftmargin=2em]
+  \item El \textbf{Jugador I} escoge $a_0 \in \omega$.
+  \item El \textbf{Jugador II} escoge $b_0 \in \omega$.
+  \item El \textbf{Jugador I} escoge $a_1 \in \omega$.
+  \item El \textbf{Jugador II} escoge $b_1 \in \omega$.
+  \item $\cdots$ (se continúa $\omega$ rondas).
+\end{itemize}
+Al cabo de $\omega$ rondas se produce una sucesión $x = (a_0, b_0, a_1, b_1, \ldots) \in \omega^\omega$. El \textbf{Jugador I gana} si $x \in A$; el \textbf{Jugador II gana} si $x \notin A$.
+\end{definicion}
+
+\begin{definicion}{Estrategia y determinismo}{estrategia}
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item Una \textbf{estrategia} para el Jugador I es una función $\sigma: \omega^{<\omega} \to \omega$ que asigna a cada secuencia finita de jugadas (la historia de la partida hasta ese momento) el siguiente movimiento del Jugador I. Una estrategia para el Jugador II se define análogamente.
+  \item Una estrategia $\sigma$ es \textbf{ganadora} para el Jugador I si toda partida jugada siguiendo $\sigma$ produce una secuencia $x \in A$, independientemente de cómo juegue el Jugador II.
+  \item El juego $G(A)$ es \textbf{determinado} si alguno de los dos jugadores tiene una estrategia ganadora.
+\end{enumerate}
+\end{definicion}
+
+\begin{ejemplo}{Ejemplo concreto: juego con condición sobre paridades}{}
+Sea $A = \{(a_0, b_0, a_1, b_1, \ldots) \in \omega^\omega : \text{la primera componente } a_0 \text{ es par}\}$.
+
+\medskip
+\textbf{Estrategia ganadora del Jugador I:} En el primer turno, el Jugador I elige $a_0 = 0$ (un número par). Después de esto, no importa qué elija el Jugador II (ni qué elija el propio Jugador I en los turnos posteriores), la secuencia resultante tendrá $a_0 = 0$, que es par, así que $x \in A$. El Jugador I gana.
+
+\medskip
+En este ejemplo, el juego es determinado y la estrategia ganadora del Jugador I es extremadamente simple.
+\end{ejemplo}
+
+\begin{ejemplo}{Juego con condición sobre límites}{}
+Sea $A = \{(a_0, b_0, a_1, b_1, \ldots) \in \omega^\omega : \lim_{n \to \infty} a_n = \infty\}$ (la secuencia de movimientos del Jugador I diverge a infinito).
+
+\medskip
+\textbf{Estrategia ganadora del Jugador I:} En el turno $n$-ésimo, el Jugador I elige $a_n = n$. Entonces $a_n = n \to \infty$, luego $x \in A$ con certeza.
+
+\medskip
+Así, el Jugador I gana con una estrategia sencilla. Nótese que si la condición fuera $\limsup_{n \to \infty} a_n < \infty$, entonces la estrategia ganadora sería del Jugador II (eligiendo en cada turno $b_n$ de manera que ``fuerce'' a $a_n$ a ser acotado... pero como el Jugador I controla sus propias elecciones, en realidad el Jugador I puede siempre hacer $a_n = n$). El juego $G(\{x : \limsup a_n < \infty\})$ es determinado por el Jugador II, que no tiene control sobre $a_n$; de hecho, el Jugador I tiene la estrategia ganadora trivialmente al elegir $a_n = n$. El análisis depende de qué jugador controla qué componentes.
+\end{ejemplo}
+
+\subsection{El Axioma de Determinismo}
+
+\begin{definicion}{Axioma de Determinismo (AD)}{AD}
+El \textbf{Axioma de Determinismo} es el enunciado:
+\[
+  \mathrm{AD}: \quad \forall A \subseteq \omega^\omega, \;\; G(A) \text{ es determinado.}
+\]
+\end{definicion}
+
+\begin{teorema}{Incompatibilidad de AD con AC}{AD_AC}
+$\mathrm{AD}$ es incompatible con el Axioma de Elección $\mathrm{AC}$ en presencia de $\mathrm{ZF}$:
+\[
+  \mathrm{ZF} \vdash \mathrm{AD} \Rightarrow \neg\mathrm{AC}.
+\]
+\end{teorema}
+
+\begin{proof}
+Suponemos $\mathrm{ZF} + \mathrm{AC}$ y construimos un conjunto $A \subseteq \omega^\omega$ sin estrategia ganadora para ninguno de los dos jugadores (un juego no determinado).
+
+Bajo AC, el conjunto $\omega^\omega$ tiene cardinalidad $2^{\aleph_0}$, y el conjunto de todas las estrategias para el Jugador I (resp. Jugador II) también tiene cardinalidad $2^{\aleph_0}$. Enumeremos todas las estrategias para el Jugador I como $\{\sigma_\alpha : \alpha < 2^{\aleph_0}\}$ y todas las estrategias para el Jugador II como $\{\tau_\alpha : \alpha < 2^{\aleph_0}\}$.
+
+Construimos $A$ por inducción transfinita de longitud $2^{\aleph_0}$. En el paso $\alpha$, escogemos (usando AC) dos partidas:
+\begin{itemize}[leftmargin=2em]
+  \item $x_\alpha$: la partida que resulta de que el Jugador I siga $\sigma_\alpha$ y el Jugador II siga alguna estrategia fija (por ejemplo $\tau_0$). Ponemos $x_\alpha \notin A$ (para que $\sigma_\alpha$ no sea ganadora para I).
+  \item $y_\alpha$: la partida que resulta de que el Jugador II siga $\tau_\alpha$ y el Jugador I siga $\sigma_0$. Ponemos $y_\alpha \in A$ (para que $\tau_\alpha$ no sea ganadora para II).
+\end{itemize}
+El conjunto $A$ así construido no tiene estrategia ganadora para ningún jugador: $\sigma_\alpha$ no es ganadora para I (porque $x_\alpha \notin A$) y $\tau_\alpha$ no es ganadora para II (porque $y_\alpha \in A$). Por lo tanto, $G(A)$ no es determinado, refutando AD.
+\end{proof}
+
+\begin{importante}
+La construcción del contraejemplo usa de manera esencial la enumeración transfinita de $2^{\aleph_0}$ estrategias, que requiere el Axioma de Elección. Si renunciamos a AC, la construcción falla.
+\end{importante}
+
+\subsection{Determinismo de Borel: lo que ZFC sí puede demostrar}
+
+\begin{teorema}{Determinismo de Borel (Martin, 1975)}{borel_det}
+Dentro de $\mathrm{ZFC}$, todo juego $G(A)$ con $A$ un conjunto de Borel en $\omega^\omega$ es determinado. Formalmente:
+\[
+  \mathrm{ZFC} \vdash \forall A \in \mathcal{B}(\omega^\omega),\; G(A) \text{ es determinado.}
+\]
+\end{teorema}
+
+\begin{proof}[Comentario sobre la demostración]
+La demostración de Martin es una inducción transfinita sobre el rango de Borel de $A$. Para conjuntos abiertos, el resultado es elemental (conocido como el teorema de Gale--Stewart, 1953): el Jugador I tiene una estrategia ganadora si y solo si puede ``forzar'' que la partida entre en $A$, y en caso contrario el Jugador II tiene una estrategia ganadora cerrando afuera. Para conjuntos de rango de Borel $\alpha$, se reduce a juegos de rango $\beta < \alpha$ mediante una construcción de ``desenrollamiento'' (\textit{unraveling}). La demostración usa $\mathrm{ZFC}$ completo, incluyendo el axioma de reemplazamiento en rango alto.
+\end{proof}
+
+\begin{observacion}{Fuerza del Determinismo de Borel}{bd_strength}
+El Determinismo de Borel requiere utilizar el axioma de reemplazamiento para sets de rango arbitrariamente alto; en particular, no es demostrable en $\mathrm{ZFC}$ sin reemplazamiento (Friedman, 1971). Este es uno de los ejemplos más concretos de la necesidad del esquema de Reemplazamiento en matemáticas ``convencionales''.
+\end{observacion}
+
+\subsection{AD bajo $L(\mathbb{R})$ y cardinales de Woodin}
+
+Si bien AD es incompatible con ZFC (pues ZFC incluye AC), puede ser consistente con ZF. Más aún, puede ser verdadero en el modelo $L(\mathbb{R})$ (el universo constructible relativo a los reales).
+
+\begin{teorema}{Woodin--Martin--Steel}{woodin_martin_steel}
+Las siguientes afirmaciones son equiconsistentes:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item Existen infinitos cardinales de Woodin.
+  \item $L(\mathbb{R}) \models \mathrm{AD}$.
+  \item Todos los juegos proyectivos son determinados ($\mathrm{PD}$: \textit{Projective Determinacy}).
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}[Comentario sobre la demostración]
+La implicación (i) $\Rightarrow$ (ii) es el teorema de Woodin: si existen infinitos cardinales de Woodin, entonces en $L(\mathbb{R})$ vale el Axioma de Determinismo. La equivalencia con (iii) es el teorema de Martin--Steel: el Determinismo Proyectivo es equivalente en consistencia a la existencia de infinitos cardinales de Woodin. Estos resultados son de los más profundos de la teoría de conjuntos de las últimas décadas.
+\end{proof}
+
+\subsection{Consecuencias de AD}
+
+Bajo $\mathrm{ZF} + \mathrm{AD}$, la teoría de los subconjuntos de $\mathbb{R}$ cambia radicalmente:
+
+\begin{teorema}{Consecuencias de AD}{AD_conseq}
+Bajo $\mathrm{ZF} + \mathrm{AD}$:
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{(Mycielski--Steinhaus)} Todos los subconjuntos de $\mathbb{R}$ son Lebesgue medibles.
+  \item Todos los subconjuntos de $\mathbb{R}$ tienen la propiedad de Baire.
+  \item Todos los subconjuntos de $\mathbb{R}$ tienen la propiedad del conjunto perfecto (cualquier conjunto no numerable contiene un conjunto cerrado perfecto, luego tiene cardinalidad $\mathfrak{c}$).
+  \item \textbf{(Solovay)} $\omega_1$ es un cardinal medible.
+  \item \textbf{(Steel)} $L(\mathbb{R}) \models \mathrm{AD}$ implica que los cardinales de $L(\mathbb{R})$ hasta $\Theta$ (el mayor cardinal de $L(\mathbb{R})$) son todos Woodin en un cierto sentido generalizado.
+  \item La Hipótesis del Continuo falla de la manera más extrema posible: $|\mathbb{R}|$ es incomparable con $\aleph_1$ en el sentido de que no existe ninguna inyección de $\mathbb{R}$ en $\omega_1$ ni viceversa (ya que AC falla).
+\end{enumerate}
+\end{teorema}
+
+\begin{ejemplo}{Comparación entre $\mathrm{ZFC}$ y $\mathrm{ZF} + \mathrm{AD}$}{}
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\textbf{Enunciado} & \textbf{Bajo ZFC} & \textbf{Bajo ZF + AD} \\
+\hline
+Todo subconjunto de $\mathbb{R}$ es medible & Falso (conjunto de Vitali) & Verdadero \\
+$\omega_1$ es medible & Falso & Verdadero \\
+Existen conjuntos de Vitali & Verdadero & Falso \\
+Existe un buen orden de $\mathbb{R}$ & Verdadero (bajo AC) & Falso \\
+Determinismo de Borel & Verdadero & Verdadero \\
+Determinismo proyectivo & Independiente & Verdadero \\
+Hipótesis del continuo & Independiente & No tiene sentido directo \\
+\hline
+\end{tabular}
+\end{center}
+La tabla ilustra cómo $\mathrm{AD}$ y $\mathrm{AC}$ dan lugar a universos matemáticos radicalmente distintos.
+\end{ejemplo}
+
+% ===========================================================
+\section{Límites epistemológicos de ZFC y preguntas abiertas}
+% ===========================================================
+
+\subsection{El segundo teorema de incompletitud y sus consecuencias}
+
+El segundo teorema de incompletitud de Gödel (1931) establece que ningún sistema consistente suficientemente expresivo puede demostrar su propia consistencia. En el contexto de ZFC:
+
+\begin{teorema}{Segundo Teorema de Incompletitud (Gödel, 1931)}{godel2}
+Si $\mathrm{ZFC}$ es consistente, entonces $\mathrm{ZFC} \not\vdash \mathrm{Con}(\mathrm{ZFC})$.
+\end{teorema}
+
+Esto significa que la jerarquía de cardinales grandes es \emph{inevitable}: para demostrar $\mathrm{Con}(\mathrm{ZFC})$, necesitamos un sistema más fuerte (como $\mathrm{ZFC} +$ ``existe un cardinal inaccesible''). Y para demostrar la consistencia de ese sistema, necesitamos uno aún más fuerte. No hay un ``techo'' alcanzable desde dentro.
+
+\subsection{El problema del valor de $2^{\aleph_0}$}
+
+El teorema de Easton (1970) establece que la función $\kappa \mapsto 2^\kappa$ en los cardinales regulares puede tomar casi cualquier valor compatible con el Teorema de König (que exige $\mathrm{cf}(2^\kappa) > \kappa$). Sin más axiomas, ZFC no determina el valor de $2^{\aleph_0}$.
+
+Las propuestas actuales más estudiadas son:
+\begin{enumerate}[leftmargin=2em, label=(\alph*)]
+  \item \textbf{$2^{\aleph_0} = \aleph_1$ (HC):} La propuesta de Gödel y, más recientemente, del programa de Woodin ($\Omega$-lógica y el axioma $(\ast)$ llevan a $2^{\aleph_0} = \aleph_2$; en versiones más recientes, Woodin ha explorado $2^{\aleph_0} = \aleph_2$).
+  \item \textbf{$2^{\aleph_0} = \aleph_2$:} Sugerida por el Axioma de Martin + $\neg\mathrm{HC}$, y por el axioma $(\ast)$ de Woodin.
+  \item \textbf{Valores más grandes:} Ningún argumento filosófico o matemático convincente resuelve la cuestión. La elección depende de qué axiomas se prefieran añadir a ZFC.
+\end{enumerate}
+
+\subsection{La Hipótesis de los Cardinales Singulares}
+
+\begin{definicion}{Hipótesis de los Cardinales Singulares (SCH)}{sch}
+La \textbf{Hipótesis de los Cardinales Singulares} afirma: para todo cardinal singular $\kappa$ con $2^{\mathrm{cf}(\kappa)} < \kappa$,
+\[
+  \kappa^{\mathrm{cf}(\kappa)} = \kappa^+.
+\]
+\end{definicion}
+
+\begin{teorema}{SCH y cardinales grandes}{sch_large}
+\begin{enumerate}[leftmargin=2em, label=(\roman*)]
+  \item \textbf{(Silver, 1975)} Si SCH falla para algún cardinal singular de cofinalidad no numerable, entonces hay muchos cardinales singulares donde falla.
+  \item \textbf{(Shelah)} SCH puede fallar en $\aleph_\omega$ si existen cardinales medibles (Magidor construyó un modelo donde $2^{\aleph_\omega} = \aleph_{\omega+2}$).
+  \item \textbf{(Solovay)} Si existe un cardinal supercompacto, entonces SCH holds por encima de dicho cardinal.
+\end{enumerate}
+\end{teorema}
+
+\subsection{El programa de modelos interiores}
+
+El \textbf{programa de modelos interiores} busca construir para cada cardinal grande $\kappa$ un modelo interno $L[\mu]$ (generalización del universo constructible $L$) que contenga $\kappa$ y sea tan ``delgado'' como sea posible, permitiendo analizar la aritmética cardinal en detalle.
+
+\begin{itemize}[leftmargin=2em]
+  \item Para cardinales medibles: $L[\mu]$ (Dodd-Jensen, 1981).
+  \item Para cardinales fuertes y de Woodin: los modelos $\mathcal{M}_n$ de Steel.
+  \item Para cardinales supercompactos: el programa de modelos interiores canónicos está incompleto; es uno de los mayores problemas abiertos.
+\end{itemize}
+
+\subsection{Preguntas abiertas en teoría de conjuntos contemporánea}
+
+Concluimos con un panorama de los problemas más importantes de la teoría de conjuntos actual.
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{PA\arabic*.}]
+
+  \item \textbf{(El programa de modelos interiores para supercompactos)} ¿Puede construirse un modelo interior canónico para un cardinal supercompacto? Esto requeriría, en particular, resolver la pregunta sobre la $\mathbf{\Sigma}^2_1$-absoluteness (absolutez de segundo nivel). Es posiblemente el problema técnico más difícil de la teoría de conjuntos actual.
+
+  \item \textbf{(Determinismo y el universo $V$)} ¿Bajo qué hipótesis de cardinales grandes es $\mathrm{AD}^{V}$ consistente? (AD ``en el universo completo'', no solo en $L(\mathbb{R})$.) ¿Son los cardinales de Reinhardt (sin AC) consistentes con ZF?
+
+  \item \textbf{(La Hipótesis del Continuo y la $\Omega$-lógica)} El programa de Woodin busca una noción de ``verdad absoluta'' para enunciados sobre $H(\omega_2)$ (los conjuntos de rango hereditario $\leq \aleph_1$) usando la $\Omega$-lógica. ¿Es el axioma $(\ast)$ de Woodin (que implica $2^{\aleph_0} = \aleph_2$) el ``axioma correcto'' para $H(\omega_2)$?
+
+  \item \textbf{(La jerarquía de los grandes ordinales)} ¿Cuál es el cardinal Woodin más grande posible antes de llegar a una contradicción? ¿Cuáles son los límites superior e inferior de los cardinales ``seguros''?
+
+  \item \textbf{(SCH en $\aleph_\omega$)} ¿Es consistente, relativo a ZFC solo (sin cardinales grandes), que $2^{\aleph_\omega} > \aleph_{\omega+1}$? El resultado de Shelah muestra que sí bajo cardinales medibles; ¿es necesaria esa hipótesis?
+
+  \item \textbf{(El axioma de Forcing máximo)} El \textbf{Axioma de Forcing Máximo} ($\mathrm{MFP}$) o el \textbf{Axioma de Martin Máximo} ($\mathrm{MM}$) son principios potentes que implican $2^{\aleph_0} = \aleph_2$ y resuelven muchos problemas. ¿Cuál es la fuerza de consistencia exacta de MM? ¿Es consistente con un cardinal supercompacto?
+
+  \item \textbf{(Problema $\mathfrak{p} = \mathfrak{t}$)} Este problema de la teoría de cardinales combinatorios fue resuelto por Malliaris y Shelah en 2017: $\mathfrak{p} = \mathfrak{t}$ en ZFC. Esto ilustra que incluso problemas de larga data sobre el continuo pueden resolverse sin cardinales grandes. ¿Hay otros problemas similares pendientes?
+
+  \item \textbf{(Teoría de conjuntos finitos)} ¿Puede la teoría de conjuntos aportar métodos nuevos a la teoría de Ramsey finita (hipergrafos, combinatoria extremal) mediante herramientas ultrafilter? Esta dirección, impulsada por Baumgartner y Shelah, tiene resultados concretos pero deja muchas preguntas abiertas.
+
+\end{enumerate}
+
+\subsection{Reflexión epistemológica final}
+
+Los resultados de esta clase —y del curso en su conjunto— permiten una reflexión sobre la naturaleza misma de las matemáticas:
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{R\arabic*.}]
+  \item \textbf{Los fundamentos no son un ``suelo firme'':} ZFC es un sistema poderoso y preciso, pero no puede demostrar su propia consistencia, ni resolver preguntas como la Hipótesis del Continuo. Las matemáticas no tienen un fundamento absoluto e indubitable: cualquier sistema suficientemente fuerte es, en cierto sentido, incompleto.
+
+  \item \textbf{Los cardinales grandes como extensión natural:} La jerarquía de cardinales grandes no es un capricho: cada nivel responde a preguntas concretas (el valor de $2^{\aleph_0}$, el determinismo de conjuntos proyectivos, etc.) y produce consecuencias verificables en matemáticas ``ordinarias'' (análisis, topología, combinatoria).
+
+  \item \textbf{La multivers de la teoría de conjuntos:} Joel David Hamkins ha propuesto la imagen del \emph{multiverso conjuntista}: no existe un único universo de conjuntos $V$, sino una pluralidad de universos, cada uno con diferentes propiedades. Bajo esta visión, preguntar si HC es ``verdadera'' carece de sentido absoluto; lo que importa es qué universo (qué axiomas) estamos usando.
+
+  \item \textbf{El platonismo de Gödel:} Por el contrario, Gödel mantuvo una visión platónica: existe un único universo verdadero de conjuntos, y nuestra tarea es descubrir los axiomas correctos que lo describen. Para Gödel, los cardinales grandes son herramientas para acercarse a esa verdad matemática objetiva.
+
+  \item \textbf{La teoría de conjuntos como ciencia empírica de los axiomas:} Una postura intermedia, defendida por muchos logistas actuales, es tratar la teoría de conjuntos como una disciplina que estudia las consecuencias de distintos sistemas axiomáticos, sin comprometerse con una ``verdad absoluta''. Bajo esta luz, preguntas como ``¿vale HC?'' son cuestiones sobre qué universo de conjuntos es más útil o más natural para la matemática.
+\end{enumerate}
+
+\begin{importante}
+El recorrido desde los números transfinitos de Cantor hasta los horizontes actuales de la teoría de conjuntos muestra que las matemáticas son una disciplina viva, en constante expansión. Cada respuesta genera nuevas preguntas, y los límites del formalismo son, a la vez, invitaciones a ir más allá.
+\end{importante}
+
+% ===========================================================
+\section*{Problemas y tareas}
+% ===========================================================
+
+\subsection*{Problemas básicos}
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{P\arabic*.}]
+
+  \item \textbf{(Cardinales regulares y singulares.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que todo sucesor cardinal $\aleph_{\alpha+1}$ es regular.
+    \item Demuestre que $\aleph_\omega$ es singular de cofinalidad $\omega$.
+    \item ¿Es posible que exista un cardinal límite regular de cofinalidad $\omega_1$? Justifique.
+    \item Demuestre que $\mathrm{cf}(\aleph_{\omega_1}) = \omega_1$.
+  \end{enumerate}
+
+  \item \textbf{(Cardinales inaccesibles y la jerarquía $V_\alpha$.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que si $\kappa$ es fuertemente inaccesible, entonces $|V_\kappa| = \kappa$.
+    \item Demuestre que $V_\kappa$ satisface el axioma de Partes: si $a \in V_\kappa$, entonces $\mathcal{P}(a) \in V_\kappa$.
+    \item Use el Teorema~\ref{teo:vkappa_zfc} para concluir que si $\kappa$ es inaccesible y $T \subseteq V_\kappa$ es un enunciado de ZFC, entonces $V_\kappa \models T$.
+    \item Explique por qué la existencia de un cardinal inaccesible no puede demostrarse en ZFC (argumento del segundo teorema de Gödel).
+  \end{enumerate}
+
+  \item \textbf{(Clubs y estacionarios.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que la intersección de dos clubs en $\kappa$ (cardinal regular no numerable) es un club.
+    \item Demuestre que la intersección de $\lambda < \kappa$ clubs en $\kappa$ es un club.
+    \item Demuestre que todo club en $\kappa$ es estacionario, pero no todo conjunto estacionario es un club.
+    \item \textit{(Presión del club.)} Demuestre que si $S \subseteq \kappa$ es estacionario y $f: S \to \kappa$ es una función de regresión (es decir, $f(\alpha) < \alpha$ para todo $\alpha \in S$), entonces existe $\gamma < \kappa$ tal que $f^{-1}(\gamma)$ es estacionario (Lema de Fodor o Presión del Club).
+  \end{enumerate}
+
+  \item \textbf{(Cardinales de Mahlo.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que si $\kappa$ es de Mahlo, entonces el conjunto $\{\lambda < \kappa : \lambda \text{ es débilmente inaccesible}\}$ también es estacionario en $\kappa$.
+    \item Use el Lema de Fodor para mostrar que si $\kappa$ es de Mahlo, entonces el conjunto de puntos fijos de la función aleph debajo de $\kappa$ es estacionario.
+    \item Enuncie (sin demostrar) en qué sentido los cardinales de Mahlo ``ven'' a los cardinales inaccesibles como ``pequeños''.
+  \end{enumerate}
+
+  \item \textbf{(Ultrafiltros y completitud.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que para $\kappa = \omega$, cualquier ultrafiltro no principal sobre $\omega$ es $\sigma$-completo si y solo si es $\omega_1$-completo.
+    \item Demuestre que si $\mathcal{U}$ es un ultrafiltro $\kappa$-completo no principal sobre $\kappa$, entonces para toda partición $\{A_i : i < \lambda\}$ de $\kappa$ con $\lambda < \kappa$, exactamente uno de los $A_i$ pertenece a $\mathcal{U}$.
+    \item Utilice (b) para demostrar que si $\kappa$ es medible, entonces $\kappa$ es cardinal límite (no sucesor).
+  \end{enumerate}
+
+  \item \textbf{(Juegos de Gale--Stewart.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Determine quién tiene estrategia ganadora en el juego $G(A)$ donde $A = \{x \in \omega^\omega : x(0) > x(1)\}$.
+    \item Determine quién tiene estrategia ganadora en el juego $G(A)$ donde $A = \{x \in \omega^\omega : \exists n, x(n) = 0\}$.
+    \item Demuestre que si $A$ es abierto en $\omega^\omega$ (topología producto), entonces $G(A)$ es determinado (caso base del Determinismo de Borel).
+    \item \textit{(Juego de Banach--Mazur.)} Defina el juego $BM(A)$ para $A \subseteq [0,1]$ (los jugadores alternan eligiendo intervalos anidados de longitud decreciente, y el Jugador I gana si el punto límite está en $A$). ¿Qué relación tiene con el Axioma de Determinismo?
+  \end{enumerate}
+
+  \item \textbf{(Jerarquía de consistencia.)}
+  \begin{enumerate}[label=(\alph*)]
+    \item Ordene los siguientes sistemas por fuerza de consistencia, de menor a mayor: ZFC, ZFC + Mahlo, ZFC + $V = L$, ZFC + medible, ZFC + supercompacto, ZFC + Determinismo de Borel.
+    \item ¿En qué posición de la jerarquía se sitúa ZFC + HC?
+    \item ¿Es ZFC + $\neg$HC más fuerte en consistencia que ZFC? Justifique.
+    \item Explique por qué ``ZFC + $V = L$'' tiene la misma fuerza de consistencia que ZFC.
+  \end{enumerate}
+
+\end{enumerate}
+
+\subsection*{Problemas de profundización}
+
+\begin{enumerate}[leftmargin=2em, label=\textbf{P\arabic*$'$.}]
+
+  \item \textbf{(El teorema de Scott: detalles.)} Desarrolle los detalles de la demostración del Teorema de Scott (\ref{teo:scott_thm}):
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que si $j: V \to M$ es elemental con $V = L$ y $M = L$, entonces $j\restriction \mathrm{Ord}$ es una función estrictamente creciente de los ordinales en sí mismos, y que $j(\alpha) \geq \alpha$ para todo $\alpha$.
+    \item Use el hecho de que $L$ tiene un parámetro de Skolem uniforme $h_L$ (una función definible $h_L: \mathrm{Ord} \times \omega \to L$ con $L = \{h_L(\alpha, n) : \alpha \in \mathrm{Ord}, n \in \omega\}$) para demostrar que cualquier inmersión elemental $j: L \to L$ debe ser la identidad.
+    \item Concluya que si $\kappa$ es medible, entonces $V \neq L$.
+  \end{enumerate}
+
+  \item \textbf{(Determinismo proyectivo y cardinales de Woodin.)} El \textbf{Determinismo Proyectivo} (PD) afirma que todo juego $G(A)$ con $A$ un conjunto proyectivo (en la jerarquía proyectiva $\Sigma^1_n$, $\Pi^1_n$) es determinado. Investigue y exponga:
+  \begin{enumerate}[label=(\alph*)]
+    \item La demostración de Martin de que $\Sigma^1_1$ (analítico) implica determinismo bajo ZFC (sin cardinales grandes).
+    \item La demostración de Martin de que la existencia de un cardinal medible implica el determinismo de todos los juegos $\Sigma^1_2$.
+    \item El enunciado del teorema de Martin--Steel: la existencia de $n$ cardinales de Woodin con un cardinal medible por encima implica el determinismo de todos los juegos $\Sigma^1_{n+1}$.
+    \item Por qué la existencia de infinitos cardinales de Woodin implica PD.
+  \end{enumerate}
+
+  \item \textbf{(El multiverso conjuntista.)} Lea el artículo seminal de Joel David Hamkins ``The set-theoretic multiverse'' (\textit{Rev. Symb. Log.}, 2012) y elabore un ensayo (2--3 páginas) que:
+  \begin{enumerate}[label=(\alph*)]
+    \item Explique la tesis del multiverso: los distintos modelos de ZFC son todos igualmente reales.
+    \item Contraste esta postura con el platonismo conjuntista de Gödel.
+    \item Discuta cómo el multiverso afecta la interpretación de resultados de independencia como HC.
+    \item Presente al menos un argumento en favor y uno en contra de la tesis del multiverso.
+  \end{enumerate}
+
+  \item \textbf{(El axioma de Martin.)} El \textbf{Axioma de Martin} ($\mathrm{MA}$) afirma: para todo ccc (condición de cadena numerable) orden parcial $\mathbb{P}$ y toda familia $\{D_i : i < \kappa\}$ con $\kappa < \mathfrak{c}$ de abiertos densos en $\mathbb{P}$, existe un filtro que intersecta todos los $D_i$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Demuestre que MA es un teorema cuando $\kappa < \aleph_0$ (Baire, el espacio de Baire).
+    \item Demuestre que MA $+$ HC es consistente con ZFC.
+    \item Demuestre que MA $+$ $\neg$HC es consistente con ZFC.
+    \item Use MA para demostrar que bajo MA $+$ $\neg$HC, toda unión de $\omega_1$ muchos conjuntos nulos (Lebesgue) tiene medida cero.
+  \end{enumerate}
+
+  \item \textbf{(Independencia de SCH.)} La falla de la Hipótesis de los Cardinales Singulares en $\aleph_\omega$ es un resultado profundo de Magidor (1977). Investigue:
+  \begin{enumerate}[label=(\alph*)]
+    \item ¿Qué cardinalidad grande se usa en la construcción de Magidor?
+    \item Enuncie el resultado de Magidor: es consistente (relativo a un cardinal supercompacto) que $2^{\aleph_\omega} = \aleph_{\omega+2}$.
+    \item ¿Por qué el Teorema de König no prohíbe esta situación?
+    \item ¿Qué dice el teorema de Shelah (\textit{pcf theory}) sobre el supremo de las potencias $2^{\aleph_n}$ para $n < \omega$?
+  \end{enumerate}
+
+\end{enumerate}
+
+% ===========================================================
+\section*{Referencias de la Clase 10}
+% ===========================================================
+
+Los resultados y conceptos de esta clase provienen de las siguientes fuentes fundamentales:
+
+\begin{itemize}[leftmargin=2em]
+  \item La referencia enciclopédica para la teoría de cardinales grandes es \cite{kanamori2003}. Cubre cardinales inaccesibles, Mahlo, débilmente compactos, Ramsey, medibles, fuertes, supercompactos, enormes y los límites de la jerarquía. Es la fuente primaria para todos los resultados de las Secciones 1--4 de esta clase.
+
+  \item Para los cardinales inaccesibles y la verificación de $V_\kappa \models \mathrm{ZFC}$, véanse los capítulos introductorios de \cite{jech2003} (capítulo~12) y \cite{kunen2011} (capítulo~V). La definición y propiedades de los cardinales de Mahlo se tratan en \cite{jech2003} (§12.4) y \cite{kanamori2003} (§1.4).
+
+  \item El teorema de Scott (si $\kappa$ es medible entonces $V \neq L$) fue publicado en \cite{scott1961}. Una demostración completa se encuentra en \cite{jech2003} (§17.1) y en \cite{kanamori2003} (§5.1).
+
+  \item El Determinismo de Borel fue demostrado por Martin en \cite{martin1975}. La necesidad del Reemplazamiento para el Determinismo de Borel se debe a Friedman (1971); véase el análisis en \cite{kanamori2003} (§27.3).
+
+  \item El teorema de Martin--Steel (la existencia de $n$ cardinales de Woodin con un cardinal medible por encima implica el determinismo $\Sigma^1_{n+2}$) se publicó en \cite{martinSteel1988}. La equivalencia entre infinitos cardinales de Woodin y $\mathrm{AD}^{L(\mathbb{R})}$ es el gran teorema de Woodin, expuesto en \cite{woodin2010det}.
+
+  \item Para el Axioma de Determinismo y sus consecuencias (medibilidad de todos los subconjuntos de $\mathbb{R}$, propiedad de Baire, propiedad del conjunto perfecto), la referencia principal es \cite{moschovakis2009}, especialmente los capítulos 6 y 7. El libro de \cite{kanamori2003} (capítulo~28) también presenta estos resultados en el contexto de la jerarquía de cardinales grandes.
+
+  \item Para la jerarquía de consistencia y el Axioma de Martin, véase \cite{kunen2011} (capítulo~III y~IV) y \cite{jech2003} (capítulo~16). El Axioma de Martin Máximo fue introducido por Foreman, Magidor y Shelah; véase \cite{foreman1988}.
+
+  \item La tesis del multiverso conjuntista se expone en \cite{hamkins2012}. Una perspectiva alternativa (absolutismo de $\Omega$-lógica) se encuentra en \cite{woodin2001} y en los artículos ulteriores de Woodin sobre el Programa Final.
+
+  \item Para el programa de modelos interiores, la referencia introductoria es \cite{steel2010}. Las aplicaciones a la Hipótesis de los Cardinales Singulares se exponen en \cite{shelah1994}.
+
+  \item El teorema de Kunen (no existen inmersiones elementales $j: V \to V$ bajo ZFC) se publicó en \cite{kunen1971}. Una exposición moderna se encuentra en \cite{kanamori2003} (§23.2).
+\end{itemize}
